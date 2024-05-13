@@ -64,74 +64,30 @@
 
             
 
-            <li class="menu-item">
+            <!-- <li class="menu-item">
                 <a href="statistik-mata-kuliah.php" class="menu-link">
                     <span class="menu-icon"><i data-feather="grid"></i></span>
                     <span class="menu-text"> Report </span>
                 </a>
-            </li>
+            </li> -->
 
-            <!-- <li class="menu-item">
-                <a href="#menuEcommerce" data-bs-toggle="collapse" class="menu-link">
-                    <span class="menu-icon"><i data-feather="shopping-cart"></i></span>
+            <li class="menu-item">
+                <a href="#menureport" data-bs-toggle="collapse" class="menu-link">
+                    <span class="menu-icon"><i data-feather="grid"></i></span>
                     <span class="menu-text"> Report </span>
                     <span class="menu-arrow"></span>
                 </a>
-                <div class="collapse" id="menuEcommerce">
+                <div class="collapse" id="menureport">
                     <ul class="sub-menu">
                         <li class="menu-item">
-                            <a href="ecommerce-dashboard.php" class="menu-link">
-                                <span class="menu-text">Report Monitoring</span>
+                            <a href="statistik-mata-kuliah.php" class="menu-link">
+                                <span class="menu-text">Statistik Matakuliah</span>
                             </a>
                         </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-products.php" class="menu-link">
-                                <span class="menu-text">Products</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-product-detail.php" class="menu-link">
-                                <span class="menu-text">Product Detail</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-product-edit.php" class="menu-link">
-                                <span class="menu-text">Add Product</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-customers.php" class="menu-link">
-                                <span class="menu-text">Customers</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-orders.php" class="menu-link">
-                                <span class="menu-text">Orders</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-order-detail.php" class="menu-link">
-                                <span class="menu-text">Order Detail</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-sellers.php" class="menu-link">
-                                <span class="menu-text">Sellers</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-cart.php" class="menu-link">
-                                <span class="menu-text">Shopping Cart</span>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="ecommerce-checkout.php" class="menu-link">
-                                <span class="menu-text">Checkout</span>
-                            </a>
-                        </li>
+                        
                     </ul>
                 </div>
-            </li> -->
+            </li>
 
         </ul>
         <!--- End Menu -->
