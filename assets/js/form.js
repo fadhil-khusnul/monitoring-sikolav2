@@ -1,5 +1,15 @@
 var tableStatistik = $("#table_statistik_matkul").DataTable({
-    stateSave: !0,
+
+    // stateSave: true,
+    lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
+    dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
+    pageLength: 25,
+    buttons: [
+
+        { extend: 'copy', },
+        { extend: 'csv' },
+    ],
+
     language: {
         paginate: {
             previous: "<i class='mdi mdi-chevron-left'>",
@@ -10,6 +20,7 @@ var tableStatistik = $("#table_statistik_matkul").DataTable({
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
     }
 });
+// tableStatistik.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)");
 
 // var selectedMK = $('#kode_mk[1]').select2();
 // console.log(selectedMK);
@@ -87,27 +98,53 @@ fetch('assets/data/list_mk.json')
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${data.courses[0].id}`, requestOptions)
                                     .then((response) => response.json())
                                     .then(result => {
+                                        let urls = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "url").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+                                        let files = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "resource" || modul.modname === "folder").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+                                        let forums = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "forum").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+
+
                                         let banyakAlur = result.filter(alur => alur.name !== "Info Matakuliah");
-                                        console.log(banyakAlur);
+                                        let banyakTerisi = banyakAlur.filter(alur => alur.modules && alur.modules.length > 0);
+                                        let tugas = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "assign").length;
+                                        }).reduce((total, current) => total + current, 0);
+                                        let surveys = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "survey").length;
+                                        }).reduce((total, current) => total + current, 0);
+                                        let quizes = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "quiz").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+
+                                        console.log(files);
+
+                                        let infoMK = result.filter(alur => alur.name == "Info Matakuliah");
+                                        let rps = infoMK.filter(section => section.modules.some(modul => modul.modname == "resource"));
+
 
                                         tableStatistik.row.add([
                                             counter++,
                                             data.courses[0].fullname,
-                                            banyakAlur.length, // Menggunakan panjang array banyakAlur
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id,
-                                            data.courses[0].id
+                                            banyakTerisi.length,
+                                            banyakAlur.length,
+                                            rps.length,
+                                            tugas,
+                                            tugas,
+                                            urls,
+                                            files,
+                                            surveys,
+                                            quizes,
+                                            forums
                                         ]).draw(false);
-
-                                        $("#loader").removeClass("d-flex").addClass("d-none")
-
-
-                                        console.log(data.courses[0].id);
                                     })
                                     .catch((error) => console.error(error));
 
@@ -134,6 +171,8 @@ fetch('assets/data/list_mk.json')
                         option.text = item.fullname_kelas_sikola;
                         groups[item.nama_prodi].appendChild(option);
                     });
+                    $("#loader").removeClass("d-flex").addClass("d-none")
+
                 })
                 .catch(error => {
                     $("#loader").removeClass("d-flex").addClass("d-none")
@@ -213,40 +252,67 @@ fetch('assets/data/get_all_prodi.json')
                         .then(dataCourses => {
 
                             let filteredCourses = dataCourses.courses.filter(course => course.shortname.includes(activeSemester));
-                            console.log(filteredCourses);
 
                             filteredCourses.forEach(item => {
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${item.id}`, requestOptions)
                                     .then((response) => response.json())
                                     .then(result => {
 
+                                        let urls = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "url").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+                                        let files = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "resource" || modul.modname === "folder").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+                                        let forums = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "forum").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+
+
                                         let banyakAlur = result.filter(alur => alur.name !== "Info Matakuliah");
-                                        console.log(banyakAlur);
+                                        let banyakTerisi = banyakAlur.filter(alur => alur.modules && alur.modules.length > 0);
+                                        let tugas = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "assign").length;
+                                        }).reduce((total, current) => total + current, 0);
+                                        let surveys = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "survey").length;
+                                        }).reduce((total, current) => total + current, 0);
+                                        let quizes = result.map(section => {
+                                            return section.modules.filter(modul => modul.modname === "quiz").length;
+                                        }).reduce((total, current) => total + current, 0);
+
+
+                                        console.log(files);
+
+                                        let infoMK = result.filter(alur => alur.name == "Info Matakuliah");
+                                        let rps = infoMK.filter(section => section.modules.some(modul => modul.modname == "resource"));
 
                                         tableStatistik.row.add([
                                             counter++,
                                             item.fullname,
+                                            banyakTerisi.length,
                                             banyakAlur.length,
-                                            item.id,
-                                            item.id,
-                                            item.id,
-                                            item.id,
-                                            item.id,
-                                            item.id,
-                                            item.id,
-                                            item.id
+                                            rps.length,
+                                            tugas,
+                                            tugas,
+                                            urls,
+                                            files,
+                                            surveys,
+                                            quizes,
+                                            forums
                                         ]).draw(false);
 
-                                        $("#loader").removeClass("d-flex").addClass("d-none")
-
-
-                                        console.log(item.id);
                                     })
                                     .catch((error) => console.error(error));
 
 
 
-                            })
+                            });
+                            $("#loader").removeClass("d-flex").addClass("d-none")
+
                         })
                         .catch((error) => console.error(error));
                 })

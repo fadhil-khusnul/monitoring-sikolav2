@@ -31,8 +31,7 @@
 
 
 
-            <!-- Notofication dropdown -->
-            <li class="dropdown notification-list">
+            <!-- <li class="dropdown notification-list">
                 <a class="nav-link dropdown-toggle waves-effect waves-light arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <i class="fe-bell font-22"></i>
                     <span class="badge bg-danger rounded-circle noti-icon-badge">9</span>
@@ -54,7 +53,6 @@
                     <div class="px-1" style="max-height: 300px;" data-simplebar>
 
                         <h5 class="text-muted font-13 fw-normal mt-2">Today</h5>
-                        <!-- item-->
 
                         <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card unread-noti shadow-none mb-1">
                             <div class="card-body">
@@ -73,7 +71,6 @@
                             </div>
                         </a>
 
-                        <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-1">
                             <div class="card-body">
                                 <span class="float-end noti-close-btn text-muted"><i class="mdi mdi-close"></i></span>
@@ -93,7 +90,6 @@
 
                         <h5 class="text-muted font-13 fw-normal mt-0">Yesterday</h5>
 
-                        <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-1">
                             <div class="card-body">
                                 <span class="float-end noti-close-btn text-muted"><i class="mdi mdi-close"></i></span>
@@ -113,7 +109,6 @@
 
                         <h5 class="text-muted font-13 fw-normal mt-0">30 Dec 2021</h5>
 
-                        <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-1">
                             <div class="card-body">
                                 <span class="float-end noti-close-btn text-muted"><i class="mdi mdi-close"></i></span>
@@ -131,7 +126,6 @@
                             </div>
                         </a>
 
-                        <!-- item-->
                         <a href="javascript:void(0);" class="dropdown-item p-0 notify-item card read-noti shadow-none mb-1">
                             <div class="card-body">
                                 <span class="float-end noti-close-btn text-muted"><i class="mdi mdi-close"></i></span>
@@ -154,13 +148,12 @@
                         </div>
                     </div>
 
-                    <!-- All-->
                     <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item border-top border-light py-2">
                         View All
                     </a>
 
                 </div>
-            </li>
+            </li> -->
 
             <!-- Light/Dark Mode Toggle Button -->
             <li class="d-none d-sm-inline-block">
@@ -213,11 +206,11 @@
             </li>
 
             <!-- Right Bar offcanvas button (Theme Customization Panel) -->
-            <li>
+            <!-- <li>
                 <a class="nav-link waves-effect waves-light" data-bs-toggle="offcanvas" href="#theme-settings-offcanvas">
                     <i class="fe-settings font-22"></i>
                 </a>
-            </li>
+            </li> -->
         </ul>
     </div>
 </div>

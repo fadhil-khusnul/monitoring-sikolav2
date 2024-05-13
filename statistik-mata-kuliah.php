@@ -54,18 +54,7 @@
 
                   </h4>
                   <div class="row">
-
-
-                    <div class="col-md-6">
-                      <h5 class="font-weight-semibold">Program Studi</h5>
-
-                      <select class="form-control" id="program_studi" name="program_studi" data-toggle="select2" data-width="100%">
-                        <option value="" selected disabled>Select Program Studi</option>
-
-
-                      </select>
-                    </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                       <h5 class="font-weight-semibold">Semester</h5>
 
                       <select class="form-control" data-toggle="select2" id="semester" name="semester" data-width="100%">
@@ -74,16 +63,27 @@
 
                       </select>
                     </div>
-                    <div class="col-md-6">
-                      <h5 class="font-weight-semibold">Master Mata Kuliah</h5>
 
-                      <select class="form-control" data-toggle="select2" id="kode_mk[1]" name="kode_mk[1]" data-width="100%">
-                        <option value="" selected disabled>Select Master Mata Kuliah</option>
+                    <div class="col-md-4">
+                      <h5 class="font-weight-semibold">Program Studi</h5>
+
+                      <select class="form-control" id="program_studi" name="program_studi" data-toggle="select2" data-width="100%">
+                        <option value="" selected disabled>Select Program Studi</option>
 
 
                       </select>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-4">
+                      <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
+
+                      <select class="form-control" data-toggle="select2" id="kode_mk[1]" name="kode_mk[1]" data-width="100%">
+                        <option value="" selected disabled>Select Mata Kuliah Semester</option>
+
+
+                      </select>
+                    </div>
+                    <div class="col-md-6 d-none">
                       <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
 
                       <select class="form-control" data-toggle="select2" data-width="100%" id="id_kelas_kuliah[1]" name="id_kelas_kuliah[1]">
@@ -104,7 +104,7 @@
                     Data
 
                   </h4>
-                  <div class="text-end mb-3">
+                  <!-- <div class="text-end mb-3">
                     <div class="btn-group mb-2">
                       <button type="button" class="btn btn-sm btn-danger">
                         PDF <i class="fe-download"></i>
@@ -113,7 +113,7 @@
                         EXCEL <i class="fe-download"></i>
                       </button>
                     </div>
-                  </div>
+                  </div> -->
 
 
                   <div class="table-responsive">
@@ -125,19 +125,25 @@
                       <div class="d-none justify-content-center" id="loader">
                         <div class="spinner-border" role="status"></div>
                       </div>
-                      <thead>
-                        <tr align="text-center">
-                          <th width="10">No</th>
-                          <th width="50">Nama Kelas</th>
-                          <th>Alur</th>
-                          <th>RPS</th>
-                          <th>Proyek</th>
-                          <th>Tugas</th>
-                          <th>Kasus</th>
-                          <th>Doc</th>
-                          <th>Survey</th>
-                          <th>Quiz</th>
-                          <th width="30">Forum, Thread, Post</th>
+                      <thead class="table-light">
+                        <tr align="center" valign="top">
+                          <th rowspan="2" width="10">No</th>
+                          <th rowspan="2" width="50">Nama Kelas</th>
+                          <th colspan="2">Alur Pembelajaran</th>
+                          <th rowspan="2">RPS</th>
+                          <th rowspan="2">Proyek</th>
+                          <th rowspan="2">Tugas</th>
+                          <th rowspan="2">Kasus/Url</th>
+                          <th rowspan="2">Doc</th>
+                          <th rowspan="2">Survey</th>
+                          <th rowspan="2">Quiz</th>
+                          <th rowspan="2" width="30">Forum, Thread, Post</th>
+                        </tr>
+                        <tr align="center">
+
+                          <th>Terisi</th>
+                          <th>Total</th>
+
                         </tr>
                       </thead>
 
@@ -200,7 +206,7 @@
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
   <script src="assets/js/form.js"></script>
-  <script src="assets/js/pages/datatables.init.js"></script>
+  <!-- <script src="assets/js/pages/datatables.init.js"></script> -->
   <script src="assets/js/pages/form-advanced.init.js"></script>
 
 
