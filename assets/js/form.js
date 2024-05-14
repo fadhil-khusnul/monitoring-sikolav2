@@ -292,7 +292,7 @@ fetch('assets/data/get_all_prodi.json')
 
                                         tableStatistik.row.add([
                                             counter++,
-                                            item.fullname,
+                                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
                                             banyakTerisi.length,
                                             banyakAlur.length,
                                             rps.length,
@@ -329,9 +329,7 @@ fetch('assets/data/get_all_prodi.json')
     });
 
 
-document.getElementById("program_studi_presensi").addEventListener("click", function() {
-    prodi_presensi(this);
-});
+
 async function get_mk(params) {
     console.log(params);
 

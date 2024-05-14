@@ -54,7 +54,7 @@
 
                   </h4>
                   <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 d-none">
                       <h5 class="font-weight-semibold">Semester</h5>
 
                       <select class="form-control" data-toggle="select2" id="semester" name="semester" data-width="100%">
@@ -75,6 +75,8 @@
                     </div>
 
                     <div class="col-md-4">
+                      <a href="" target="_blank"></a>
+                      <i></i>
                       <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
 
                       <select class="form-control" data-toggle="select2" id="kode_mk[1]" name="kode_mk[1]" data-width="100%">

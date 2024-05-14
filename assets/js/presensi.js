@@ -163,15 +163,24 @@ fetch('assets/data/get_all_prodi.json')
                                                 terisiDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0);
                                                 totalDosen = absenDosenData.length;
 
-                                                // console.log(terisiDosen, terisiMhs);
+                                                console.log(terisiDosen, terisiMhs);
                                                 tableStatistik.row.add([
                                                     counter++,
-                                                    item.fullname,
-                                                    terisiDosen.length,
+                                                    `
+                                                    <a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>
+
+                                                    `,
+                                                    `${terisiDosen.length}`,
                                                     totalDosen,
+                                                    `
+                                                    <a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>
+                                                    `,
                                                     terisiMhs.length,
                                                     totalMahasiswa,
-                                                    attendanceMhsE
+                                                    `
+                                                    <a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenMhs[0].id}" target="_blank" class="">Presensi Mahasiswa <i class="fe-external-link"></i></a>
+                                                    `,
+
                                                 ]).draw(false);
                                             })
 
@@ -233,7 +242,7 @@ fetch('assets/data/get_all_prodi.json')
                                         console.log(item.fullname, "INF");
                                         tabelInforMk.row.add([
                                             counter_e++,
-                                            item.fullname,
+                                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="link">${item.fullname} <i class="fe-external-link"></i></a>`,
                                             "Nama Presensi Tidak Sesuai, Judul InfoMatakuliah Tidak Sesuai"
 
                                         ]).draw(false);

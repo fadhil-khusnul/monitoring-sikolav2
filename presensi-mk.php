@@ -129,8 +129,8 @@
                         <tr align="center" valign="top">
                           <th rowspan="2" width="10">No</th>
                           <th rowspan="2" width="80">Nama Kelas</th>
-                          <th colspan="2" style="text-align: center;">Presensi Dosen</th>
-                          <th colspan="2" style="text-align: center;">Presensi Mahasiswa</th>
+                          <th colspan="3" style="text-align: center;">Presensi Dosen</th>
+                          <th colspan="3" style="text-align: center;">Presensi Mahasiswa</th>
                           <!-- <th rowspan="2">Bermasalah</th> -->
                           
                         </tr>
@@ -138,9 +138,11 @@
 
                           <th style="text-align:center;">Terisi</th>
                           <th style="text-align:center;">Total</th>
+                          <th style="text-align:center;">Link</th>
 
                           <th style="text-align:center;">Terisi</th>
                           <th style="text-align:center;">Total</th>
+                          <th style="text-align:center;">Link</th>
 
                         </tr>
                       </thead>
