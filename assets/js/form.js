@@ -328,10 +328,10 @@ fetch('assets/data/get_all_prodi.json')
         })
     });
 
-function get_id_prodi() {
 
-}
-
+document.getElementById("program_studi_presensi").addEventListener("click", function() {
+    prodi_presensi(this);
+});
 async function get_mk(params) {
     console.log(params);
 
