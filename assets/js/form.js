@@ -3,7 +3,7 @@ var tableStatistik = $("#table_statistik_matkul").DataTable({
     // stateSave: true,
     lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
     dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    pageLength: 25,
+    pageLength: 15,
     buttons: [
 
         { extend: 'copy', },
@@ -267,7 +267,7 @@ function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, 
             height: 380,
             type: "line",
             zoom: { enabled: !1 },
-            toolbar: { show: !1 }
+            toolbar: { show: !0 }
         },
         plotOptions: {
             bar: {

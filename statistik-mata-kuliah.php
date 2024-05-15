@@ -103,23 +103,7 @@
 
 
             </div>
-            <div class="col-12">
-              <!-- Portlet card -->
-              <div class="card">
-                <div class="card-body">
-                  <div class="card-widgets">
-                    <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                    <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
-                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
-                  </div>
-                  <h4 class="header-title mb-0">Grafik</h4>
-
-                  <div id="cardCollpase10" class="collapse show" dir="ltr">
-                    <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#1abc9c,#f672a7"></div>
-                  </div> <!-- collapsed end -->
-                </div> <!-- end card-body -->
-              </div> <!-- end card-->
-            </div>
+            
 
             <div class="col-12">
               <div class="card">
@@ -180,6 +164,23 @@
 
                 </div>
               </div>
+            </div>
+            <div class="col-12">
+              <!-- Portlet card -->
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-widgets">
+                    <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
+                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                  </div>
+                  <h4 class="header-title mb-0">Grafik</h4>
+
+                  <div id="cardCollpase10" class="collapse show" dir="ltr">
+                    <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#1abc9c,#f672a7"></div>
+                  </div> <!-- collapsed end -->
+                </div> <!-- end card-body -->
+              </div> <!-- end card-->
             </div>
           </div>
 
