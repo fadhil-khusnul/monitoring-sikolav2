@@ -163,8 +163,8 @@
 
                   <div class="table-responsive">
 
-                    <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH YANG BERMASALAH</h4>
-                    <h4 class="title text-center" id="judul_prodi"></h4>
+                    <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH PRODI YANG BERMASALAH</h4>
+                    <h4 class="title text-center" id="judul_prodi_kendala"></h4>
 
                     <table id="tabelInforMk" class="table activate-select dt-responsive nowrap w-100">
                       <div class="d-none justify-content-center" id="loader">

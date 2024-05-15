@@ -95,10 +95,32 @@
                       </select>
                     </div>
                   </div>
+                  <div class="d-none justify-content-center" id="loader">
+                    <div class="spinner-border" role="status"></div>
+                  </div>
                 </div>
               </div>
 
+
             </div>
+            <div class="col-12">
+              <!-- Portlet card -->
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-widgets">
+                    <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
+                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                  </div>
+                  <h4 class="header-title mb-0">Grafik</h4>
+
+                  <div id="cardCollpase10" class="collapse show" dir="ltr">
+                    <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#1abc9c,#f672a7"></div>
+                  </div> <!-- collapsed end -->
+                </div> <!-- end card-body -->
+              </div> <!-- end card-->
+            </div>
+
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
@@ -124,9 +146,7 @@
                     <h4 class="title text-center" id="judul_prodi"></h4>
 
                     <table id="table_statistik_matkul" class="table activate-select dt-responsive nowrap w-100">
-                      <div class="d-none justify-content-center" id="loader">
-                        <div class="spinner-border" role="status"></div>
-                      </div>
+
                       <thead class="table-light">
                         <tr align="center" valign="top">
                           <th rowspan="2" width="10">No</th>
@@ -205,6 +225,13 @@
   <!-- JsGrid js -->
   <!-- <script src="assets/libs/jsgrid/jsgrid.min.js"></script> -->
   <script src="assets/libs/select2/js/select2.min.js"></script>
+
+  <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+  <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
+  <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
+
+  <!-- init js -->
+  <script src="assets/js/pages/apexcharts.init.js"></script>
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->

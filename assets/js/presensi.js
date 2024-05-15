@@ -121,6 +121,8 @@ async function get_prodi(params) {
 
                 $("#judul_prodi").html("")
                 $("#judul_prodi").html(nama_prodi)
+                $("#judul_prodi_kendala").html("")
+                $("#judul_prodi_kendala").html(nama_prodi)
 
 
 

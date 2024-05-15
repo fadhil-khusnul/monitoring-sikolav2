@@ -1,10 +1,11 @@
 <?php include 'partials/main.php'; ?>
+<!-- <?php include 'services/session.php';?> -->
 
 <?php 
-if (!$_SESSION['modern_user'] || !isset($_SESSION['modern_user'])) {
-    header('Location: auth-login.php');
-    exit();
-}
+// if (!$_SESSION['modern_user'] || !isset($_SESSION['modern_user'])) {
+//     header('Location: auth-login.php');
+//     exit();
+// }
 ?>
 
 <head>

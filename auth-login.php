@@ -1,20 +1,20 @@
 <?php include 'partials/main.php'; ?>
 <?php
-    $_SESSION['error'] = null;
-    if(isset($_POST['email'])){
-        $email = $_POST['email'];
-        if (strlen($email)==0) {
-            $_SESSION['error'] =  "Please enter a email";
-            $_POST['email'] = null;
-        }else{
-        if(checkAuth($email)===true){
-            header('Location: index.php');
-            die();
-        }else{
-            $_SESSION['error'] =  "Email is not valid";
-        }
-    }
-    }
+    // $_SESSION['error'] = null;
+    // if(isset($_POST['email'])){
+    //     $email = $_POST['email'];
+    //     if (strlen($email)==0) {
+    //         $_SESSION['error'] =  "Please enter a email";
+    //         $_POST['email'] = null;
+    //     }else{
+    //     if(checkAuth($email)===true){
+    //         header('Location: index2.php');
+    //         die();
+    //     }else{
+    //         $_SESSION['error'] =  "Email is not valid";
+    //     }
+    // }
+    // }
 
 ?>
 
@@ -58,7 +58,10 @@
                                     <div class="mb-3">
                                         <label for="emailaddress" class="form-label">Email address</label>
                                         <input class="form-control" type="email" id="emailaddress" placeholder="Enter your email" name="email" value="<?php echo ($_POST['email'] ?? "demo@customer.com") ?>">
-                                        <span class="text-danger"><?php echo $_SESSION['error'] ?></span>
+                                        <span class="text-danger"><?php 
+                                        // echo $_SESSION['error'] 
+                                        
+                                        ?></span>
                                     </div>
 
                                     <div class="mb-3">
@@ -124,7 +127,7 @@
 
 
         <footer class="footer footer-alt">
-            2015 - <script>document.write(new Date().getFullYear())</script> &copy; UBold theme by <a href="" class="text-white-50">Coderthemes</a> 
+            <script>document.write(new Date().getFullYear())</script> &copy; UBold theme by <a href="" class="text-white-50">Coderthemes</a> 
         </footer>
 
         <!-- Authentication js -->
