@@ -42,7 +42,7 @@
 
           <?php
           $sub_title = "Report";
-          $title = "Monitoring Presensi SikolaV2";
+          $title = "Monitoring Presensi Sikola";
           include 'partials/page-title.php'; ?>
 
           <div class="row">
@@ -54,10 +54,10 @@
 
                   </h4>
                   <div class="row">
-                    <div class="col-md-4 d-none">
+                  <div class="col-md-4">
                       <h5 class="font-weight-semibold">Semester</h5>
 
-                      <select class="form-control" data-toggle="select2" id="semester" name="semester" data-width="100%">
+                      <select class="form-control" data-toggle="select2" id="semester_select" name="semester_select" data-width="100%" onchange="get_prodi(this)">
                         <option value="" selected disabled>Select Semester</option>
 
 
@@ -74,19 +74,12 @@
                       </select>
                     </div>
 
-                    <div class="col-md-4 d-none">
+                    <div class="col-md-4">
+                      <a href="" target="_blank"></a>
+                      <i></i>
                       <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
 
-                      <select class="form-control" data-toggle="select2" id="kode_mk[1]" name="kode_mk[1]" data-width="100%">
-                        <option value="" selected disabled>Select Mata Kuliah Semester</option>
-
-
-                      </select>
-                    </div>
-                    <div class="col-md-6 d-none">
-                      <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
-
-                      <select class="form-control" data-toggle="select2" data-width="100%" id="id_kelas_kuliah[1]" name="id_kelas_kuliah[1]">
+                      <select class="form-control" data-toggle="select2" id="select_mk" name="select_mk" data-width="100%">
                         <option value="" selected disabled>Select Mata Kuliah Semester</option>
 
 

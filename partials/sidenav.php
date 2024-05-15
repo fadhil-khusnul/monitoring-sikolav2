@@ -23,7 +23,7 @@
         <div class="user-box text-center">
             <img src="assets/images/logo-unhas.png" alt="user-img" title="Mat Helme" class="rounded-circle avatar-md">
             <div class="dropdown">
-                <a href="javascript: void(0);" class="dropdown-toggle h5 mb-1 d-block" data-bs-toggle="dropdown">Admin SikolaV2</a>
+                <a href="javascript: void(0);" class="dropdown-toggle h5 mb-1 d-block" data-bs-toggle="dropdown">Admin Sikola</a>
                 <div class="dropdown-menu user-pro-dropdown">
 
                     <!-- item-->

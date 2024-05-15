@@ -167,7 +167,7 @@
                 <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                     <img src="assets/images/logo-unhas.png" alt="user-image" class="rounded-circle" style="height:auto;">
                     <span class="ms-1 d-none d-md-inline-block">
-                        Admin SikolaV2 <i class="mdi mdi-chevron-down"></i>
+                        Admin Sikola <i class="mdi mdi-chevron-down"></i>
                     </span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
