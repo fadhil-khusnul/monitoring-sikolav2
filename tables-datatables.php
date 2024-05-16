@@ -542,7 +542,7 @@ include 'partials/page-title.php'; ?>
                                             that will interact with a DataTable. The core library provides the based framework upon which plug-ins can built.
                                         </p>
 
-                                        <table id="datatable-buttons" class="table table-striped dt-responsive nowrap w-100">
+                                        <table id="datatable-buttons" class="table table-hover dt-responsive nowrap w-100">
                                             <thead>
                                                 <tr>
                                                     <th>Name</th>

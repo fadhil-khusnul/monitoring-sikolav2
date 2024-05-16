@@ -103,7 +103,7 @@
 
 
             </div>
-            
+
 
             <div class="col-12">
               <div class="card">
@@ -124,48 +124,46 @@
                   </div> -->
 
 
-                  <div class="table-responsive">
 
-                    <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
-                    <h4 class="title text-center" id="judul_prodi"></h4>
+                  <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
+                  <h4 class="title text-center" id="judul_prodi"></h4>
 
-                    <table id="table_statistik_matkul" class="table activate-select dt-responsive nowrap w-100">
+                  <table id="table_statistik_matkul" class="table table-hover activate-select w-100">
 
-                      <thead class="table-light">
-                        <tr align="center" valign="top">
-                          <th rowspan="2" width="10">No</th>
-                          <th rowspan="2" width="50">Nama Kelas</th>
-                          <th colspan="2">Alur Pembelajaran</th>
-                          <th rowspan="2">RPS</th>
-                          <th rowspan="2">Proyek</th>
-                          <th rowspan="2">Tugas</th>
-                          <th rowspan="2">Kasus/Url</th>
-                          <th rowspan="2">Doc</th>
-                          <th rowspan="2">Survey</th>
-                          <th rowspan="2">Quiz</th>
-                          <th rowspan="2">Forum, Thread, Post</th>
-                          <th rowspan="2">Reports</th>
-                        </tr>
-                        <tr align="center">
+                    <thead class="table-light">
+                      <tr align="center" valign="top">
+                        <th rowspan="2">No</th>
+                        <th rowspan="2" width="70%">Nama Kelas</th>
+                        <th colspan="2">Alur Pembelajaran</th>
+                        <th rowspan="2">RPS</th>
+                        <th rowspan="2">Proyek</th>
+                        <th rowspan="2">Tugas</th>
+                        <th rowspan="2">Kasus/Url</th>
+                        <th rowspan="2">Doc</th>
+                        <th rowspan="2">Survey</th>
+                        <th rowspan="2">Quiz</th>
+                        <th rowspan="2">Forum, Thread, Post</th>
+                        <th rowspan="2" width="20%">Reports</th>
+                      </tr>
+                      <tr align="center">
 
-                          <th>Terisi</th>
-                          <th>Total</th>
+                        <th>Terisi</th>
+                        <th>Total</th>
 
-                        </tr>
-                      </thead>
+                      </tr>
+                    </thead>
 
-                      <tbody>
+                    <tbody>
 
-                      </tbody>
-                    </table>
+                    </tbody>
+                  </table>
 
-                  </div>
                   <!-- <div id="jsGrid"></div> -->
 
                 </div>
               </div>
             </div>
-            <div class="col-12">
+            <div class="col-6">
               <!-- Portlet card -->
               <div class="card">
                 <div class="card-body">
@@ -174,10 +172,28 @@
                     <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
                     <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                   </div>
-                  <h4 class="header-title mb-0">Grafik</h4>
+                  <h4 class="header-title mb-0">Bar Chart</h4>
 
                   <div id="cardCollpase10" class="collapse show" dir="ltr">
                     <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#1abc9c,#f672a7"></div>
+                  </div> <!-- collapsed end -->
+                </div> <!-- end card-body -->
+              </div> <!-- end card-->
+            </div>
+
+            <div class="col-6">
+              <!-- Portlet card -->
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-widgets">
+                    <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase18" role="button" aria-expanded="false" aria-controls="cardCollpase18"><i class="mdi mdi-minus"></i></a>
+                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                  </div>
+                  <h4 class="header-title mb-0">Pie Chart</h4>
+
+                  <div id="cardCollpase18" class="collapse show" dir="ltr">
+                    <div id="apex-pie-1" class="apex-charts pt-3" data-colors="#077AC3,#4fc6e1,#4892B5,#405D88,#4A81D4,#00B19D,#798385,#B56C79,#F1556C"></div>
                   </div> <!-- collapsed end -->
                 </div> <!-- end card-body -->
               </div> <!-- end card-->
@@ -228,11 +244,11 @@
   <script src="assets/libs/select2/js/select2.min.js"></script>
 
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-  <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script>
-  <script src="https://apexcharts.com/samples/assets/ohlc.js"></script>
+  <!-- <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script> -->
+  <!-- <script src="https://apexcharts.com/samples/assets/ohlc.js"></script> -->
 
   <!-- init js -->
-  <script src="assets/js/pages/apexcharts.init.js"></script>
+  <!-- <script src="assets/js/pages/apexcharts.init.js"></script> -->
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->

@@ -1,6 +1,7 @@
 var tableStatistik = $("#table_statistik_matkul").DataTable({
 
     // stateSave: true,
+    scrollX: true,
     lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
     dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
     pageLength: 15,
@@ -80,13 +81,14 @@ function get_prodi(params) {
 
 
             $(select).on("change", function(e) {
+                $("#apex-column-2").html("")
+                $("#apex-pie-1").html("")
                 const paramsOptions = params.options[params.selectedIndex];
                 const mk_aktif = paramsOptions.getAttribute('mk_aktif');
 
 
 
                 $("#judul_prodi").html("")
-                $("#apex-column-2").html("")
 
 
 
@@ -118,6 +120,8 @@ function get_prodi(params) {
 function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, counter, mk_aktif) {
     console.log(mk_aktif);
     $("#select_mk").empty();
+
+
 
 
     tableStatistik.clear().draw();
@@ -216,7 +220,12 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
                                     surveys,
                                     quizes,
                                     forums,
-                                    `<a href="https://sikola-v2.unhas.ac.id/report/view.php?courseid=${item.id}" target="_blank" class="">Reports <i class="fe-external-link"></i></a>`,
+                                    `
+                                    <a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a>
+                                    <br>
+                                    <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>
+                                    
+                                    `,
                                 ]).draw(false);
 
                             })
@@ -225,6 +234,7 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
 
 
                     });
+
 
                     Promise.all(fetchPromises).then(() => {
                         console.log(totalBanyakTerisi, "BNAYY");
@@ -254,8 +264,9 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
 
 
 
-function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi) {
-
+async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi) {
+    $("#apex-column-2").html("")
+    $("#apex-pie-1").html("")
 
     // if (chart) {
     //     chart.destroy(); // Destroy the previous chart instance
@@ -265,7 +276,7 @@ function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, 
     options = {
         chart: {
             height: 380,
-            type: "line",
+            type: "bar",
             zoom: { enabled: !1 },
             toolbar: { show: !0 }
         },
@@ -276,12 +287,15 @@ function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, 
         },
         dataLabels: {
             enabled: !0,
+            offsetY: -30,
+            style: { fontSize: "12px", colors: ["#304758"] }
         },
-        stroke: { width: [3, 3], curve: "smooth" },
+        // stroke: { width: [3, 3], curve: "smooth" },
         colors: colors,
         series: [{
-            name: nama_prodi,
-            type: 'line',
+            name: "Total",
+
+            // type: 'bar',
             data: [totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum]
         }, ],
         xaxis: {
@@ -320,6 +334,28 @@ function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, 
 
 
     chart.render();
+
+
+    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
+    (dataColors = $("#apex-pie-1").data("colors")) && (colors = dataColors.split(","));
+    options = {
+        chart: {
+            height: 380,
+            type: "pie"
+        },
+        title: {
+            text: nama_prodi,
+            align: "center",
+            style: { color: "#444" }
+        },
+        series: [totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum],
+        labels: ["Alur Pembelajaran (Terisi)", "RPS", "Proyek", "Tugas", "Kasus/Url", "Doc", "Survey", "Quiz", "Forum"],
+        colors: colors,
+        legend: { show: !0, position: "bottom", horizontalAlign: "center", verticalAlign: "middle", floating: !1, fontSize: "14px", offsetX: 0, offsetY: 7 },
+        responsive: [{ breakpoint: 600, options: { chart: { height: 240 }, legend: { show: !1 } } }]
+    };
+    (chart = new ApexCharts(document.querySelector("#apex-pie-1"), options)).render();
+
     // chart.destroy(); // Destroy the previous chart instance
 
     // chart.destroy()
@@ -443,7 +479,12 @@ function fetch_mk(mk_aktif, id_prodi, requestOptions) {
                                                 surveys,
                                                 quizes,
                                                 forums,
-                                                `<a href="https://sikola-v2.unhas.ac.id/report/view.php?courseid=${data.courses[0].id}" target="_blank" class="">Reports <i class="fe-external-link"></i></a>`,
+                                                `
+                                                <a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${data.courses[0].id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a>
+                                                <br>
+                                                <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${data.courses[0].id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>
+                                                
+                                                `
                                             ]).draw(false);
                                         })
                                         .catch((error) => console.error(error));

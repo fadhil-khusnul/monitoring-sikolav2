@@ -166,6 +166,7 @@ html[data-topbar-color=brand] {
     src: url("../fonts/cerebrisans-regular.eot");
     src: local("Cerebri-sans Regular"), url("../fonts/cerebrisans-regular.woff") format("woff");
     font-weight: 400;
+    color: #33dd80;
 }
 
 @font-face {
