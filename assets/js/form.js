@@ -277,7 +277,7 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
         chart: {
             height: 380,
             type: "bar",
-            zoom: { enabled: !1 },
+            zoom: { enabled: !0 },
             toolbar: { show: !0 }
         },
         plotOptions: {
@@ -341,7 +341,9 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
     options = {
         chart: {
             height: 380,
-            type: "pie"
+            type: "pie",
+            zoom: { enabled: !0 },
+            toolbar: { show: !0 }
         },
         title: {
             text: nama_prodi,
