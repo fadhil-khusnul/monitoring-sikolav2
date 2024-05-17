@@ -143,6 +143,7 @@
                         <th rowspan="2">Survey</th>
                         <th rowspan="2">Quiz</th>
                         <th rowspan="2">Forum, Thread, Post</th>
+                        <th rowspan="2" width="20%">Dosen</th>
                         <th rowspan="2" width="20%">Reports</th>
                       </tr>
                       <tr align="center">
@@ -175,7 +176,7 @@
                   <h4 class="header-title mb-0">Bar Chart</h4>
 
                   <div id="cardCollpase10" class="collapse show" dir="ltr">
-                    <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#1abc9c,#f672a7"></div>
+                    <div id="apex-column-2" class="apex-charts pt-3" data-colors="#077AC3,#4fc6e1,#4892B5,#405D88,#4A81D4,#00B19D,#798385,#B56C79,#F1556C"></div>
                   </div> <!-- collapsed end -->
                 </div> <!-- end card-body -->
               </div> <!-- end card-->

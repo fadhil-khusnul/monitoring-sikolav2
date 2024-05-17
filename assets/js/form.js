@@ -152,7 +152,7 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
                     const fetchPromises = filteredCourses.map(item => {
                         return fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${item.id}`, requestOptions)
                             .then((response) => response.json())
-                            .then(result => {
+                            .then(async result => {
 
                                 let urls = result.map(section => {
                                     return section.modules.filter(modul => modul.modname === "url").length;
@@ -199,14 +199,34 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
 
 
 
-                                let infoMK = result.filter(alur => alur.name == "Info Matakuliah");
+                                let infoMK = result.filter(alur => alur.name === "Info Matakuliah");
                                 let rps = infoMK.filter(section => section.modules.some(modul => modul.modname == "resource"));
 
                                 totalRps += rps.length
 
-                                // let uniqueValues = [...new Set([...result.map(section => section.modules.map(modul => modul.modname)).flat())]]
-                                // Ensure that the values are numeric
-                                // let numericValues = uniqueValues.map(value => parseInt(value));
+                                let attendanceModules = [];
+
+                                infoMK.forEach(section => {
+                                    section.modules.forEach(modul => {
+                                        if (modul.modname === "attendance") {
+                                            attendanceModules.push(modul);
+                                        }
+
+                                    });
+                                });
+                                let absenDosen = attendanceModules.filter(alur => alur.name === "Presensi Pengampu Mata Kuliah");
+
+
+                                const namaDosen = await getUserDosen(absenDosen, requestOptions);
+                                console.log(namaDosen, "NAMA DOSENN");
+
+                                const namaDosenListItems = namaDosen.map(dosen => `<li>${dosen.firstname} ${dosen.lastname}</li>`).join('');
+
+                                // Wrap the &lt;li&gt; elements in an &lt;ol&gt; tag
+                                const namaDosenHtml = `<ol>${namaDosenListItems}</ol>`;
+
+
+
                                 tableStatistik.row.add([
                                     counter++,
                                     `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
@@ -220,6 +240,7 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
                                     surveys,
                                     quizes,
                                     forums,
+                                    `${namaDosenHtml}`,
                                     `
                                     <a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a>
                                     <br>
@@ -262,7 +283,18 @@ function select_mk_fun(id_prodi, nama_prodi, selectedOption, requestOptions, cou
 
 }
 
-
+async function getUserDosen(absenDosen, requestOptions) {
+    try {
+        console.log(absenDosen, "ABS");
+        const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions);
+        const result = await response.json();
+        const namaDosen = result[0].users;
+        return namaDosen;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
 
 async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi) {
     $("#apex-column-2").html("")
@@ -271,7 +303,7 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
     // if (chart) {
     //     chart.destroy(); // Destroy the previous chart instance
     // }
-    colors = ["#077AC3"];
+    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
     (dataColors = $("#apex-column-2").data("colors")) && (colors = dataColors.split(","));
     options = {
         chart: {
@@ -282,7 +314,8 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
         },
         plotOptions: {
             bar: {
-                dataLabels: { position: "top" }
+                dataLabels: { position: "top" },
+                distributed: true
             }
         },
         dataLabels: {
@@ -298,8 +331,11 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
             // type: 'bar',
             data: [totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum]
         }, ],
+
+        labels: ["Alur Pembelajaran (Terisi)", "RPS", "Proyek", "Tugas", "Kasus/Url", "Doc", "Survey", "Quiz", "Forum"],
+
         xaxis: {
-            categories: ["Alur Pembelajaran (Terisi)", "RPS", "Proyek", "Tugas", "Kasus/Url", "Doc", "Survey", "Quiz", "Forum"],
+            // categories: ["Alur Pembelajaran (Terisi)", "RPS", "Proyek", "Tugas", "Kasus/Url", "Doc", "Survey", "Quiz", "Forum"],
             axisBorder: { show: !0 },
             axisTicks: { show: !0 },
             crosshairs: {
@@ -327,12 +363,12 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
             align: "center",
             style: { color: "#444" }
         },
+        // legend: { show: !0, position: "bottom", horizontalAlign: "center", verticalAlign: "middle", floating: !1, fontSize: "14px", offsetX: 0, offsetY: 7 },
+
         grid: { row: { colors: ["transparent", "transparent"], opacity: .2 }, borderColor: "#f1f3fa" }
     };
 
     chart = new ApexCharts(document.querySelector("#apex-column-2"), options);
-
-
     chart.render();
 
 
@@ -436,7 +472,7 @@ function fetch_mk(mk_aktif, id_prodi, requestOptions) {
                                 .then(data => {
                                     return fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${data.courses[0].id}`, requestOptions)
                                         .then((response) => response.json())
-                                        .then(result => {
+                                        .then(async result => {
                                             let urls = result.map(section => {
                                                 return section.modules.filter(modul => modul.modname === "url").length;
                                             }).reduce((total, current) => total + current, 0);
@@ -468,6 +504,27 @@ function fetch_mk(mk_aktif, id_prodi, requestOptions) {
                                             let infoMK = result.filter(alur => alur.name == "Info Matakuliah");
                                             let rps = infoMK.filter(section => section.modules.some(modul => modul.modname == "resource"));
 
+                                            let attendanceModules = [];
+
+                                            infoMK.forEach(section => {
+                                                section.modules.forEach(modul => {
+                                                    if (modul.modname === "attendance") {
+                                                        attendanceModules.push(modul);
+                                                    }
+
+                                                });
+                                            });
+                                            let absenDosen = attendanceModules.filter(alur => alur.name === "Presensi Pengampu Mata Kuliah");
+
+
+                                            const namaDosen = await getUserDosen(absenDosen, requestOptions);
+                                            console.log(namaDosen, "NAMA DOSENN");
+
+                                            const namaDosenListItems = namaDosen.map(dosen => `<li>${dosen.firstname} ${dosen.lastname}</li>`).join('');
+
+                                            // Wrap the &lt;li&gt; elements in an &lt;ol&gt; tag
+                                            const namaDosenHtml = `<ol>${namaDosenListItems}</ol>`;
+
                                             tableStatistik.row.add([
                                                 counter++,
                                                 `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${data.courses[0].id}" target="_blank" class="">${data.courses[0].fullname} <i class="fe-external-link"></i></a>`,
@@ -481,6 +538,7 @@ function fetch_mk(mk_aktif, id_prodi, requestOptions) {
                                                 surveys,
                                                 quizes,
                                                 forums,
+                                                namaDosenHtml,
                                                 `
                                                 <a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${data.courses[0].id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a>
                                                 <br>
