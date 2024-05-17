@@ -95,9 +95,7 @@
                       </select>
                     </div>
                   </div>
-                  <div class="d-none justify-content-center" id="loader">
-                    <div class="spinner-border" role="status"></div>
-                  </div>
+                  
                 </div>
               </div>
 
@@ -128,6 +126,9 @@
                   <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
                   <h4 class="title text-center" id="judul_prodi"></h4>
 
+                  <div class="d-none justify-content-center" id="loader">
+                    <div class="spinner-border" role="status"></div>
+                  </div>
                   <table id="table_statistik_matkul" class="table table-hover activate-select w-100">
 
                     <thead class="table-light">
