@@ -4,7 +4,7 @@ var tableStatistik = $("#table_statistik_matkul").DataTable({
     scrollX: true,
     lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
     dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    pageLength: 15,
+    pageLength: 10,
     buttons: [
 
         { extend: 'copy', },

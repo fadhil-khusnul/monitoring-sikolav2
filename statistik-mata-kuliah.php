@@ -134,7 +134,7 @@
                     <thead class="table-light">
                       <tr align="center" valign="top">
                         <th rowspan="2">No</th>
-                        <th rowspan="2" width="70%">Nama Kelas</th>
+                        <th rowspan="2" width="50%">Nama Kelas</th>
                         <th colspan="2">Alur Pembelajaran</th>
                         <th rowspan="2">RPS</th>
                         <th rowspan="2">Proyek</th>
@@ -144,7 +144,7 @@
                         <th rowspan="2">Survey</th>
                         <th rowspan="2">Quiz</th>
                         <th rowspan="2">Forum, Thread, Post</th>
-                        <th rowspan="2" width="20%">Dosen</th>
+                        <th rowspan="2" width="50%">Dosen</th>
                         <th rowspan="2" width="20%">Reports</th>
                       </tr>
                       <tr align="center">
