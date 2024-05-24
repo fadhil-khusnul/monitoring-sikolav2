@@ -31,7 +31,14 @@ $(document).ready(function() {
             language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
             drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }
         }),
-        $("#scroll-horizontal-datatable").DataTable({ scrollX: !0, language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } }, drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") } }), $("#complex-header-datatable").DataTable({ language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } }, drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }, columnDefs: [{ visible: !1, targets: -1 }] }), $("#row-callback-datatable").DataTable({ language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } }, drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }, createdRow: function(a, e, t) { 15e4 < +e[5].replace(/[\$,]/g, "") && $("td", a).eq(5).addClass("text-danger") } }),
+        $("#scroll-horizontal-datatable").DataTable({
+            scrollX: !0,
+            language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
+            drawCallback: function() { 
+                $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }
+        }), 
+        
+        $("#complex-header-datatable").DataTable({ language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } }, drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }, columnDefs: [{ visible: !1, targets: -1 }] }), $("#row-callback-datatable").DataTable({ language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } }, drawCallback: function() { $(".dataTables_paginate > .pagination").addClass("pagination-rounded") }, createdRow: function(a, e, t) { 15e4 < +e[5].replace(/[\$,]/g, "") && $("td", a).eq(5).addClass("text-danger") } }),
         $("#table_statistik_matkul_tes").DataTable({
             stateSave: !0,
             language: {

@@ -1,4 +1,4 @@
-let tableStatistik = $("#table_presensi_matkul").DataTable({
+let tableStatistik = $("#table_nilai").DataTable({
     // responsive: true,
     // stateSave: true,
     // lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
@@ -11,60 +11,19 @@ let tableStatistik = $("#table_presensi_matkul").DataTable({
     ],
     scrollX: !0,
     fixedHeader: true,
-
-    language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-    }
-
-});
-let tabelMhs = $("#table_presensi_matkul_mhs").DataTable({
-    // responsive: true,
-    // stateSave: true,
-    // lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
-    dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    // pageLength: 10,
-    buttons: [
-
-        { extend: 'copy', },
-        { extend: 'csv' },
-    ],
-    scrollX: !0,
-    fixedHeader: true,
-
-    language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-    }
-
-});
-
-$("#semester_select, #program_studi_presensi, #select_mk").select2()
-
-
-
-let tabelInforMk = $("#tabelInforMk").DataTable({
-
-    // stateSave: true,
-    lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
-    dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    pageLength: 10,
-    buttons: [
-
-        { extend: 'copy', },
-        { extend: 'csv' },
-    ],
-
-    language: {
-        paginate: {
-            previous: "<i class='mdi mdi-chevron-left'>",
-            next: "<i class='mdi mdi-chevron-right'>"
-        }
+    createdRow: function(row, data, dataIndex) {
+        // Set the fourth column to be centered
+        $('td', row).eq(3).addClass('text-center');
     },
+
+    language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
     drawCallback: function() {
         $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
     }
+
 });
+
+
 
 let activeSemester = "TA232"
 let active = "2023/2024 Genap"
@@ -166,8 +125,6 @@ async function prodi_select_fun() {
 
 
     $("#filter_data").removeAttr("disabled")
-    $('#select_mk').val("").trigger('change');
-
 
     const program_studi = document.getElementById("program_studi")
 
@@ -217,24 +174,6 @@ async function prodi_select_fun() {
         return;
     }
 
-    // if (mk_value_storage) {
-    //     $('#select_mk').val(mk_value_storage).trigger('change');
-    // }
-
-    // if (nama_prodi_storage != nama_prodi) {
-    //     $('#select_mk').val("").trigger('change');
-
-    // }
-
-    // if (nama_prodi_storage != nama_prodi && !mk_value_storage) {
-
-    //     localStorage.removeItem('mk_value_storage');
-
-    //     filter_data() // Remove from localStorage
-
-
-    // }
-
     if (nama_prodi_storage && !mk_value_storage) {
         // $('#program_studi').val(nama_prodi_storage).trigger('change');
 
@@ -273,9 +212,6 @@ async function filter_data() {
     $("#btn_spinner").removeClass("d-none")
     $("#judul_prodi, #apex-column-2, #apex-pie-1").html("")
     tableStatistik.clear().draw();
-    tabelMhs.clear().draw();
-    tabelInforMk.clear().draw();
-
 
 
     let nama_prodi = document.getElementById("program_studi").value
@@ -473,22 +409,11 @@ async function filter_data() {
                                 tableStatistik.row.add([
                                     counter++,
                                     `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
-                                    `${terisiDosen.length}`,
-                                    totalDosen,
-                                    `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
-                                    d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
+                                    `<div class="badge label-table bg-danger">Belum Sinkron</div>`,
+                                    `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${item.id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`,
 
                                 ]).draw(false);
 
-                                tabelMhs.row.add([
-                                    counter_m++,
-                                    `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
-                                    terisiMhs.length,
-                                    totalMahasiswa,
-                                    `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenMhs[0].id}" target="_blank" class="">Presensi Mahasiswa <i class="fe-external-link"></i></a>`,
-                                    m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16,
-
-                                ]).draw(false);
 
 
 
@@ -512,12 +437,7 @@ async function filter_data() {
                         console.error(error)
 
                         console.log(item.fullname, "INF");
-                        tabelInforMk.row.add([
-                            counter_e++,
-                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="link">${item.fullname} <i class="fe-external-link"></i></a>`,
-                            "Nama Presensi Tidak Sesuai, Judul InfoMatakuliah Tidak Sesuai"
 
-                        ]).draw(false);
 
 
                     });
@@ -546,8 +466,6 @@ async function filter_data() {
             localStorage.setItem('fullname_sikola_storage', fullname_sikola)
             localStorage.setItem('mk_value_storage', mk_value)
             $("#judul_prodi").html(fullname_sikola + " / " + nama_prodi)
-            $("#judul_prodi_mhs").html(fullname_sikola + " / " + nama_prodi)
-            $("#judul_prodi_e").html(fullname_sikola + " / " + nama_prodi)
 
             const response = await fetch(`assets/data/list_mk_per_kelas.json`)
             const data = await response.json()
@@ -718,23 +636,14 @@ async function filter_data() {
                                         tableStatistik.row.add([
                                             counter++,
                                             `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
-                                            `${terisiDosen.length}`,
-                                            totalDosen,
-                                            `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
-                                            d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
+                                            `<div class="badge label-table bg-danger">Belum Sinkron</div>`,
+                                            `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${kelas.courses[0].id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`,
 
 
-                                        ]).draw(false);
-
-                                        tabelMhs.row.add([
-                                            counter_m++,
-                                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
-                                            terisiMhs.length,
-                                            totalMahasiswa,
-                                            `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenMhs[0].id}" target="_blank" class="">Presensi Mahasiswa <i class="fe-external-link"></i></a>`,
-                                            m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16,
 
                                         ]).draw(false);
+
+
 
 
                                     })
@@ -753,18 +662,9 @@ async function filter_data() {
                             .catch(error => {
 
                                 console.error(error)
-                                tabelInforMk.row.add([
-                                    counter_e++,
-                                    `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="link">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
-                                    "Nama Presensi Tidak Sesuai, Judul InfoMatakuliah Tidak Sesuai"
 
-                                ]).draw(false);
                             });
 
-
-
-
-                        console.log(kelas.courses[0].id);
                     })
                     .catch(error => {
 
@@ -821,12 +721,11 @@ const clear_filter = async() => {
     localStorage.removeItem('mk_aktif');
 
 
-    $("#judul_prodi, #judul_prodi_mhs, #judul_prodi_e").html("")
+    $("#judul_prodi").html("")
     $("#filter_data").attr("disabled", true)
 
     tableStatistik.clear().draw();
-    tabelMhs.clear().draw();
-    tabelInforMk.clear().draw();
+
     $("#semester_select, #program_studi, #select_mk").val("").trigger("change");
 
 

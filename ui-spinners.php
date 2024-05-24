@@ -176,7 +176,10 @@ include 'partials/page-title.php'; ?>
                                             <div class="col-md-6">
                                                 <div class="button-list mb-1 mb-sm-0">
                                                     <button class="btn btn-primary" type="button" disabled>
-                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span class="visually-hidden">Loading...</span>
+                                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+
+                                                        </span>
+                                                        <span class="visually-hidden">Loading...</span>
                                                     </button>
                                                     <button class="btn btn-primary" type="button" disabled>
                                                         <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>

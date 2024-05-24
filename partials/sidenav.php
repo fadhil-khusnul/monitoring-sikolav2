@@ -89,6 +89,11 @@
                                 <span class="menu-text">Presensi Matakuliah</span>
                             </a>
                         </li>
+                        <li class="menu-item">
+                            <a href="nilai-mk.php" class="menu-link">
+                                <span class="menu-text">Nilai Matakuliah</span>
+                            </a>
+                        </li>
                         
                     </ul>
                 </div>

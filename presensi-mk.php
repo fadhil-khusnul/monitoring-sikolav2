@@ -2,7 +2,7 @@
 
 <head>
   <?php
-  $title = "Monitoring Presensi Sikola";
+  $title = "Presensi | Monitoring SIKOLA 2.0";
   include 'partials/title-meta.php'; ?>
 
   <link href="assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
@@ -42,53 +42,81 @@
 
           <?php
           $sub_title = "Report";
-          $title = "Monitoring Presensi Sikola";
+          $title = "Presensi";
           include 'partials/page-title.php'; ?>
 
           <div class="row">
+            <?php include 'partials/filter_element.php'; ?>
+
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="mb-3 font-weight-semibold">
-                    Filter Data
+                  <h4 class="font-weight-semibold mb-3">
+                    Data
 
                   </h4>
-                  <div class="row">
-                  <div class="col-md-4">
-                      <h5 class="font-weight-semibold">Semester</h5>
-
-                      <select class="form-control" data-toggle="select2" id="semester_select" name="semester_select" data-width="100%" onchange="get_prodi(this)">
-                        <option value="" selected disabled>Select Semester</option>
 
 
-                      </select>
-                    </div>
 
-                    <div class="col-md-4">
-                      <h5 class="font-weight-semibold">Program Studi</h5>
-
-                      <select class="form-control" id="program_studi_presensi" name="program_studi_presensi" data-toggle="select2" data-width="100%">
-                        <option value="" selected disabled>Select Program Studi</option>
+                  <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH (DOSEN)</h4>
+                  <h4 class="title text-center" id="judul_prodi"></h4>
 
 
-                      </select>
-                    </div>
 
-                    <div class="col-md-4">
-                      <a href="" target="_blank"></a>
-                      <i></i>
-                      <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
+                  <div class="table-responsive">
+                    <table id="table_presensi_matkul" class="table table-hover w-100 nowra">
+                      <thead class="table-light">
+                        <tr align="center" valign="top">
+                          <th rowspan="2" width="">No</th>
+                          <th rowspan="2" width="">Nama Kelas</th>
+                          <th colspan="3" style="text-align: center;">Presensi Dosen</th>
+                          <th colspan="16" style="text-align: center;">Minggu</th>
 
-                      <select class="form-control" data-toggle="select2" id="select_mk" name="select_mk" data-width="100%">
-                        <option value="" selected disabled>Select Mata Kuliah Semester</option>
+                        </tr>
+                        <tr>
 
 
-                      </select>
-                    </div>
+                          <th style="text-align:center;">Terisi</th>
+                          <th style="text-align:center;">Total</th>
+                          <th style="text-align:center;">Link</th>
+
+
+                          <th style="text-align:center;">1</th>
+                          <th style="text-align:center;">2</th>
+                          <th style="text-align:center;">3</th>
+                          <th style="text-align:center;">4</th>
+                          <th style="text-align:center;">5</th>
+                          <th style="text-align:center;">6</th>
+                          <th style="text-align:center;">7</th>
+                          <th style="text-align:center;">8</th>
+                          <th style="text-align:center;">9</th>
+                          <th style="text-align:center;">10</th>
+                          <th style="text-align:center;">11</th>
+                          <th style="text-align:center;">12</th>
+                          <th style="text-align:center;">13</th>
+                          <th style="text-align:center;">14</th>
+                          <th style="text-align:center;">15</th>
+                          <th style="text-align:center;">16</th>
+
+
+
+                        </tr>
+                      </thead>
+
+                      <tbody>
+
+
+                      </tbody>
+                    </table>
                   </div>
+                  <!-- <div class="table-responsive">
+
+
+                  </div> -->
+                  <!-- <div id="jsGrid"></div> -->
+
                 </div>
               </div>
-
             </div>
             <div class="col-12">
               <div class="card">
@@ -97,55 +125,62 @@
                     Data
 
                   </h4>
-                  <!-- <div class="text-end mb-3">
-                    <div class="btn-group mb-2">
-                      <button type="button" class="btn btn-sm btn-danger">
-                        PDF <i class="fe-download"></i>
-                      </button>
-                      <button type="button" class="btn btn-sm btn-success">
-                        EXCEL <i class="fe-download"></i>
-                      </button>
-                    </div>
-                  </div> -->
+                  <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH (MAHASISWA)</h4>
+                  <h4 class="title text-center" id="judul_prodi_mhs"></h4>
+
 
 
                   <div class="table-responsive">
-
-                    <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH</h4>
-                    <h4 class="title text-center" id="judul_prodi"></h4>
-
-                    <table id="table_presensi_matkul" class="table activate-select dt-responsive nowrap w-100">
-                      <div class="d-none justify-content-center" id="loader">
-                        <div class="spinner-border" role="status"></div>
-                      </div>
+                    <table id="table_presensi_matkul_mhs" class="table table-hover w-100 nowra">
                       <thead class="table-light">
                         <tr align="center" valign="top">
-                          <th rowspan="2" width="10">No</th>
-                          <th rowspan="2" width="80">Nama Kelas</th>
-                          <th colspan="3" style="text-align: center;">Presensi Dosen</th>
+                          <th rowspan="2" width="">No</th>
+                          <th rowspan="2" width="">Nama Kelas</th>
                           <th colspan="3" style="text-align: center;">Presensi Mahasiswa</th>
-                          <!-- <th rowspan="2">Bermasalah</th> -->
-                          
+                          <th colspan="16" style="text-align: center;">Minggu</th>
+
                         </tr>
-                        <tr align="center">
+                        <tr>
+
+
 
                           <th style="text-align:center;">Terisi</th>
                           <th style="text-align:center;">Total</th>
                           <th style="text-align:center;">Link</th>
 
-                          <th style="text-align:center;">Terisi</th>
-                          <th style="text-align:center;">Total</th>
-                          <th style="text-align:center;">Link</th>
+
+                          <th style="text-align:center;">1</th>
+                          <th style="text-align:center;">2</th>
+                          <th style="text-align:center;">3</th>
+                          <th style="text-align:center;">4</th>
+                          <th style="text-align:center;">5</th>
+                          <th style="text-align:center;">6</th>
+                          <th style="text-align:center;">7</th>
+                          <th style="text-align:center;">8</th>
+                          <th style="text-align:center;">9</th>
+                          <th style="text-align:center;">10</th>
+                          <th style="text-align:center;">11</th>
+                          <th style="text-align:center;">12</th>
+                          <th style="text-align:center;">13</th>
+                          <th style="text-align:center;">14</th>
+                          <th style="text-align:center;">15</th>
+                          <th style="text-align:center;">16</th>
+
+
 
                         </tr>
                       </thead>
 
                       <tbody>
 
+
                       </tbody>
                     </table>
-
                   </div>
+                  <!-- <div class="table-responsive">
+
+
+                  </div> -->
                   <!-- <div id="jsGrid"></div> -->
 
                 </div>
@@ -158,13 +193,12 @@
                     Kelas yang Bermasalah
 
                   </h4> -->
-                 
+
 
 
                   <div class="table-responsive">
-
                     <h4 class="title text-center font-weight-bold">PRESENSI MATA KULIAH PRODI YANG BERMASALAH</h4>
-                    <h4 class="title text-center" id="judul_prodi_kendala"></h4>
+                    <h4 class="title text-center" id="judul_prodi_e"></h4>
 
                     <table id="tabelInforMk" class="table activate-select dt-responsive nowrap w-100">
                       <div class="d-none justify-content-center" id="loader">
@@ -176,13 +210,14 @@
                           <th width="10">No</th>
                           <th width="">Nama Kelas</th>
                           <th width="">Kendala</th>
-                         
+
                       </thead>
 
                       <tbody>
 
                       </tbody>
                     </table>
+
 
                   </div>
                   <!-- <div id="jsGrid"></div> -->

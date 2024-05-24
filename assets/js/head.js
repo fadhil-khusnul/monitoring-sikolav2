@@ -1,12 +1,12 @@
 /**
-* Theme: Ubold - Responsive Bootstrap 5 Admin Dashboard
-* Author: Coderthemes
-* Module/App: Theme Config Js
-*/
+ * Theme: Ubold - Responsive Bootstrap 5 Admin Dashboard
+ * Author: Coderthemes
+ * Module/App: Theme Config Js
+ */
 
 
 
-(function () {
+(function() {
     var savedConfig = sessionStorage.getItem("__UBOLD_MODERN_CONFIG__");
     // var savedConfig = localStorage.getItem("__UBOLD_MODERN_CONFIG__");
 

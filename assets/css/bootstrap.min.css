@@ -3542,7 +3542,10 @@ textarea.form-control.is-invalid {
 @media (prefers-reduced-motion:reduce) {
     .btn {
         -webkit-transition: none;
-        transition: none
+        transition: none;
+        -moz-transition: none;
+        -ms-transition: none;
+        -o-transition: none;
     }
 }
 
@@ -3608,12 +3611,12 @@ fieldset:disabled .btn {
     --ct-btn-bg: #077AC3;
     --ct-btn-border-color: #077AC3;
     --ct-btn-hover-color: #fff;
-    --ct-btn-hover-bg: #574bbc;
+    --ct-btn-hover-bg: #024e7f;
     --ct-btn-hover-border-color: #077AC3;
     --ct-btn-focus-shadow-rgb: 125, 113, 226;
     --ct-btn-active-color: #fff;
     --ct-btn-active-bg: #077AC3;
-    --ct-btn-active-border-color: #4d42a6;
+    --ct-btn-active-border-color: #024e7f;
     --ct-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
     --ct-btn-disabled-color: #fff;
     --ct-btn-disabled-bg: #077AC3;

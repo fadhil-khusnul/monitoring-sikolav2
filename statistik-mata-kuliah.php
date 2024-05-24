@@ -2,7 +2,7 @@
 
 <head>
   <?php
-  $title = "Monitoring Sikola";
+  $title = "Statistik | Monitoring SIKOLA 2.0";
   include 'partials/title-meta.php'; ?>
 
   <link href="assets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css" />
@@ -42,129 +42,13 @@
 
           <?php
           $sub_title = "Report";
-          $title = "Monitoring Sikola";
+          $title = "Statistik";
           include 'partials/page-title.php'; ?>
 
           <div class="row">
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="mb-3 font-weight-semibold">
-                    Filter Data
-
-                  </h4>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <h5 class="font-weight-semibold">Semester</h5>
-
-                      <select class="form-control" data-toggle="select2" id="semester_select" name="semester_select" data-width="100%" onchange="get_prodi(this)">
-                        <option value="" selected disabled>Select Semester</option>
+            <?php include 'partials/filter_element.php'; ?>
 
 
-                      </select>
-                    </div>
-
-                    <div class="col-md-4">
-                      <h5 class="font-weight-semibold">Program Studi</h5>
-
-                      <select class="form-control" id="program_studi" name="program_studi" data-toggle="select2" data-width="100%">
-                        <option value="" selected disabled>Select Program Studi</option>
-
-
-                      </select>
-                    </div>
-
-                    <div class="col-md-4">
-                      <a href="" target="_blank"></a>
-                      <i></i>
-                      <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
-
-                      <select class="form-control" data-toggle="select2" id="select_mk" name="select_mk" data-width="100%">
-                        <option value="" selected disabled>Select Mata Kuliah Semester</option>
-
-
-                      </select>
-                    </div>
-                    <div class="col-md-6 d-none">
-                      <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
-
-                      <select class="form-control" data-toggle="select2" data-width="100%" id="id_kelas_kuliah[1]" name="id_kelas_kuliah[1]">
-                        <option value="" selected disabled>Select Mata Kuliah Semester</option>
-
-
-                      </select>
-                    </div>
-                  </div>
-                  
-                </div>
-              </div>
-
-
-            </div>
-
-
-            <div class="col-12">
-              <div class="card">
-                <div class="card-body">
-                  <h4 class="font-weight-semibold mb-3">
-                    Data
-
-                  </h4>
-                  <!-- <div class="text-end mb-3">
-                    <div class="btn-group mb-2">
-                      <button type="button" class="btn btn-sm btn-danger">
-                        PDF <i class="fe-download"></i>
-                      </button>
-                      <button type="button" class="btn btn-sm btn-success">
-                        EXCEL <i class="fe-download"></i>
-                      </button>
-                    </div>
-                  </div> -->
-
-
-
-                  <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
-                  <h4 class="title text-center" id="judul_prodi"></h4>
-
-                  <div class="d-none justify-content-center" id="loader">
-                    <div class="spinner-border" role="status"></div>
-                  </div>
-                  <table id="table_statistik_matkul" class="table table-hover activate-select w-100">
-
-                    <thead class="table-light">
-                      <tr align="center" valign="top">
-                        <th rowspan="2">No</th>
-                        <th rowspan="2" width="50%">Nama Kelas</th>
-                        <th colspan="2">Alur Pembelajaran</th>
-                        <th rowspan="2">RPS</th>
-                        <th rowspan="2">Proyek</th>
-                        <th rowspan="2">Tugas</th>
-                        <th rowspan="2">Kasus/Url</th>
-                        <th rowspan="2">Doc</th>
-                        <th rowspan="2">Survey</th>
-                        <th rowspan="2">Quiz</th>
-                        <th rowspan="2">Forum, Thread, Post</th>
-                        <th rowspan="2" width="50%">Dosen</th>
-                        <th rowspan="2" width="20%">Reports</th>
-                      </tr>
-                      <tr align="center">
-
-                        <th>Terisi</th>
-                        <th>Total</th>
-
-                      </tr>
-                    </thead>
-
-                    <tbody>
-
-                    </tbody>
-                  </table>
-
-                  <!-- <div id="jsGrid"></div> -->
-
-                </div>
-              </div>
-            </div>
             <div class="col-6">
               <!-- Portlet card -->
               <div class="card">
@@ -200,6 +84,78 @@
                 </div> <!-- end card-body -->
               </div> <!-- end card-->
             </div>
+          
+
+
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="font-weight-semibold mb-3">
+                    Data
+
+                  </h4>
+
+                  <!-- <div class="text-end mb-3">
+                    <div class="btn-group mb-2">
+                      <button type="button" class="btn btn-sm btn-danger">
+                        PDF <i class="fe-download"></i>
+                      </button>
+                      <button type="button" class="btn btn-sm btn-success">
+                        EXCEL <i class="fe-download"></i>
+                      </button>
+                    </div>
+                  </div> -->
+
+
+
+                  <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
+                  <h4 class="title text-center" id="judul_prodi"></h4>
+                  <!-- 
+                  <div class="d-none justify-content-center" id="loader">
+                    <div class="spinner-border" role="status"></div>
+                  </div> -->
+
+                  <div class="table-responsive">
+
+                    <table width="100%" id="table_statistik_matkul" class="table table-hover activate-select">
+
+                      <thead class="table-light">
+                        <tr align="center" valign="top">
+                          <th rowspan="2">No</th>
+                          <th rowspan="2" width="50%">Nama Kelas</th>
+                          <th colspan="2">Alur Pembelajaran</th>
+                          <th rowspan="2">RPS</th>
+                          <!-- <th rowspan="2">Proyek</th> -->
+                          <th rowspan="2">Tugas</th>
+                          <!-- <th rowspan="2">Kasus/Url</th> -->
+                          <th rowspan="2">Doc</th>
+                          <th rowspan="2">Survey</th>
+                          <th rowspan="2">Quiz</th>
+                          <th rowspan="2">Forum, Thread, Post</th>
+                          <th rowspan="2" width="30%">Dosen</th>
+                          <th rowspan="2" width="20%">Reports</th>
+                        </tr>
+                        <tr align="center">
+
+                          <th>Terisi</th>
+                          <th>Total</th>
+
+                        </tr>
+                      </thead>
+
+                      <tbody>
+
+                      </tbody>
+                    </table>
+                  </div>
+
+
+                  <!-- <div id="jsGrid"></div> -->
+
+                </div>
+              </div>
+            </div>
+          
           </div>
 
         </div> <!-- container -->
