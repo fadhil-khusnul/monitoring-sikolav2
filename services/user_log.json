@@ -1,74 +1,73 @@
-[
-    {
+[{
         "username": "admin_ekonomi",
-        "password": "54e2rwtL"
+        "password": "u6HLZbBj"
     },
     {
         "username": "admin_hukum",
-        "password": "1wX3uSdA"
+        "password": "gnocOI28"
     },
     {
         "username": "admin_kedokteran",
-        "password": "YTkQZSVf"
+        "password": "doeEw2I4"
     },
     {
         "username": "admin_keperawatan",
-        "password": "my8D2Cks"
+        "password": "fShW21mX"
     },
     {
         "username": "admin_teknik",
-        "password": "1HNEL5ow"
+        "password": "IDRVda0y"
     },
     {
         "username": "admin_ilmu kelautan dan perikanan",
-        "password": "oOzYtujn"
+        "password": "NmvnLoTy"
     },
     {
         "username": "admin_ilmu sosial dan ilmu politik",
-        "password": "47N68gjm"
+        "password": "spIB98ge"
     },
     {
         "username": "admin_ilmu budaya",
-        "password": "prnPV79E"
+        "password": "90yic2A5"
     },
     {
         "username": "admin_pertanian",
-        "password": "RZcNnl6q"
+        "password": "kxFj6cm2"
     },
     {
         "username": "admin_matematika dan ilmu peng. alam",
-        "password": "7KOxqDjY"
+        "password": "g0nkaT2l"
     },
     {
         "username": "admin_peternakan",
-        "password": "8Ae2wbux"
+        "password": "wBVDah5l"
     },
     {
         "username": "admin_pendidikan dokter gigi",
-        "password": "aSuNh9Rk"
+        "password": "jHx5SPEM"
     },
     {
         "username": "admin_kesehatan masyarakat",
-        "password": "Rys8L6VA"
+        "password": "KgmXdCEb"
     },
     {
         "username": "admin_kehutanan",
-        "password": "OxiHn8fS"
+        "password": "mbWsMyJt"
     },
     {
         "username": "admin_farmasi",
-        "password": "9q7tnuBL"
+        "password": "PgAh51ul"
     },
     {
         "username": "admin_program pascasarjana",
-        "password": "brt8xqyd"
+        "password": "Jxjloe3b"
     },
     {
         "username": "admin_mku",
-        "password": "OGc8T7qx"
+        "password": "COrnmfpz"
     },
     {
         "username": "admin_vokasi",
-        "password": "RE7LxyfB"
+        "password": "cOYuej6F"
     }
 ]

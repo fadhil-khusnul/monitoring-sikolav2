@@ -64,7 +64,7 @@
 
 
                   <div class="table-responsive">
-                    <table id="table_presensi_matkul" class="table table-hover w-100 nowra">
+                    <table id="table_presensi_matkul" class="table table-hover w-100">
                       <thead class="table-light">
                         <tr align="center" valign="top">
                           <th rowspan="2" width="">No</th>
@@ -131,7 +131,7 @@
 
 
                   <div class="table-responsive">
-                    <table id="table_presensi_matkul_mhs" class="table table-hover w-100 nowra">
+                    <table id="table_presensi_matkul_mhs" class="table table-hover w-100">
                       <thead class="table-light">
                         <tr align="center" valign="top">
                           <th rowspan="2" width="">No</th>

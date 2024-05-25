@@ -29,7 +29,7 @@ let tabelMhs = $("#table_presensi_matkul_mhs").DataTable({
         { extend: 'copy', },
         { extend: 'csv' },
     ],
-    scrollX: !0,
+    // scrollX: !0,
     fixedHeader: true,
 
     language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
