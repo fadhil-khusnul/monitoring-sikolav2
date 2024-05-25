@@ -25,6 +25,8 @@ function generatePassword($length = 8)
 // Array to keep track of unique fakultas IDs
 $fakultasIds = [];
 
+$logData = [];
+
 foreach ($data as $item) {
   $fakultasId = $item['fakultas']['id'];
   $username_admin = strtolower($item['fakultas']['nama_resmi']);
@@ -33,14 +35,21 @@ foreach ($data as $item) {
     $fakultasIds[] = $fakultasId;
 
     $username = "admin_" . $username_admin;
-    $password = generatePassword();
+    $plainPassword = generatePassword();
 
-    // $password = password_hash($password, PASSWORD_DEFAULT);
+    // Simpan username dan password sebelum di-hash ke array log
+    $logData[] = [
+        'username' => $username,
+        'password' => $plainPassword
+    ];
+
+    // Hash password
+    $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
     $email = isset($item['email']) ? $item['email'] : 'default' . $fakultasId . '@example.com';
 
     $stmt = $conn->prepare("INSERT INTO users (username, password, fakultas_id, nama_fakultas, email) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssiss", $username, $password, $fakultasId, $nama_fakultas, $email);
+    $stmt->bind_param("ssiss", $username, $hashedPassword, $fakultasId, $nama_fakultas, $email);
 
     if ($stmt->execute()) {
       echo "User for fakultas_id $fakultasId created successfully.<br>";
@@ -51,5 +60,8 @@ foreach ($data as $item) {
     $stmt->close();
   }
 }
+
+$logFile = 'user_log.json';
+file_put_contents($logFile, json_encode($logData, JSON_PRETTY_PRINT));
 
 $conn->close();

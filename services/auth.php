@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bind_result($id, $username, $hashed_password, $fakultas_id, $email, $nama_fakultas);
     $stmt->fetch();
 
-    if ($password === $hashed_password) {
+    if (password_verify($password, $hashed_password)) {
       // Store data in session variables
       $_SESSION['loggedin'] = true;
       $_SESSION['id'] = $id;

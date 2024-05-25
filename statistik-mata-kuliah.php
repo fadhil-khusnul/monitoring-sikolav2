@@ -120,7 +120,7 @@ include 'partials/main.php';
 
                   <div class="table-responsive">
 
-                    <table width="100%" id="table_statistik_matkul" class="table table-hover activate-select">
+                    <table width="100%" style=" display: table; table-layout: fixed;" id="table_statistik_matkul" class="table table-hover activate-select">
 
                       <thead class="table-light">
                         <tr align="center" valign="top">
