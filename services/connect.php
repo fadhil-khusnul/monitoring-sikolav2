@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
+$username = "hadindev";
+$password = "qwerty";
 $dbname = "monitoring_sikola";
 
 // Create connection
