@@ -272,7 +272,8 @@
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
-  <script src="assets/js/presensi.js"></script>
+  <!-- <script src="assets/js/presensi.js"></script> -->
+  <script src="<?= 'assets/js/presensi.js?v='. time() ?>"></script>
   <!-- <script src="assets/js/pages/datatables.init.js"></script> -->
   <script src="assets/js/pages/form-advanced.init.js"></script>
 

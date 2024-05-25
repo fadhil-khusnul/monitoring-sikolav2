@@ -1070,7 +1070,7 @@ html[data-sidenav-size=fullscreen]:not([data-layout=horizontal]) .app-menu {
 }
 
 html[data-layout-mode=detached]:not([data-layout=horizontal]) body:not(.auth-fluid-pages) {
-    margin: .75rem .75rem
+    /* margin: .75rem .75rem */
 }
 
 html[data-layout-mode=detached]:not([data-layout=horizontal]) body:not(.auth-fluid-pages) #wrapper .logo-box {
@@ -1091,8 +1091,8 @@ html[data-layout-mode=detached]:not([data-layout=horizontal]) body:not(.auth-flu
 }
 
 html[data-layout-mode=detached]:not([data-layout=horizontal]) body:not(.auth-fluid-pages) #wrapper .content-page .navbar-custom {
-    top: .75rem;
-    margin: 0 .75rem;
+    /* top: .75rem; */
+    /* margin: 0 .75rem; */
     border-radius: var(--ct-border-radius);
     border: var(--ct-theme-border-width) solid var(--ct-border-color)
 }

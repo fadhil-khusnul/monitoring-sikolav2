@@ -445,7 +445,7 @@
                         <div class="collapse collapse-md" id="menuAuth">
                             <ul class="sub-menu">
                                 <li class="menu-item">
-                                    <a href="auth-login.php" class="menu-link">
+                                    <a href="login.php" class="menu-link">
                                         <span class="menu-text">Log In</span>
                                     </a>
                                 </li>

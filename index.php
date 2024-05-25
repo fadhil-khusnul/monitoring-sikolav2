@@ -1,3 +1,6 @@
-<?php include 'partials/main.php'; ?>
-<?php include 'statistik-mata-kuliah.php'; ?>
+<?php
 
+include 'partials/main.php';
+
+include 'statistik-mata-kuliah.php';
+?>

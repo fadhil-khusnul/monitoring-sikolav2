@@ -1,4 +1,7 @@
-<?php include 'partials/main.php'; ?>
+<?php
+
+include 'partials/main.php';
+?>
 
 <head>
   <?php
@@ -84,7 +87,7 @@
                 </div> <!-- end card-body -->
               </div> <!-- end card-->
             </div>
-          
+
 
 
             <div class="col-md-12">
@@ -155,7 +158,7 @@
                 </div>
               </div>
             </div>
-          
+
           </div>
 
         </div> <!-- container -->
@@ -210,7 +213,7 @@
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
-  <script src="assets/js/form.js"></script>
+  <script src="<?= 'assets/js/form.js?v=' . time() ?>"></script>
   <!-- <script src="assets/js/pages/datatables.init.js"></script> -->
   <script src="assets/js/pages/form-advanced.init.js"></script>
 

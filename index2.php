@@ -3,7 +3,7 @@
 
 <?php 
 // if (!$_SESSION['modern_user'] || !isset($_SESSION['modern_user'])) {
-//     header('Location: auth-login.php');
+//     header('Location: login.php');
 //     exit();
 // }
 ?>

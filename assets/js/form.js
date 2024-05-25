@@ -33,7 +33,7 @@ var tableStatistik = $("#table_statistik_matkul").DataTable({
 let activeSemester = "TA232"
 let active = "2023/2024 Genap"
 let id_fakultas = document.getElementById("id_fakultas").value;
-// localStorage.setItem('mk_aktif', active);
+// sessionStorage.setItem('mk_aktif', active);
 
 
 // var chart;
@@ -105,10 +105,10 @@ selectSemester.appendChild(optionDefault)
 
 
 
-let nama_prodi_storage = localStorage.getItem('nama_prodi_storage');
-const id_prodi_storage = localStorage.getItem('id_prodi_storage');
-const semester_aktif_storage = localStorage.getItem('semester_aktif_storage');
-let mk_value_storage = localStorage.getItem('mk_value_storage');
+let nama_prodi_storage = sessionStorage.getItem('nama_prodi_storage');
+const id_prodi_storage = sessionStorage.getItem('id_prodi_storage');
+const semester_aktif_storage = sessionStorage.getItem('semester_aktif_storage');
+let mk_value_storage = sessionStorage.getItem('mk_value_storage');
 let isFilterCleared = false; // Variabel flag untuk melacak status filter
 if (semester_aktif_storage) {
     $('#semester_select').val(semester_aktif_storage).trigger('change');
@@ -196,7 +196,7 @@ async function prodi_select_fun() {
     console.log(nama_prodi);
     const id_prodi = selectedOption.getAttribute('id_prodi');
 
-    localStorage.setItem('nama_prodi_storage', nama_prodi);
+    sessionStorage.setItem('nama_prodi_storage', nama_prodi);
 
 
     // nama_prodi_storage = null
@@ -250,9 +250,9 @@ async function prodi_select_fun() {
     // if (nama_prodi_storage != nama_prodi && !mk_value_storage) {
     //     $('#select_mk').val("").trigger('change');
 
-    //     localStorage.removeItem('mk_value_storage');
+    //     sessionStorage.removeItem('mk_value_storage');
 
-    //     filter_data() // Remove from localStorage
+    //     filter_data() // Remove from sessionStorage
 
 
     // }
@@ -262,7 +262,7 @@ async function prodi_select_fun() {
         // $('#program_studi').val(nama_prodi_storage).trigger('change');
         filter_data();
         nama_prodi_storage = null;
-        // localStorage.removeItem('nama_prodi_storage'); // Remove from localStorage
+        // sessionStorage.removeItem('nama_prodi_storage'); // Remove from sessionStorage
         // Reset mk_value_storage
 
     } else if (nama_prodi_storage && mk_value_storage) {
@@ -270,7 +270,7 @@ async function prodi_select_fun() {
         $('#select_mk').val(mk_value_storage).trigger('change');
         filter_data();
         mk_value_storage = null; // Reset mk_value_storage
-        localStorage.removeItem('mk_value_storage'); // Remove from localStorage
+        sessionStorage.removeItem('mk_value_storage'); // Remove from sessionStorage
 
     }
 
@@ -306,9 +306,9 @@ async function filter_data() {
     // console.log(nama_prodi, id_prodi);
     console.log("HAHSHAHSAH", id_prodi, nama_prodi);
 
-    localStorage.setItem('nama_prodi_storage', nama_prodi)
-    localStorage.setItem('id_prodi_storage', id_prodi)
-    localStorage.setItem('semester_aktif_storage', semester_aktif)
+    sessionStorage.setItem('nama_prodi_storage', nama_prodi)
+    sessionStorage.setItem('id_prodi_storage', id_prodi)
+    sessionStorage.setItem('semester_aktif_storage', semester_aktif)
 
 
 
@@ -468,9 +468,9 @@ async function filter_data() {
         }
     } else {
         try {
-            localStorage.setItem('selectedKodeMatkul_storage', selectedKodeMatkul)
-            localStorage.setItem('fullname_sikola_storage', fullname_sikola)
-            localStorage.setItem('mk_value_storage', mk_value)
+            sessionStorage.setItem('selectedKodeMatkul_storage', selectedKodeMatkul)
+            sessionStorage.setItem('fullname_sikola_storage', fullname_sikola)
+            sessionStorage.setItem('mk_value_storage', mk_value)
             $("#judul_prodi").html(fullname_sikola + " / " + nama_prodi)
 
             const response = await fetch(`assets/data/list_mk_per_kelas.json`)
@@ -813,13 +813,13 @@ const clear_filter = async() => {
         console.log(chartElement2._chartInstance);
         chartElement2._chartInstance.destroy();
     }
-    localStorage.removeItem('nama_prodi_storage');
-    localStorage.removeItem('id_prodi_storage');
-    localStorage.removeItem('semester_aktif_storage');
-    localStorage.removeItem('selectedKodeMatkul_storage');
-    localStorage.removeItem('fullname_sikola_storage');
-    localStorage.removeItem('mk_value_storage');
-    localStorage.removeItem('mk_aktif');
+    sessionStorage.removeItem('nama_prodi_storage');
+    sessionStorage.removeItem('id_prodi_storage');
+    sessionStorage.removeItem('semester_aktif_storage');
+    sessionStorage.removeItem('selectedKodeMatkul_storage');
+    sessionStorage.removeItem('fullname_sikola_storage');
+    sessionStorage.removeItem('mk_value_storage');
+    sessionStorage.removeItem('mk_aktif');
 
 
     $("#judul_prodi").html("")

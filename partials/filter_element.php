@@ -1,7 +1,14 @@
+<?php
+// Pastikan sesi telah dimulai
+
+
+// Ambil nilai fakultas_id dari sesi
+$fakultas_id = isset($_SESSION['fakultas_id']) ? $_SESSION['fakultas_id'] : 0;
+?>
 <div class="col-12">
   <div class="card">
     <div class="card-body">
-      <input type="hidden" value="0" name="id_fakultas" id="id_fakultas">
+      <input type="hidden" value="<?php echo htmlspecialchars($fakultas_id); ?>" name="id_fakultas" id="id_fakultas">
 
       <h4 class="mb-3 font-weight-semibold">
         Filter Data
