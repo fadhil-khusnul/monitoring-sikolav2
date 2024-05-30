@@ -615,10 +615,7 @@ async function filter_data() {
 
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
 
-                $("#btn_spinner").addClass("d-none")
-                $("#clear_filter").removeAttr("disabled")
 
-                $("#filter_data").removeAttr("disabled")
 
 
             });
@@ -978,6 +975,11 @@ const grafikKelas = async(kelasMK, requestOptions) => {
     document.querySelector("#apex-column-1")._chartInstance = chart;
 
 
+    $("#btn_spinner").addClass("d-none")
+    $("#clear_filter").removeAttr("disabled")
+
+    $("#filter_data").removeAttr("disabled")
+
 
 
 }
@@ -1057,6 +1059,10 @@ const grafikKelas2 = async(kelasMK, requestOptions, nama_kelas) => {
     chart.render();
     document.querySelector("#apex-column-1")._chartInstance = chart;
 
+    $("#btn_spinner").addClass("d-none")
+    $("#clear_filter").removeAttr("disabled")
+
+    $("#filter_data").removeAttr("disabled")
 
 
 }
