@@ -295,7 +295,7 @@ async function filter_data() {
     };
     $("#filter_data, #clear_filter").attr("disabled", true);
     $("#btn_spinner").removeClass("d-none")
-    $("#judul_prodi, #apex-column-2, #apex-pie-1").html("")
+    $("#judul_prodi, #apex-column-2, #apex-pie-1, #apex-column-1").html("")
     tableStatistik.clear().draw();
 
     let nama_prodi = document.getElementById("program_studi").value
@@ -452,6 +452,9 @@ async function filter_data() {
 
             Promise.all(fetchPromises).then(() => {
                 console.log(totalBanyakTerisi, "BNAYY");
+                // $("#grafik_kelas").html("");
+                $("#grafik_kelas").addClass("d-none")
+
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
                 $("#btn_spinner").addClass("d-none")
                 $("#clear_filter").removeAttr("disabled")
@@ -590,8 +593,9 @@ async function filter_data() {
                                     <a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${data.courses[0].id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a>
                                     <br>
                                     <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${data.courses[0].id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>
-                                    
-                                    `
+                                    `,
+                                    // <br>
+                                    // <a onclick="modalShow('${data.courses[0].fullname}', ${banyakTerisi.length}, ${banyakAlur.length}, ${rps.length}, ${tugas}, ${files}, ${surveys}, ${quizes}, ${forums})" style="cursor: pointer;" class="">Grafik <i class="fe-external-link"></i></a>
                                 ]).draw(false);
                             })
                             .catch((error) => console.error(error));
@@ -602,18 +606,20 @@ async function filter_data() {
             });
 
             Promise.all(fetchPromises).then(() => {
+                $("#grafik_kelas").removeClass("d-none")
 
-                console.log("bnnn", totalBanyakTerisi);
 
                 nama_prodi = `${fullname_sikola} / ${nama_prodi}`
 
-                grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
+                grafikKelas2(filteredData, requestOptions);
 
+                grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
 
                 $("#btn_spinner").addClass("d-none")
                 $("#clear_filter").removeAttr("disabled")
 
                 $("#filter_data").removeAttr("disabled")
+
 
             });
 
@@ -630,6 +636,114 @@ async function filter_data() {
 
 }
 
+const modalShow = (namaKelas, banyakTerisi, banyakAlur, rps, tugas, files, surveys, quizes, forums, namaDosenHtml) => {
+    $("#modal_grafik").modal("show");
+
+    // $("#apex-column-modal").html("")
+    // $("#apex-pie-modal").html("")
+
+
+
+    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
+    (dataColors = $("#apex-column-modal").data("colors")) && (colors = dataColors.split(","));
+    options = {
+        chart: {
+            height: 380,
+            type: "bar",
+            zoom: { enabled: !0 },
+            toolbar: { show: !0 }
+        },
+        plotOptions: {
+            bar: {
+                dataLabels: { position: "top" },
+                distributed: true
+            }
+        },
+        dataLabels: {
+            enabled: !0,
+            offsetY: -30,
+            style: { fontSize: "12px", colors: ["#304758"] }
+        },
+        // stroke: { width: [3, 3], curve: "smooth" },
+        colors: colors,
+        series: [{
+            name: "Total",
+
+            // type: 'bar',
+            data: [banyakTerisi, rps, tugas, files, surveys, quizes, forums]
+        }, ],
+
+        labels: ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"],
+
+        xaxis: {
+            // categories: ["Alur Pembelajaran (Terisi)", "RPS", "Proyek", "Tugas", "Kasus/Url", "Doc", "Survey", "Quiz", "Forum"],
+            axisBorder: { show: !0 },
+            axisTicks: { show: !0 },
+            crosshairs: {
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                        colorFrom: "#D8E3F0",
+                        colorTo: "#BED1E6",
+                        stops: [0, 100],
+                        opacityFrom: .4,
+                        opacityTo: .5
+                    }
+                }
+            },
+            tooltip: { enabled: !1, offsetY: -35 }
+        },
+        fill: { gradient: { enabled: !1, shade: "light", type: "horizontal", shadeIntensity: .25, gradientToColors: void 0, inverseColors: !0, opacityFrom: 1, opacityTo: 1, stops: [50, 0, 100, 100] } },
+        yaxis: {
+            axisBorder: { show: !0 },
+            axisTicks: { show: !0 },
+            labels: { show: !0 },
+        },
+        title: {
+            text: namaKelas,
+            align: "center",
+            style: { color: "#444" }
+        },
+        // legend: { show: !0, position: "bottom", horizontalAlign: "center", verticalAlign: "middle", floating: !1, fontSize: "14px", offsetX: 0, offsetY: 7 },
+
+        grid: { row: { colors: ["transparent", "transparent"], opacity: .2 }, borderColor: "#f1f3fa" }
+    };
+
+    chart = new ApexCharts(document.querySelector("#apex-column-modal"), options);
+    chart.render();
+
+    document.querySelector("#apex-column-modal")._chartInstance = chart;
+
+
+
+    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
+    (dataColors = $("#apex-pie-modal").data("colors")) && (colors = dataColors.split(","));
+    options = {
+        chart: {
+            height: 380,
+            type: "pie",
+            zoom: { enabled: !0 },
+            toolbar: { show: !0 }
+        },
+        title: {
+            text: namaKelas,
+            align: "center",
+            style: { color: "#444" }
+        },
+        series: [banyakTerisi, rps, tugas, files, surveys, quizes, forums],
+        labels: ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"],
+        colors: colors,
+        legend: { show: !0, position: "bottom", horizontalAlign: "center", verticalAlign: "middle", floating: !1, fontSize: "14px", offsetX: 0, offsetY: 7 },
+        responsive: [{ breakpoint: 600, options: { chart: { height: 240 }, legend: { show: !1 } } }]
+    };
+    (chart = new ApexCharts(document.querySelector("#apex-pie-modal"), options)).render();
+
+    document.querySelector("#apex-pie-modal")._chartInstance = chart;
+
+
+}
+
+
 async function getUserDosen(absenDosen, requestOptions) {
     try {
         const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions);
@@ -643,15 +757,24 @@ async function getUserDosen(absenDosen, requestOptions) {
 }
 
 async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi) {
-    $("#apex-column-2").html("")
-    $("#apex-pie-1").html("")
+    const chartElement = document.querySelector('#apex-pie-1');
+    if (chartElement && chartElement._chartInstance) {
+        console.log(chartElement._chartInstance);
+        chartElement._chartInstance.destroy();
+    }
+
+    const chartElement2 = document.querySelector('#apex-column-2');
+    if (chartElement2 && chartElement2._chartInstance) {
+        console.log(chartElement2._chartInstance);
+        chartElement2._chartInstance.destroy();
+    }
 
     // if (chart) {
     //     chart.destroy(); // Destroy the previous chart instance
     // }
 
     // console.log("BNNN");
-    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
+    colors = ["#008ffb", "#00e396", "#feb019", "#ff4560", "#775dd0", "#ffe200", "#798385"];
     (dataColors = $("#apex-column-2").data("colors")) && (colors = dataColors.split(","));
     options = {
         chart: {
@@ -723,7 +846,7 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
 
 
 
-    colors = ["#077AC3", "#4fc6e1", "#4892B5", "#405D88", "#4A81D4", "#00B19D", "#798385", "#B56C79", "#F1556C"];
+    colors = ["#008ffb", "#00e396", "#feb019", "#ff4560", "#775dd0", "#ffe200", "#798385"];
     (dataColors = $("#apex-pie-1").data("colors")) && (colors = dataColors.split(","));
     options = {
         chart: {
@@ -753,14 +876,189 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
 
 
 
-    $("#btn_spinner").addClass("d-none")
-    $("#clear_filter").removeAttr("disabled")
 
-    $("#filter_data").removeAttr("disabled")
-        // chart.destroy(); // Destroy the previous chart instance
+    // chart.destroy(); // Destroy the previous chart instance
 
     // chart.destroy()
 }
+
+const grafikKelas = async(kelasMK, requestOptions) => {
+
+    const chartElement3 = document.querySelector('#apex-column-1');
+    if (chartElement3 && chartElement3._chartInstance) {
+        console.log(chartElement3._chartInstance);
+        chartElement3._chartInstance.destroy();
+    }
+    let categories = [];
+    let dataTerisi = [];
+    let dataRPS = [];
+    let dataTugas = [];
+    let dataDoc = [];
+    let dataSurvey = [];
+    let dataQuiz = [];
+    let dataForum = [];
+
+    for (const item of kelasMK) {
+        const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_courses_by_field&field=shortname&value=${item.shortname_sikola}`, requestOptions);
+        const data = await response.json();
+        const courseId = data.courses[0].id;
+        const contentResponse = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${courseId}`, requestOptions);
+        const contentData = await contentResponse.json();
+
+        // Kumpulkan data
+        let totalTerisi = contentData.filter(section => section.name !== "Info Matakuliah" && section.modules.length > 0).length;
+        let totalRPS = contentData.filter(section => section.name === "Info Matakuliah" && section.modules.some(modul => modul.modname === "resource")).length;
+        let totalTugas = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "assign").length, 0);
+        let totalDoc = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "resource" || modul.modname === "folder").length, 0);
+        let totalSurvey = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "survey").length, 0);
+        let totalQuiz = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "quiz").length, 0);
+        let totalForum = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "forum").length, 0);
+
+        // Tambahkan ke array
+        categories.push(data.courses[0].fullname);
+        dataTerisi.push(totalTerisi);
+        dataRPS.push(totalRPS);
+        dataTugas.push(totalTugas);
+        dataDoc.push(totalDoc);
+        dataSurvey.push(totalSurvey);
+        dataQuiz.push(totalQuiz);
+        dataForum.push(totalForum);
+    }
+
+    // Konfigurasi grafik
+
+    colors = ["#008ffb", "#00e396", "#feb019", "#ff4560", "#775dd0", "#ffe200", "#798385"];
+    (dataColors = $("#apex-column-1").data("colors")) && (colors = dataColors.split(","));
+    const options = {
+        chart: {
+            height: 380,
+            type: "bar",
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                endingShape: "rounded",
+                columnWidth: "55%"
+            }
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        series: [
+            { name: "Alur Pembelajaran (Terisi)", data: dataTerisi },
+            { name: "RPS", data: dataRPS },
+            { name: "Tugas", data: dataTugas },
+            { name: "Doc", data: dataDoc },
+            { name: "Survey", data: dataSurvey },
+            { name: "Quiz", data: dataQuiz },
+            { name: "Forum", data: dataForum },
+        ],
+        color: colors,
+        xaxis: {
+            categories: categories,
+
+        },
+
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'center', // 'left', 'right', or 'center'
+            floating: false,
+            fontSize: '14px',
+            offsetY: 10
+        },
+        fill: { opacity: 1 },
+        grid: { row: { colors: ["transparent", "transparent"], opacity: .2 }, borderColor: "#f1f3fa", padding: { bottom: 20 } }
+    };
+
+    const chart = new ApexCharts(document.querySelector("#apex-column-1"), options);
+    chart.render();
+    document.querySelector("#apex-column-1")._chartInstance = chart;
+
+
+
+
+}
+const grafikKelas2 = async(kelasMK, requestOptions) => {
+
+    const chartElement3 = document.querySelector('#apex-column-1');
+    if (chartElement3 && chartElement3._chartInstance) {
+        console.log(chartElement3._chartInstance);
+        chartElement3._chartInstance.destroy();
+    }
+    let categories = ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"];
+    let seriesData = [];
+
+    for (const item of kelasMK) {
+        const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_courses_by_field&field=shortname&value=${item.shortname_sikola}`, requestOptions);
+        const data = await response.json();
+        const courseId = data.courses[0].id;
+        const contentResponse = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${courseId}`, requestOptions);
+        const contentData = await contentResponse.json();
+
+        // Kumpulkan data
+        let totalTerisi = contentData.filter(section => section.name !== "Info Matakuliah" && section.modules.length > 0).length;
+        let totalRPS = contentData.filter(section => section.name === "Info Matakuliah" && section.modules.some(modul => modul.modname === "resource")).length;
+        let totalTugas = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "assign").length, 0);
+        let totalDoc = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "resource" || modul.modname === "folder").length, 0);
+        let totalSurvey = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "survey").length, 0);
+        let totalQuiz = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "quiz").length, 0);
+        let totalForum = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "forum").length, 0);
+
+        // Tambahkan data ke array series
+        seriesData.push({
+            name: data.courses[0].fullname,
+            data: [totalTerisi, totalRPS, totalTugas, totalDoc, totalSurvey, totalQuiz, totalForum]
+        });
+    }
+
+    // Konfigurasi grafik
+    colors = ["#008ffb", "#00e396", "#feb019", "#ff4560", "#775dd0", "#ffe200", "#798385"];
+    (dataColors = $("#apex-column-1").data("colors")) && (colors = dataColors.split(","));
+    const options = {
+        chart: {
+            height: 380,
+            type: "bar",
+            toolbar: {
+                show: false
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                endingShape: "rounded",
+                columnWidth: "55%"
+            }
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ["transparent"] },
+        series: seriesData,
+        colors: colors,
+        xaxis: {
+            categories: categories,
+        },
+        legend: {
+            show: true,
+            position: 'top',
+            horizontalAlign: 'center',
+            floating: false,
+            fontSize: '14px',
+            offsetY: 10
+        },
+        fill: { opacity: 1 },
+        grid: { row: { colors: ["transparent", "transparent"], opacity: .2 }, borderColor: "#f1f3fa", padding: { bottom: 20 } }
+    };
+
+    const chart = new ApexCharts(document.querySelector("#apex-column-1"), options);
+    chart.render();
+    document.querySelector("#apex-column-1")._chartInstance = chart;
+
+
+
+}
+
 // $(document).ready(function() {
 
 // Add an event listener for semester_select change
@@ -812,6 +1110,12 @@ const clear_filter = async() => {
     if (chartElement2 && chartElement2._chartInstance) {
         console.log(chartElement2._chartInstance);
         chartElement2._chartInstance.destroy();
+    }
+
+    const chartElement3 = document.querySelector('#apex-column-1');
+    if (chartElement3 && chartElement3._chartInstance) {
+        console.log(chartElement3._chartInstance);
+        chartElement3._chartInstance.destroy();
     }
     sessionStorage.removeItem('nama_prodi_storage');
     sessionStorage.removeItem('id_prodi_storage');
