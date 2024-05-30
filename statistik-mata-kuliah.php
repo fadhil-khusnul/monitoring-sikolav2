@@ -97,7 +97,7 @@ include 'partials/main.php';
                     <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
                     <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
                   </div>
-                  <h4 class="header-title mb-0">Bar Chart (Kelas)</h4>
+                  <h4 class="header-title mb-0 text-center" id="juduL_kelas"></h4>
 
                   <div id="cardCollpase10" class="collapse show" dir="ltr">
                     <div id="apex-column-1" class="apex-charts pt-3" data-colors="#008ffb,#00e396,#feb019,#ff4560,#775dd0,#ffe200,#798385,#B56C79,#F1556C"></div>

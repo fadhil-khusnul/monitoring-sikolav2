@@ -611,7 +611,7 @@ async function filter_data() {
 
                 nama_prodi = `${fullname_sikola} / ${nama_prodi}`
 
-                grafikKelas2(filteredData, requestOptions);
+                grafikKelas2(filteredData, requestOptions, nama_prodi);
 
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
 
@@ -981,7 +981,9 @@ const grafikKelas = async(kelasMK, requestOptions) => {
 
 
 }
-const grafikKelas2 = async(kelasMK, requestOptions) => {
+const grafikKelas2 = async(kelasMK, requestOptions, nama_kelas) => {
+
+    $("#juduL_kelas").html(`Grafik Kelas - ${nama_kelas}`)
 
     const chartElement3 = document.querySelector('#apex-column-1');
     if (chartElement3 && chartElement3._chartInstance) {
