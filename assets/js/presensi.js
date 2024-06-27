@@ -13,11 +13,23 @@ let tableStatistik = $("#table_presensi_matkul").DataTable({
     fixedHeader: true,
 
     language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-    }
+    drawCallback: function(settings) {
+        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
+        // MergeGridCells('table_presensi_matkul', [1, 2]);
+
+    },
+    rowGroup: [1, 2],
+    "createdRow": function(row, data, dataIndex) {
+        $(row).find('td:first').addClass('no');
+        $(row).find('td:eq(1)').addClass('course-name');
+        $(row).find('td:eq(4)').addClass('totalDosen');
+        $(row).find('td:eq(5)').addClass('linkDosen');
+    },
+    fixedHeader: true
 
 });
+
+
 let tabelMhs = $("#table_presensi_matkul_mhs").DataTable({
     // responsive: true,
     // stateSave: true,
@@ -350,6 +362,15 @@ async function filter_data() {
                         let absenDosen = attendanceModules.filter(alur => alur.name === "Presensi Pengampu Mata Kuliah");
                         attendanceMhsE = attendanceModules.filter(alur => alur.name !== "Presensi Pengampu Mata Kuliah" && alur.name !== "Presensi Mahasiswa");
 
+
+                        const namaDosen = await getUserDosen(absenDosen, requestOptions);
+
+                        // const namaDosenListItems = namaDosen.map(dosen => `<li>${dosen.firstname} ${dosen.lastname}</li>`).join('');
+
+                        // Wrap the &lt;li&gt; elements in an &lt;ol&gt; tag
+                        // const namaDosenHtml = `<ol>${namaDosenListItems}</ol>`;
+
+
                         const formatDate = (date) => {
                             let year = date.getFullYear();
                             let month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -374,10 +395,10 @@ async function filter_data() {
                         };
 
                         const startDate = '2024-02-19';
-                        const numWeeks = 16;
+                        const numWeeks = 18;
                         const weeks = generateWeeks(startDate, numWeeks);
                         const weekCountersMhs = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
-                        const weekCountersDosen = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
+                        // const weekCountersDosen = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
 
                         const groupByWeekMhs = (dataAbsen) => {
                             dataAbsen.forEach(item => {
@@ -392,18 +413,34 @@ async function filter_data() {
                             });
                         };
 
-                        const groupByWeekDosen = (dataAbsen) => {
+                        const weekCountersDosen = {};
+                        namaDosen.forEach(dosen => {
+                            weekCountersDosen[dosen.id] = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
+                        });
+
+                        const groupByWeekDosen = (dataAbsen, absenId) => {
                             dataAbsen.forEach(item => {
                                 const sessdate = formatDate(new Date(item.sessdate * 1000));
 
-                                for (const [week, range] of Object.entries(weeks)) {
-                                    if (sessdate >= range.start && sessdate <= range.end) {
-                                        weekCountersDosen[week]++;
-                                        break;
+                                item.attendance_log.forEach(log => {
+                                    const dosenId = log.studentid;
+                                    const statusId = log.statusid;
+
+
+                                    if (weekCountersDosen[dosenId] && statusId != absenId) {
+                                        for (const [week, range] of Object.entries(weeks)) {
+                                            if (sessdate >= range.start && sessdate <= range.end) {
+                                                weekCountersDosen[dosenId][week]++;
+                                                break;
+                                            }
+                                        }
                                     }
-                                }
+                                });
                             });
                         };
+
+
+
                         Promise.all([
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenMhs[0].instance}`, requestOptions),
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions),
@@ -421,12 +458,272 @@ async function filter_data() {
                                 terisiMhs = absenMhsData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0 && sessi.groupid === mahasiswaGroupId);
                                 totalMahasiswa = absenMhsData.filter(sessi => sessi.groupid === mahasiswaGroupId).length;
 
-                                terisiDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0 && sessi.groupid === dosenGroupId);
-                                totalDosen = absenDosenData.filter(sessi => sessi.groupid === dosenGroupId).length;
+                                const namaDosenById = {};
+                                namaDosen.forEach(dosen => {
+                                    namaDosenById[dosen.id] = dosen;
+                                });
 
-                                // Group data by week
+
+
+
+
+                                console.log(namaDosenById);
+
+
+
+                                // Menghitung terisiDosen dan totalDosen
+                                let presentStatusId = absenDosenData.find(data => data.statuses.some(status => status.acronym === "P")).statuses.find(status => status.acronym === "P").id;
+                                let lateStatusId = absenDosenData.find(data => data.statuses.some(status => status.acronym === "L")).statuses.find(status => status.acronym === "L").id;
+
+                                console.log(presentStatusId, lateStatusId);
+
+
+                                let absenId = absenDosenData.find(data => data.statuses.some(status => status.acronym === "A")).statuses.find(status => status.acronym === "A").id;
+
+                                let terisiDosen = absenDosenData.filter(sessi => (
+                                    sessi.attendance_log && sessi.groupid == dosenGroupId
+                                ));
+
+                                console.log(terisiDosen);
+
+                                groupByWeekDosen(terisiDosen, absenId);
+
+
+
+                                const courseid = item.id;
+                                const courseName = item.fullname;
+
+                                const dosenIds = Object.keys(namaDosenById);
+                                const rowspan = dosenIds.length;
+
+                                var dosenByCourse = {};
+
+                                let totalDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.some(log => namaDosenById[log.studentid])).length;
+
+
+                                if (!dosenByCourse[courseName]) {
+                                    dosenByCourse[courseName] = {
+                                        id: courseid,
+                                        dosenList: [],
+                                        totalDosen: totalDosen,
+                                        weeklyData: {
+                                            pekan1: [],
+                                            pekan2: [],
+                                            pekan3: [],
+                                            pekan4: [],
+                                            pekan5: [],
+                                            pekan6: [],
+                                            pekan7: [],
+                                            pekan8: [],
+                                            pekan9: [],
+                                            pekan10: [],
+                                            pekan11: [],
+                                            pekan12: [],
+                                            pekan13: [],
+                                            pekan14: [],
+                                            pekan15: [],
+                                            pekan16: [],
+                                            pekan17: [],
+                                            pekan18: []
+                                        }
+                                    };
+                                }
+
+                                dosenIds.forEach(dosenId => {
+                                    const terisiDosenCount = terisiDosen.filter(sessi => sessi.attendance_log.some(log => log.studentid == dosenId && log.statusid != absenId)).length;
+                                    dosenByCourse[courseName].dosenList.push({
+                                        name: `${namaDosenById[dosenId].firstname} ${namaDosenById[dosenId].lastname}`,
+                                        terisiDosenCount: terisiDosenCount,
+                                        // absenLink: `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`
+                                    });
+
+                                    dosenByCourse[courseName].weeklyData.pekan1.push(weekCountersDosen[dosenId].pekan1 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan2.push(weekCountersDosen[dosenId].pekan2 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan3.push(weekCountersDosen[dosenId].pekan3 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan4.push(weekCountersDosen[dosenId].pekan4 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan5.push(weekCountersDosen[dosenId].pekan5 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan6.push(weekCountersDosen[dosenId].pekan6 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan7.push(weekCountersDosen[dosenId].pekan7 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan8.push(weekCountersDosen[dosenId].pekan8 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan9.push(weekCountersDosen[dosenId].pekan9 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan10.push(weekCountersDosen[dosenId].pekan10 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan11.push(weekCountersDosen[dosenId].pekan11 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan12.push(weekCountersDosen[dosenId].pekan12 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan13.push(weekCountersDosen[dosenId].pekan13 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan14.push(weekCountersDosen[dosenId].pekan14 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan15.push(weekCountersDosen[dosenId].pekan15 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan16.push(weekCountersDosen[dosenId].pekan16 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan17.push(weekCountersDosen[dosenId].pekan17 || '');
+                                    dosenByCourse[courseName].weeklyData.pekan18.push(weekCountersDosen[dosenId].pekan18 || '');
+                                });
+                                Object.keys(dosenByCourse).forEach((courseName, index) => {
+
+                                    const addBreaks = (hasData) => {
+                                        return hasData ? '<br> <br> <br> <br>' : '<br> <br> <br> <br> <br>';
+                                    };
+
+                                    const course = dosenByCourse[courseName];
+                                    const dosenList = course.dosenList.map(dosen => `<li>${dosen.name}</li><br>`).join('');
+                                    const terisiDosenCount = course.dosenList.map(dosen => `<li>${dosen.terisiDosenCount}</li> <br> <br> <br> <br>`).join('');
+                                    // const absenLinks = course.dosenList.map(dosen => `<li>${dosen.absenLink}</li>`).join('');
+
+                                    const weeklyDataPekan1 = course.weeklyData.pekan1.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan2 = course.weeklyData.pekan2.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan3 = course.weeklyData.pekan3.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan4 = course.weeklyData.pekan4.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan5 = course.weeklyData.pekan5.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan6 = course.weeklyData.pekan6.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan7 = course.weeklyData.pekan7.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan8 = course.weeklyData.pekan8.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan9 = course.weeklyData.pekan9.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan10 = course.weeklyData.pekan10.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan11 = course.weeklyData.pekan11.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan12 = course.weeklyData.pekan12.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan13 = course.weeklyData.pekan13.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan14 = course.weeklyData.pekan14.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan15 = course.weeklyData.pekan15.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan16 = course.weeklyData.pekan16.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan17 = course.weeklyData.pekan17.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                    const weeklyDataPekan18 = course.weeklyData.pekan18.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+
+                                    tableStatistik.row.add([
+                                        `${counter++}`,
+                                        `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${course.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`,
+                                        `<ul class="no-bullets">${dosenList}</ul>`,
+                                        `<ul class="no-bullets">${terisiDosenCount}</ul>`,
+                                        `${course.totalDosen}`,
+                                        `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan1}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan2}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan3}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan4}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan5}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan6}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan7}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan8}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan9}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan10}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan11}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan12}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan13}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan14}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan15}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan16}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan17}</ul>`,
+                                        `<ul class="no-bullets">${weeklyDataPekan18}</ul>`
+                                    ]).draw(false);
+                                });
+
+                                // Object.keys(dosenByCourse).forEach((courseName, index) => {
+                                //     const course = dosenByCourse[courseName];
+                                //     const numRows = course.dosenList.length; // Jumlah baris berdasarkan jumlah dosen
+
+                                //     course.dosenList.forEach((dosen, dosenIndex) => {
+                                //         const weeklyDataPekan1 = course.weeklyData.pekan1[dosenIndex] || '';
+                                //         const weeklyDataPekan2 = course.weeklyData.pekan2[dosenIndex] || '';
+                                //         const weeklyDataPekan3 = course.weeklyData.pekan3[dosenIndex] || '';
+                                //         const weeklyDataPekan4 = course.weeklyData.pekan4[dosenIndex] || '';
+                                //         const weeklyDataPekan5 = course.weeklyData.pekan5[dosenIndex] || '';
+                                //         const weeklyDataPekan6 = course.weeklyData.pekan6[dosenIndex] || '';
+                                //         const weeklyDataPekan7 = course.weeklyData.pekan7[dosenIndex] || '';
+                                //         const weeklyDataPekan8 = course.weeklyData.pekan8[dosenIndex] || '';
+                                //         const weeklyDataPekan9 = course.weeklyData.pekan9[dosenIndex] || '';
+                                //         const weeklyDataPekan10 = course.weeklyData.pekan10[dosenIndex] || '';
+                                //         const weeklyDataPekan11 = course.weeklyData.pekan11[dosenIndex] || '';
+                                //         const weeklyDataPekan12 = course.weeklyData.pekan12[dosenIndex] || '';
+                                //         const weeklyDataPekan13 = course.weeklyData.pekan13[dosenIndex] || '';
+                                //         const weeklyDataPekan14 = course.weeklyData.pekan14[dosenIndex] || '';
+                                //         const weeklyDataPekan15 = course.weeklyData.pekan15[dosenIndex] || '';
+                                //         const weeklyDataPekan16 = course.weeklyData.pekan16[dosenIndex] || '';
+                                //         const weeklyDataPekan17 = course.weeklyData.pekan17[dosenIndex] || '';
+
+                                //         if (dosenIndex === 0) {
+                                //             tableStatistik.row.add([
+                                //                 `<td rowspan="${numRows}">${counter++}</td>`,
+                                //                 `<td rowspan="${numRows}"><a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${course.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a></td>`,
+                                //                 `${dosen.name}`,
+                                //                 `${dosen.terisiDosenCount}`,
+                                //                 `<td rowspan="${numRows}">${course.totalDosen}</td> `,
+                                //                 `<td rowspan="${numRows}">${dosen.absenLink}</td> `,
+                                //                 `${weeklyDataPekan1}`,
+                                //                 `${weeklyDataPekan2}`,
+                                //                 `${weeklyDataPekan3}`,
+                                //                 `${weeklyDataPekan4}`,
+                                //                 `${weeklyDataPekan5}`,
+                                //                 `${weeklyDataPekan6}`,
+                                //                 `${weeklyDataPekan7}`,
+                                //                 `${weeklyDataPekan8}`,
+                                //                 `${weeklyDataPekan9}`,
+                                //                 `${weeklyDataPekan10}`,
+                                //                 `${weeklyDataPekan11}`,
+                                //                 `${weeklyDataPekan12}`,
+                                //                 `${weeklyDataPekan13}`,
+                                //                 `${weeklyDataPekan14}`,
+                                //                 `${weeklyDataPekan15}`,
+                                //                 `${weeklyDataPekan16}`,
+                                //                 `${weeklyDataPekan17}`
+                                //             ]).draw(false);
+                                //         } else {
+                                //             tableStatistik.row.add([
+                                //                 '',
+                                //                 '',
+                                //                 `${dosen.name}`,
+                                //                 `${dosen.terisiDosenCount}`,
+                                //                 ``,
+                                //                 ``,
+                                //                 `${weeklyDataPekan1}`,
+                                //                 `${weeklyDataPekan2}`,
+                                //                 `${weeklyDataPekan3}`,
+                                //                 `${weeklyDataPekan4}`,
+                                //                 `${weeklyDataPekan5}`,
+                                //                 `${weeklyDataPekan6}`,
+                                //                 `${weeklyDataPekan7}`,
+                                //                 `${weeklyDataPekan8}`,
+                                //                 `${weeklyDataPekan9}`,
+                                //                 `${weeklyDataPekan10}`,
+                                //                 `${weeklyDataPekan11}`,
+                                //                 `${weeklyDataPekan12}`,
+                                //                 `${weeklyDataPekan13}`,
+                                //                 `${weeklyDataPekan14}`,
+                                //                 `${weeklyDataPekan15}`,
+                                //                 `${weeklyDataPekan16}`,
+                                //                 `${weeklyDataPekan17}`
+                                //             ]).draw(false);
+                                //         }
+                                //     });
+                                // });
+
+                                // tableStatistik.row.add([
+                                //     `<td rowspan="${rowspan}">${counter++}</td>`,
+                                //     `<td rowspan="${rowspan}"><a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a></td>`,
+                                //     `<td><li>${namaDosenById[dosenId].firstname} ${namaDosenById[dosenId].lastname}</li></td>`,
+                                //     `<td>${terisiDosenCount}</td>`,
+                                //     `<td>${totalDosen}</td>`,
+                                //     `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
+                                //     d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16, d17
+                                // ]).draw(false);
+
+
+
+
+
+
+
+
+
+                                // Menambahkan baris pertama dengan rowspan
+
+
+                                // Menambahkan baris-baris berikutnya
+                                // for (let i = 1; i < rows.length; i++) {
+                                //     tableStatistik.row.add(['', '', ...rows[i]]).draw(false);
+                                // }
+
+
+
                                 groupByWeekMhs(terisiMhs);
-                                groupByWeekDosen(terisiDosen);
+
+                                // groupByWeekDosen(terisiDosen);
                                 // groupByWeek(terisiDosen);
                                 console.log(weekCountersDosen, terisiDosen, terisiMhs);
 
@@ -445,40 +742,31 @@ async function filter_data() {
                                     m13 = weekCountersMhs.pekan13,
                                     m14 = weekCountersMhs.pekan14,
                                     m15 = weekCountersMhs.pekan15,
-                                    m16 = weekCountersMhs.pekan16;
+                                    m16 = weekCountersMhs.pekan16,
+                                    m17 = weekCountersMhs.pekan17,
+                                    m18 = weekCountersMhs.pekan18;
 
-                                let d1 = weekCountersDosen.pekan1,
-                                    d2 = weekCountersDosen.pekan2,
-                                    d3 = weekCountersDosen.pekan3,
-                                    d4 = weekCountersDosen.pekan4,
-                                    d5 = weekCountersDosen.pekan5,
-                                    d6 = weekCountersDosen.pekan6,
-                                    d7 = weekCountersDosen.pekan7,
-                                    d8 = weekCountersDosen.pekan8,
-                                    d9 = weekCountersDosen.pekan9,
-                                    d10 = weekCountersDosen.pekan10,
-                                    d11 = weekCountersDosen.pekan11,
-                                    d12 = weekCountersDosen.pekan12,
-                                    d13 = weekCountersDosen.pekan13,
-                                    d14 = weekCountersDosen.pekan14,
-                                    d15 = weekCountersDosen.pekan15,
-                                    d16 = weekCountersDosen.pekan16;
+
 
 
 
                                 // console.log(weekCounters, "M1");
 
+                                // const namaDosenHtml = namaDosen.map(dosen => `<li>${dosen.firstname} ${dosen.lastname}</li>`).join('');
+                                // const rowspan = namaDosen.length;
 
 
-                                tableStatistik.row.add([
-                                    counter++,
-                                    `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
-                                    `${terisiDosen.length}`,
-                                    totalDosen,
-                                    `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
-                                    d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
 
-                                ]).draw(false);
+                                // tableStatistik.row.add([
+                                //     `<td rowspan="${rowspan}">${counter++}</td>`,
+                                //     `<td rowspan="${rowspan}"><a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a></td>`,
+                                //     namaDosenHtml,
+                                //     `${terisiDosen.length}`,
+                                //     totalDosen,
+                                //     `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
+                                //     d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
+
+                                // ]).draw(false);
 
                                 tabelMhs.row.add([
                                     counter_m++,
@@ -486,7 +774,7 @@ async function filter_data() {
                                     terisiMhs.length,
                                     totalMahasiswa,
                                     `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenMhs[0].id}" target="_blank" class="">Presensi Mahasiswa <i class="fe-external-link"></i></a>`,
-                                    m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16,
+                                    m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18
 
                                 ]).draw(false);
 
@@ -494,6 +782,7 @@ async function filter_data() {
 
 
                             })
+
 
                         .catch(error => {
                             console.error(error)
@@ -530,6 +819,11 @@ async function filter_data() {
                 $("#btn_spinner").addClass("d-none")
                 $("#clear_filter").removeAttr("disabled")
                 $("#filter_data").removeAttr("disabled")
+
+                // $('#table_presensi_matkul').on('draw.dt', function() {
+                //     mergeCells();
+                // });
+
 
             });
 
@@ -619,10 +913,10 @@ async function filter_data() {
                                 };
 
                                 const startDate = '2024-02-19';
-                                const numWeeks = 16;
+                                const numWeeks = 18;
                                 const weeks = generateWeeks(startDate, numWeeks);
                                 const weekCountersMhs = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
-                                const weekCountersDosen = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
+                                // const weekCountersDosen = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
 
                                 const groupByWeekMhs = (dataAbsen) => {
                                     dataAbsen.forEach(item => {
@@ -637,18 +931,38 @@ async function filter_data() {
                                     });
                                 };
 
-                                const groupByWeekDosen = (dataAbsen) => {
+                                const namaDosen = await getUserDosen(absenDosen, requestOptions);
+
+
+                                const weekCountersDosen = {};
+                                namaDosen.forEach(dosen => {
+                                    weekCountersDosen[dosen.id] = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
+                                });
+
+
+                                const groupByWeekDosen = (dataAbsen, absenId) => {
                                     dataAbsen.forEach(item => {
                                         const sessdate = formatDate(new Date(item.sessdate * 1000));
 
-                                        for (const [week, range] of Object.entries(weeks)) {
-                                            if (sessdate >= range.start && sessdate <= range.end) {
-                                                weekCountersDosen[week]++;
-                                                break;
+                                        item.attendance_log.forEach(log => {
+                                            const dosenId = log.studentid;
+                                            const statusId = log.statusid;
+
+
+                                            if (weekCountersDosen[dosenId] && statusId != absenId) {
+                                                for (const [week, range] of Object.entries(weeks)) {
+                                                    if (sessdate >= range.start && sessdate <= range.end) {
+                                                        weekCountersDosen[dosenId][week]++;
+                                                        break;
+                                                    }
+                                                }
                                             }
-                                        }
+                                        });
                                     });
                                 };
+
+
+
 
 
 
@@ -672,15 +986,177 @@ async function filter_data() {
                                         terisiMhs = absenMhsData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0 && sessi.groupid === mahasiswaGroupId);
                                         totalMahasiswa = absenMhsData.filter(sessi => sessi.groupid === mahasiswaGroupId).length;
 
-                                        terisiDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0 && sessi.groupid === dosenGroupId);
-                                        totalDosen = absenDosenData.filter(sessi => sessi.groupid === dosenGroupId).length;
+                                        const namaDosenById = {};
+                                        namaDosen.forEach(dosen => {
+                                            namaDosenById[dosen.id] = dosen;
+                                        });
+                                        let absenId = absenDosenData.find(data => data.statuses.some(status => status.acronym === "A")).statuses.find(status => status.acronym === "A").id;
 
+                                        let terisiDosen = absenDosenData.filter(sessi => (
+                                            sessi.attendance_log && sessi.groupid == dosenGroupId
+                                        ));
                                         // Group data by week
-                                        groupByWeekMhs(terisiMhs);
-                                        groupByWeekDosen(terisiDosen);
+                                        groupByWeekDosen(terisiDosen, absenId);
 
                                         // console.log(terisiDosen, terisiMhs);
 
+
+                                        const courseid = kelas.courses[0].id;
+                                        const courseName = kelas.courses[0].fullname;
+
+                                        const dosenIds = Object.keys(namaDosenById);
+                                        const rowspan = dosenIds.length;
+
+
+                                        let totalDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.some(log => namaDosenById[log.studentid])).length;
+
+                                        var dosenByCourse = {};
+
+                                        if (!dosenByCourse[courseName]) {
+                                            dosenByCourse[courseName] = {
+                                                id: courseid,
+                                                dosenList: [],
+                                                totalDosen: totalDosen,
+                                                weeklyData: {
+                                                    pekan1: [],
+                                                    pekan2: [],
+                                                    pekan3: [],
+                                                    pekan4: [],
+                                                    pekan5: [],
+                                                    pekan6: [],
+                                                    pekan7: [],
+                                                    pekan8: [],
+                                                    pekan9: [],
+                                                    pekan10: [],
+                                                    pekan11: [],
+                                                    pekan12: [],
+                                                    pekan13: [],
+                                                    pekan14: [],
+                                                    pekan15: [],
+                                                    pekan16: [],
+                                                    pekan17: [],
+                                                    pekan18: []
+                                                }
+                                            };
+                                        }
+
+                                        dosenIds.forEach(dosenId => {
+                                            const terisiDosenCount = terisiDosen.filter(sessi => sessi.attendance_log.some(log => log.studentid == dosenId && log.statusid != absenId)).length;
+                                            dosenByCourse[courseName].dosenList.push({
+                                                name: `${namaDosenById[dosenId].firstname} ${namaDosenById[dosenId].lastname}`,
+                                                terisiDosenCount: terisiDosenCount,
+                                                // absenLink: `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`
+                                            });
+
+                                            dosenByCourse[courseName].weeklyData.pekan1.push(weekCountersDosen[dosenId].pekan1 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan2.push(weekCountersDosen[dosenId].pekan2 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan3.push(weekCountersDosen[dosenId].pekan3 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan4.push(weekCountersDosen[dosenId].pekan4 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan5.push(weekCountersDosen[dosenId].pekan5 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan6.push(weekCountersDosen[dosenId].pekan6 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan7.push(weekCountersDosen[dosenId].pekan7 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan8.push(weekCountersDosen[dosenId].pekan8 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan9.push(weekCountersDosen[dosenId].pekan9 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan10.push(weekCountersDosen[dosenId].pekan10 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan11.push(weekCountersDosen[dosenId].pekan11 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan12.push(weekCountersDosen[dosenId].pekan12 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan13.push(weekCountersDosen[dosenId].pekan13 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan14.push(weekCountersDosen[dosenId].pekan14 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan15.push(weekCountersDosen[dosenId].pekan15 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan16.push(weekCountersDosen[dosenId].pekan16 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan17.push(weekCountersDosen[dosenId].pekan17 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan18.push(weekCountersDosen[dosenId].pekan18 || '');
+                                        });
+
+                                        Object.keys(dosenByCourse).forEach((courseName, index) => {
+
+                                            const addBreaks = (hasData) => {
+                                                return hasData ? '<br> <br> <br> <br>' : '<br> <br> <br> <br> <br>';
+                                            };
+
+                                            const course = dosenByCourse[courseName];
+                                            const dosenList = course.dosenList.map(dosen => `<li>${dosen.name}</li><br>`).join('');
+                                            const terisiDosenCount = course.dosenList.map(dosen => `<li>${dosen.terisiDosenCount}</li> <br> <br> <br> <br>`).join('');
+                                            // const absenLinks = course.dosenList.map(dosen => `<li>${dosen.absenLink}</li>`).join('');
+
+                                            const weeklyDataPekan1 = course.weeklyData.pekan1.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan2 = course.weeklyData.pekan2.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan3 = course.weeklyData.pekan3.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan4 = course.weeklyData.pekan4.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan5 = course.weeklyData.pekan5.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan6 = course.weeklyData.pekan6.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan7 = course.weeklyData.pekan7.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan8 = course.weeklyData.pekan8.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan9 = course.weeklyData.pekan9.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan10 = course.weeklyData.pekan10.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan11 = course.weeklyData.pekan11.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan12 = course.weeklyData.pekan12.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan13 = course.weeklyData.pekan13.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan14 = course.weeklyData.pekan14.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan15 = course.weeklyData.pekan15.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan16 = course.weeklyData.pekan16.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan17 = course.weeklyData.pekan17.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+                                            const weeklyDataPekan18 = course.weeklyData.pekan18.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
+
+                                            tableStatistik.row.add([
+                                                `${counter++}`,
+                                                `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${course.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`,
+                                                `<ul class="no-bullets">${dosenList}</ul>`,
+                                                `<ul class="no-bullets">${terisiDosenCount}</ul>`,
+                                                `${course.totalDosen}`,
+                                                `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan1}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan2}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan3}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan4}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan5}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan6}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan7}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan8}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan9}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan10}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan11}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan12}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan13}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan14}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan15}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan16}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan17}</ul>`,
+                                                `<ul class="no-bullets">${weeklyDataPekan18}</ul>`
+                                            ]).draw(false);
+                                        });
+
+
+                                        // let d1 = weekCountersDosen.pekan1,
+                                        //     d2 = weekCountersDosen.pekan2,
+                                        //     d3 = weekCountersDosen.pekan3,
+                                        //     d4 = weekCountersDosen.pekan4,
+                                        //     d5 = weekCountersDosen.pekan5,
+                                        //     d6 = weekCountersDosen.pekan6,
+                                        //     d7 = weekCountersDosen.pekan7,
+                                        //     d8 = weekCountersDosen.pekan8,
+                                        //     d9 = weekCountersDosen.pekan9,
+                                        //     d10 = weekCountersDosen.pekan10,
+                                        //     d11 = weekCountersDosen.pekan11,
+                                        //     d12 = weekCountersDosen.pekan12,
+                                        //     d13 = weekCountersDosen.pekan13,
+                                        //     d14 = weekCountersDosen.pekan14,
+                                        //     d15 = weekCountersDosen.pekan15,
+                                        //     d16 = weekCountersDosen.pekan16;
+
+                                        // tableStatistik.row.add([
+                                        //     counter++,
+                                        //     `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
+                                        //     `${terisiDosen.length}`,
+                                        //     totalDosen,
+                                        //     `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
+                                        //     d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
+
+
+                                        // ]).draw(false);
+
+
+                                        groupByWeekMhs(terisiMhs);
                                         let m1 = weekCountersMhs.pekan1,
                                             m2 = weekCountersMhs.pekan2,
                                             m3 = weekCountersMhs.pekan3,
@@ -696,35 +1172,10 @@ async function filter_data() {
                                             m13 = weekCountersMhs.pekan13,
                                             m14 = weekCountersMhs.pekan14,
                                             m15 = weekCountersMhs.pekan15,
-                                            m16 = weekCountersMhs.pekan16;
+                                            m16 = weekCountersMhs.pekan16,
+                                            m17 = weekCountersMhs.pekan17,
+                                            m18 = weekCountersMhs.pekan18;
 
-                                        let d1 = weekCountersDosen.pekan1,
-                                            d2 = weekCountersDosen.pekan2,
-                                            d3 = weekCountersDosen.pekan3,
-                                            d4 = weekCountersDosen.pekan4,
-                                            d5 = weekCountersDosen.pekan5,
-                                            d6 = weekCountersDosen.pekan6,
-                                            d7 = weekCountersDosen.pekan7,
-                                            d8 = weekCountersDosen.pekan8,
-                                            d9 = weekCountersDosen.pekan9,
-                                            d10 = weekCountersDosen.pekan10,
-                                            d11 = weekCountersDosen.pekan11,
-                                            d12 = weekCountersDosen.pekan12,
-                                            d13 = weekCountersDosen.pekan13,
-                                            d14 = weekCountersDosen.pekan14,
-                                            d15 = weekCountersDosen.pekan15,
-                                            d16 = weekCountersDosen.pekan16;
-
-                                        tableStatistik.row.add([
-                                            counter++,
-                                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
-                                            `${terisiDosen.length}`,
-                                            totalDosen,
-                                            `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
-                                            d1, d2, d3, d4, d5, d6, d7, d8, d9, d10, d11, d12, d13, d14, d15, d16,
-
-
-                                        ]).draw(false);
 
                                         tabelMhs.row.add([
                                             counter_m++,
@@ -732,7 +1183,7 @@ async function filter_data() {
                                             terisiMhs.length,
                                             totalMahasiswa,
                                             `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenMhs[0].id}" target="_blank" class="">Presensi Mahasiswa <i class="fe-external-link"></i></a>`,
-                                            m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16,
+                                            m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18
 
                                         ]).draw(false);
 
@@ -831,4 +1282,16 @@ const clear_filter = async() => {
 
 
 
+}
+
+async function getUserDosen(absenDosen, requestOptions) {
+    try {
+        const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions);
+        const result = await response.json();
+        const namaDosen = result[0].users;
+        return namaDosen;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
 }

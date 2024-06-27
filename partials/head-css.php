@@ -1,5 +1,5 @@
 <!-- Theme Config Js -->
-<script src="assets/js/head.js"></script>
+<script src="<?= 'assets/js/head.js?v='. time() ?>"></script>
 
 <!-- Bootstrap css -->
 <link href="<?= 'assets/css/bootstrap.min.css?v='. time()?>" rel="stylesheet" type="text/css" id="app-style" />

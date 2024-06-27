@@ -32,7 +32,7 @@
 
         // This option for only vertical (left Sidebar) layout
         sidenav: {
-            size: "default",
+            size: "condensed",
             twocolumn: "light",
             user: false,
         },

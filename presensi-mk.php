@@ -18,6 +18,16 @@
   <link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 
   <?php include 'partials/head-css.php'; ?>
+
+  <style>
+    .no-bullets {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    
+</style>
 </head>
 
 <body>
@@ -69,15 +79,16 @@
                         <tr align="center" valign="top">
                           <th rowspan="2" width="">No</th>
                           <th rowspan="2" width="">Nama Kelas</th>
-                          <th colspan="3" style="text-align: center;">Presensi Dosen</th>
-                          <th colspan="16" style="text-align: center;">Minggu</th>
+                          <th colspan="4" style="text-align: center;">Presensi Dosen</th>
+                          <th colspan="18" style="text-align: center;">Minggu</th>
 
                         </tr>
                         <tr>
 
 
-                          <th style="text-align:center;">Terisi</th>
-                          <th style="text-align:center;">Total</th>
+                          <th style="text-align:center;">Nama Dosen</th>
+                          <th style="text-align:center;">Session Terisi</th>
+                          <th style="text-align:center;">Total Session</th>
                           <th style="text-align:center;">Link</th>
 
 
@@ -97,13 +108,16 @@
                           <th style="text-align:center;">14</th>
                           <th style="text-align:center;">15</th>
                           <th style="text-align:center;">16</th>
+                          <th style="text-align:center;">17</th>
+                          <th style="text-align:center;">18</th>
+                          <!-- <th style="text-align:center;">18</th> -->
 
 
 
                         </tr>
                       </thead>
 
-                      <tbody>
+                      <tbody id="table-statistik-body">
 
 
                       </tbody>
@@ -137,7 +151,7 @@
                           <th rowspan="2" width="">No</th>
                           <th rowspan="2" width="">Nama Kelas</th>
                           <th colspan="3" style="text-align: center;">Presensi Mahasiswa</th>
-                          <th colspan="16" style="text-align: center;">Minggu</th>
+                          <th colspan="18" style="text-align: center;">Minggu</th>
 
                         </tr>
                         <tr>
@@ -165,6 +179,8 @@
                           <th style="text-align:center;">14</th>
                           <th style="text-align:center;">15</th>
                           <th style="text-align:center;">16</th>
+                          <th style="text-align:center;">17</th>
+                          <th style="text-align:center;">18</th>
 
 
 

@@ -16,4 +16,4 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en" data-layout-mode="detached" data-topbar-color="dark" data-sidenav-user="true">
+<html lang="en" data-layout-mode="detached" data-topbar-color="dark" data-sidenav-user="true" data-sidenav-size="condensed">
