@@ -1,5 +1,5 @@
 <?php
-// header('Content-Type: application/json');
+header('Content-Type: application/json');
 
 
 // Retrieve courseId from query parameters
@@ -15,7 +15,11 @@ if (!$courseId) {
 
 // Initialize cURL
 $curl = curl_init();
-
+if (!$curl) {
+  http_response_code(500);
+  echo json_encode(['error' => 'Failed to initialize cURL']);
+  exit;
+}
 
 // echo json_decode($courseId);
 curl_setopt_array($curl, array(
@@ -23,7 +27,7 @@ curl_setopt_array($curl, array(
   CURLOPT_RETURNTRANSFER => true,
   CURLOPT_ENCODING => '',
   CURLOPT_MAXREDIRS => 10,
-  CURLOPT_TIMEOUT => 0,
+  CURLOPT_TIMEOUT => 30,
   CURLOPT_FOLLOWLOCATION => true,
   CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
   CURLOPT_CUSTOMREQUEST => 'GET',
@@ -34,11 +38,13 @@ curl_setopt_array($curl, array(
 
 $response = curl_exec($curl);
 
-if(curl_errno($curl)) {
-    http_response_code(500);
-    echo json_encode(['error' => curl_error($curl)]);
-    curl_close($curl);
-    exit;
+if ($response === false) {
+  $curlError = curl_error($curl);
+  error_log("cURL error: " . $curlError); // Log cURL error
+  http_response_code(500);
+  echo json_encode(['error' => 'cURL error: ' . $curlError]);
+  curl_close($curl);
+  exit;
 }
 
 curl_close($curl);
