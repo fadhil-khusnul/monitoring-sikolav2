@@ -270,7 +270,7 @@ async function filter_data() {
                 return fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${item.id}`, requestOptions)
                     .then((response) => response.json())
                     .then(async result => {
-                        return fetch(`services/sikola_connect.php?courseId=${item.id}`, requestOptionsNilai)
+                        return fetch(`/services/sikola_connect.php?courseId=${item.id}`, requestOptionsNilai)
                             .then(response => response.json())
                             .then(async getNilai => {
                                 let kursusSinkron = false;
@@ -350,7 +350,7 @@ async function filter_data() {
                         return fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${kelas.courses[0].id}`, requestOptions)
                             .then((response) => response.json())
                             .then(async result => {
-                                return fetch(`services/sikola_connect.php?courseId=${kelas.courses[0].id}`, requestOptions)
+                                return fetch(`/services/sikola_connect.php?courseId=${kelas.courses[0].id}`, requestOptions)
                                     .then(response => response.json())
                                     .then(async getNilai => {
                                         let kursusSinkron = false;
