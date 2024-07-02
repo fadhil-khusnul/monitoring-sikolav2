@@ -48,6 +48,24 @@
           <div class="row">
           <?php include 'partials/filter_element.php'; ?>
 
+          <div class="col-12">
+              <!-- Portlet card -->
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-widgets">
+                    <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase18" role="button" aria-expanded="false" aria-controls="cardCollpase18"><i class="mdi mdi-minus"></i></a>
+                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                  </div>
+                  <h4 class="header-title mb-0">Pie Chart</h4>
+
+                  <div id="cardCollpase18" class="collapse show" dir="ltr">
+                    <div id="apex-pie-1" class="apex-charts pt-3" data-colors="#00e396,#ff4560"></div>
+                  </div> <!-- collapsed end -->
+                </div> <!-- end card-body -->
+              </div> <!-- end card-->
+            </div>
+
             <div class="col-12">
               <div class="card">
                 <div class="card-body">
@@ -146,6 +164,7 @@
   <!-- JsGrid js -->
   <!-- <script src="assets/libs/jsgrid/jsgrid.min.js"></script> -->
   <script src="assets/libs/select2/js/select2.min.js"></script>
+  <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
