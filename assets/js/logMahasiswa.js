@@ -588,7 +588,7 @@ async function filter_data() {
                                         dataSource.push({
                                             'No': index === 0 ? counter : '',
                                             'span': dosenList.length,
-                                            'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : '', // Show course name only for the first row of the course
+                                            'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`, // Show course name only for the first row of the course
                                             'Report Actitivity': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/report/log/index.php?id=${courseData.id}" target="_blank">Report Actitivity <i class="fe-external-link"></i></a>` : '',
                                             'Nama Mahasiswa': dosen.name,
                                             'Total Aktifitas': dosen.terisiMhsCount,
@@ -625,7 +625,7 @@ async function filter_data() {
                                     editing: false,
                                     sorting: true,
                                     paging: true,
-                                    // filtering: true,
+                                    filtering: true,
                                     autoload: true,
                                     pageSize: 20,
                                     pageButtonCount: 15,
@@ -1099,7 +1099,7 @@ async function filter_data() {
                                                 dataSource.push({
                                                     'No': index === 0 ? counter : '',
                                                     'span': dosenList.length,
-                                                    'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : '', // Show course name only for the first row of the course
+                                                    'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`, // Show course name only for the first row of the course
                                                     'Report Actitivity': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/report/log/index.php?id=${courseData.id}" target="_blank">Report Actitivity <i class="fe-external-link"></i></a>` : '',
                                                     'Nama Mahasiswa': dosen.name,
                                                     'Total Aktifitas': dosen.terisiMhsCount,
@@ -1297,19 +1297,9 @@ function clearJsGrid(gridId) {
     $(gridId).jsGrid("option", "data", []).jsGrid("refresh");
 }
 const clear_filter = async() => {
-    isFilterCleared = true; // Setel flag menjadi true
+    // isFilterCleared = true; // Setel flag menjadi true
 
-    const chartElement = document.querySelector('#apex-pie-1');
-    if (chartElement && chartElement._chartInstance) {
-        console.log(chartElement._chartInstance);
-        chartElement._chartInstance.destroy();
-    }
 
-    const chartElement2 = document.querySelector('#apex-column-2');
-    if (chartElement2 && chartElement2._chartInstance) {
-        console.log(chartElement2._chartInstance);
-        chartElement2._chartInstance.destroy();
-    }
     localStorage.removeItem('nama_prodi_storage');
     localStorage.removeItem('id_prodi_storage');
     localStorage.removeItem('semester_aktif_storage');
@@ -1326,7 +1316,7 @@ const clear_filter = async() => {
 
     clearJsGrid("#table_presensi_matkul_mhs");
 
-    tabelInforMk.clear().draw();
+    // tabelInforMk.clear().draw();
     $("#semester_select, #program_studi, #select_mk").val("").trigger("change");
 
 
