@@ -740,12 +740,12 @@ async function filter_data() {
                                     controller: {
                                         loadData: function(filter) {
                                             return $.grep(dataSource, function(item) {
-                                                return (!filter['Nama Kelas'] || item['Nama Kelas'].indexOf(filter['Nama Kelas']) > -1) &&
-                                                    (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].indexOf(filter['Nama Mahasiswa']) > -1);
+                                                return (!filter['Nama Kelas'] || item['Nama Kelas'].toLowerCase().indexOf(filter['Nama Kelas'].toLowerCase()) > -1) &&
+                                                    (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].toLowerCase().indexOf(filter['Nama Mahasiswa'].toLowerCase()) > -1);
                                             });
-                                        },
-
+                                        }
                                     },
+
                                     // onRefreshed: function(args) {
                                     //     // Iterate over each course and apply rowspan
                                     //     for (const [courseName, span] of Object.entries(rowSpanTracker)) {
@@ -801,8 +801,12 @@ async function filter_data() {
                                 });
 
                                 // $("#table_presensi_matkul_mhs").jsGrid("option", "data", dataSource);
-                                $("#table_presensi_matkul_mhs").jsGrid("loadData");
-
+                                // $("#table_presensi_matkul_mhs").jsGrid("loadData").done(function() {
+                                //     // Hide spinner and enable buttons after data is loaded
+                                //     $("#btn_spinner").addClass("d-none");
+                                //     $("#clear_filter").removeAttr("disabled");
+                                //     $("#filter_data").removeAttr("disabled");
+                                // })
 
 
                             })
@@ -1149,21 +1153,7 @@ async function filter_data() {
                                                     type: "number",
                                                     width: 50,
                                                     filtering: false,
-                                                    // rowspan: 10,
-                                                    // itemTemplate: function(value, item) {
 
-                                                    //     // console.log($item);
-
-                                                    //     // return item['No'] === '' ? "" : $item.attr("rowspan", item.span).html(item['No']);
-                                                    //     if (item['No'] !== '') {
-
-                                                    //         const $td = $("td").attr("rowspan", item['span']).text(item['No']);
-                                                    //         return $td;
-                                                    //     }
-                                                    //     // const $td = $("<td>").attr("rowspan", item.span).text(item.No);
-                                                    //     // return $td.html();
-                                                    //     // return ""; // return rowspan:item.span ;
-                                                    // }
                                                 },
                                                 {
                                                     name: "Nama Kelas",
@@ -1206,21 +1196,30 @@ async function filter_data() {
                                                 { name: "18", type: "text", width: 50, filtering: false }
                                             ],
 
-
-
                                             controller: {
                                                 loadData: function(filter) {
                                                     return $.grep(dataSource, function(item) {
-                                                        return (!filter['Nama Kelas'] || item['Nama Kelas'].indexOf(filter['Nama Kelas']) > -1) &&
-                                                            (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].indexOf(filter['Nama Mahasiswa']) > -1);
+                                                        return (!filter['Nama Kelas'] || item['Nama Kelas'].toLowerCase().indexOf(filter['Nama Kelas'].toLowerCase()) > -1) &&
+                                                            (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].toLowerCase().indexOf(filter['Nama Mahasiswa'].toLowerCase()) > -1);
                                                     });
-                                                },
-
+                                                }
                                             },
+
+
+
+                                            // controller: {
+                                            //     loadData: function(filter) {
+                                            //         return $.grep(dataSource, function(item) {
+                                            //             return (!filter['Nama Kelas'] || item['Nama Kelas'].indexOf(filter['Nama Kelas']) > -1) &&
+                                            //                 (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].indexOf(filter['Nama Mahasiswa']) > -1);
+                                            //         });
+                                            //     },
+
+                                            // },
                                         });
 
                                         // $("#table_presensi_matkul_mhs").jsGrid("option", "data", dataSource);
-                                        $("#table_presensi_matkul_mhs").jsGrid("loadData");
+                                        $("#table_presensi_matkul_mhs").jsGrid("loadData")
 
 
 
