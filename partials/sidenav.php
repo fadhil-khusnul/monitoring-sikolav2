@@ -91,6 +91,11 @@
                                 <span class="menu-text">Nilai Matakuliah</span>
                             </a>
                         </li>
+                        <li class="menu-item">
+                            <a href="log-mahasiswa.php" class="menu-link">
+                                <span class="menu-text">Log Mahasiswa</span>
+                            </a>
+                        </li>
                         
                     </ul>
                 </div>

@@ -131,8 +131,8 @@ async function prodi_select_fun() {
     const selectedOption = program_studi.options[program_studi.selectedIndex];
     // console.log(selectedOption);
     const nama_prodi = selectedOption.value;
-    console.log(nama_prodi);
     const id_prodi = selectedOption.getAttribute('id_prodi');
+    console.log(nama_prodi, id_prodi);
 
     localStorage.setItem('nama_prodi_storage', nama_prodi);
 
@@ -274,6 +274,8 @@ async function filter_data() {
                             .then(response => response.json())
                             .then(async getNilai => {
                                 let kursusSinkron = false;
+
+                                console.log(getNilai);
                                 // Check if getNilai is not empty and status is defined
                                 if (getNilai.length > 0 && getNilai[0].status) {
                                     if (getNilai[0].status === 1) {
