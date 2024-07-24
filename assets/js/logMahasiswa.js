@@ -324,7 +324,9 @@ async function filter_data() {
     $("#btn_spinner").removeClass("d-none")
     $("#judul_prodi, #apex-column-2, #apex-pie-1").html("")
         // tableStatistik.clear().draw();
-    tabelInforMk.clear().draw();
+        // tabelInforMk.clear().draw();
+
+    clearJsGrid("#table_presensi_matkul_mhs");
 
 
 
@@ -463,16 +465,14 @@ async function filter_data() {
 
                         Promise.all([
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenMhs[0].instance}`, requestOptions),
-                                fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions),
                                 fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_group_get_course_groups&courseid=${item.id}`, requestOptions),
                                 fetch(`/services/sikolaLogMhs.php?courseId=${item.id}`, requestOptions)
                             ])
                             .then(responses => Promise.all(responses.map(response => response.json())))
                             .then(async data => {
                                 let absenMhsData = data[0];
-                                let absenDosenData = data[1];
-                                let groups = data[2];
-                                let logMhs = data[3];
+                                let groups = data[1];
+                                let logMhs = data[2];
 
                                 let mahasiswaGroupId = groups.find(group => group.name === "MAHASISWA").id;
                                 let dosenGroupId = groups.find(group => group.name === "DOSEN").id;
@@ -625,7 +625,7 @@ async function filter_data() {
                                     editing: false,
                                     sorting: true,
                                     paging: true,
-                                    filtering: true,
+                                    // filtering: true,
                                     autoload: true,
                                     pageSize: 20,
                                     pageButtonCount: 15,
@@ -881,6 +881,9 @@ async function filter_data() {
             counter_e = 1
             counter_m = 1
 
+            const dataSource = [];
+            const rowSpanTracker = {};
+
             const filteredData = data.filter(item => item.kode_matkul === selectedKodeMatkul);
 
             const fetchPromises = filteredData.map(item => {
@@ -937,51 +940,32 @@ async function filter_data() {
                                 const startDate = '2024-02-19';
                                 const numWeeks = 18;
                                 const weeks = generateWeeks(startDate, numWeeks);
-                                const weekCountersMhs = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
                                 // const weekCountersDosen = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
 
-                                const groupByWeekMhs = (dataAbsen) => {
-                                    dataAbsen.forEach(item => {
-                                        const sessdate = formatDate(new Date(item.sessdate * 1000));
+                                const groupByWeekMhs = (logs, mhsId) => {
+                                    logs.forEach(item => {
+                                        const sessdate = formatDate(new Date(item.timecreated * 1000));
 
                                         for (const [week, range] of Object.entries(weeks)) {
                                             if (sessdate >= range.start && sessdate <= range.end) {
-                                                weekCountersMhs[week]++;
+                                                weekCountersDosen[mhsId][week]++;
                                                 break;
                                             }
                                         }
+
+
                                     });
                                 };
 
-                                const namaDosen = await getUserDosen(absenDosen, requestOptions);
+                                const namaMhs = await getUserMahasiswa(absenMhs, requestOptions);
 
 
                                 const weekCountersDosen = {};
-                                namaDosen.forEach(dosen => {
+                                namaMhs.forEach(dosen => {
                                     weekCountersDosen[dosen.id] = Object.fromEntries(Object.keys(weeks).map(week => [week, 0]));
                                 });
 
 
-                                const groupByWeekDosen = (dataAbsen, absenId) => {
-                                    dataAbsen.forEach(item => {
-                                        const sessdate = formatDate(new Date(item.sessdate * 1000));
-
-                                        item.attendance_log.forEach(log => {
-                                            const dosenId = log.studentid;
-                                            const statusId = log.statusid;
-
-
-                                            if (weekCountersDosen[dosenId] && statusId != absenId) {
-                                                for (const [week, range] of Object.entries(weeks)) {
-                                                    if (sessdate >= range.start && sessdate <= range.end) {
-                                                        weekCountersDosen[dosenId][week]++;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    });
-                                };
 
 
 
@@ -990,55 +974,59 @@ async function filter_data() {
 
                                 Promise.all([
                                         fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenMhs[0].instance}`, requestOptions),
-                                        fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=mod_attendance_get_sessions&attendanceid=${absenDosen[0].instance}`, requestOptions),
-                                        fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_group_get_course_groups&courseid=${kelas.courses[0].id}`, requestOptions)
+                                        fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_group_get_course_groups&courseid=${kelas.courses[0].id}`, requestOptions),
+                                        fetch(`/services/sikolaLogMhs.php?courseId=${kelas.courses[0].id}`, requestOptions)
+
 
                                     ])
                                     .then(responses => Promise.all(responses.map(response => response.json())))
                                     .then(data => {
                                         let absenMhsData = data[0];
-                                        let absenDosenData = data[1];
-                                        let groups = data[2];
-
-
+                                        let groups = data[1];
+                                        let logMhs = data[2];
 
                                         let mahasiswaGroupId = groups.find(group => group.name === "MAHASISWA").id;
                                         let dosenGroupId = groups.find(group => group.name === "DOSEN").id;
 
-                                        terisiMhs = absenMhsData.filter(sessi => sessi.attendance_log && sessi.attendance_log.length > 0 && sessi.groupid === mahasiswaGroupId);
-                                        totalMahasiswa = absenMhsData.filter(sessi => sessi.groupid === mahasiswaGroupId).length;
-
-                                        const namaDosenById = {};
-                                        namaDosen.forEach(dosen => {
-                                            namaDosenById[dosen.id] = dosen;
+                                        const namaMhsById = {};
+                                        namaMhs.forEach(dosen => {
+                                            namaMhsById[dosen.id] = dosen;
                                         });
-                                        let absenId = absenDosenData.find(data => data.statuses.some(status => status.acronym === "A")).statuses.find(status => status.acronym === "A").id;
+                                        console.log(namaMhsById);
 
-                                        let terisiDosen = absenDosenData.filter(sessi => (
-                                            sessi.attendance_log && sessi.groupid == dosenGroupId
+                                        let presentStatusId = absenMhsData.find(data => data.statuses.some(status => status.acronym === "P")).statuses.find(status => status.acronym === "P").id;
+                                        let lateStatusId = absenMhsData.find(data => data.statuses.some(status => status.acronym === "L")).statuses.find(status => status.acronym === "L").id;
+
+                                        console.log(presentStatusId, lateStatusId);
+
+
+                                        let absenId = absenMhsData.find(data => data.statuses.some(status => status.acronym === "A")).statuses.find(status => status.acronym === "A").id;
+
+                                        let terisiMhs = absenMhsData.filter(sessi => (
+                                            sessi.attendance_log && sessi.groupid == mahasiswaGroupId
                                         ));
-                                        // Group data by week
-                                        groupByWeekDosen(terisiDosen, absenId);
 
-                                        // console.log(terisiDosen, terisiMhs);
+                                        console.log(terisiMhs);
+
+
 
 
                                         const courseid = kelas.courses[0].id;
                                         const courseName = kelas.courses[0].fullname;
 
-                                        const dosenIds = Object.keys(namaDosenById);
-                                        const rowspan = dosenIds.length;
-
-
-                                        let totalDosen = absenDosenData.filter(sessi => sessi.attendance_log && sessi.attendance_log.some(log => namaDosenById[log.studentid])).length;
+                                        const mahasiswaIds = Object.keys(namaMhsById);
+                                        const rowspan = mahasiswaIds.length;
 
                                         var dosenByCourse = {};
+
+                                        let totalMhs = absenMhsData.filter(sessi => sessi.attendance_log && sessi.attendance_log.some(log => namaMhsById[log.studentid])).length;
+
 
                                         if (!dosenByCourse[courseName]) {
                                             dosenByCourse[courseName] = {
                                                 id: courseid,
                                                 dosenList: [],
-                                                totalDosen: totalDosen,
+                                                totalMhs: totalMhs,
                                                 weeklyData: {
                                                     pekan1: [],
                                                     pekan2: [],
@@ -1062,91 +1050,184 @@ async function filter_data() {
                                             };
                                         }
 
-                                        dosenIds.forEach(dosenId => {
-                                            const terisiDosenCount = terisiDosen.filter(sessi => sessi.attendance_log.some(log => log.studentid == dosenId && log.statusid != absenId)).length;
+                                        mahasiswaIds.forEach(mhsId => {
+                                            const logs = logMhs.filter(log => log.userid == mhsId)
+                                                // console.log(log, "LOGGG");
+                                            groupByWeekMhs(logs, mhsId);
+
+
+                                            // for (const [week] of Object.entries(weeks)) {
+                                            //     dosenByCourse[courseName].weeklyData[week].push(weekCountersDosen[mhsId].[week]);
+                                            //     break;
+
+                                            // }
+
+                                            const terisiMhsCount = logs.length;
                                             dosenByCourse[courseName].dosenList.push({
-                                                name: `${namaDosenById[dosenId].firstname} ${namaDosenById[dosenId].lastname}`,
-                                                terisiDosenCount: terisiDosenCount,
-                                                // absenLink: `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`
+                                                name: `${namaMhsById[mhsId].firstname} ${namaMhsById[mhsId].lastname}`,
+                                                terisiMhsCount: terisiMhsCount,
                                             });
 
-                                            dosenByCourse[courseName].weeklyData.pekan1.push(weekCountersDosen[dosenId].pekan1 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan2.push(weekCountersDosen[dosenId].pekan2 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan3.push(weekCountersDosen[dosenId].pekan3 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan4.push(weekCountersDosen[dosenId].pekan4 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan5.push(weekCountersDosen[dosenId].pekan5 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan6.push(weekCountersDosen[dosenId].pekan6 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan7.push(weekCountersDosen[dosenId].pekan7 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan8.push(weekCountersDosen[dosenId].pekan8 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan9.push(weekCountersDosen[dosenId].pekan9 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan10.push(weekCountersDosen[dosenId].pekan10 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan11.push(weekCountersDosen[dosenId].pekan11 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan12.push(weekCountersDosen[dosenId].pekan12 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan13.push(weekCountersDosen[dosenId].pekan13 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan14.push(weekCountersDosen[dosenId].pekan14 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan15.push(weekCountersDosen[dosenId].pekan15 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan16.push(weekCountersDosen[dosenId].pekan16 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan17.push(weekCountersDosen[dosenId].pekan17 || '');
-                                            dosenByCourse[courseName].weeklyData.pekan18.push(weekCountersDosen[dosenId].pekan18 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan1.push(weekCountersDosen[mhsId].pekan1 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan2.push(weekCountersDosen[mhsId].pekan2 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan3.push(weekCountersDosen[mhsId].pekan3 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan4.push(weekCountersDosen[mhsId].pekan4 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan5.push(weekCountersDosen[mhsId].pekan5 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan6.push(weekCountersDosen[mhsId].pekan6 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan7.push(weekCountersDosen[mhsId].pekan7 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan8.push(weekCountersDosen[mhsId].pekan8 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan9.push(weekCountersDosen[mhsId].pekan9 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan10.push(weekCountersDosen[mhsId].pekan10 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan11.push(weekCountersDosen[mhsId].pekan11 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan12.push(weekCountersDosen[mhsId].pekan12 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan13.push(weekCountersDosen[mhsId].pekan13 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan14.push(weekCountersDosen[mhsId].pekan14 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan15.push(weekCountersDosen[mhsId].pekan15 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan16.push(weekCountersDosen[mhsId].pekan16 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan17.push(weekCountersDosen[mhsId].pekan17 || '');
+                                            dosenByCourse[courseName].weeklyData.pekan18.push(weekCountersDosen[mhsId].pekan18 || '');
                                         });
 
-                                        Object.keys(dosenByCourse).forEach((courseName, index) => {
 
-                                            const addBreaks = (hasData) => {
-                                                return hasData ? '<br> <br> <br> <br>' : '<br> <br> <br> <br> <br>';
-                                            };
 
-                                            const course = dosenByCourse[courseName];
-                                            const dosenList = course.dosenList.map(dosen => `<li>${dosen.name}</li><br>`).join('');
-                                            const terisiDosenCount = course.dosenList.map(dosen => `<li>${dosen.terisiDosenCount}</li> <br> <br> <br> <br>`).join('');
-                                            // const absenLinks = course.dosenList.map(dosen => `<li>${dosen.absenLink}</li>`).join('');
+                                        for (const [courseName, courseData] of Object.entries(dosenByCourse)) {
+                                            const { dosenList, weeklyData } = courseData;
+                                            rowSpanTracker[courseName] = dosenList.length; // Store the number of students in each course
 
-                                            const weeklyDataPekan1 = course.weeklyData.pekan1.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan2 = course.weeklyData.pekan2.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan3 = course.weeklyData.pekan3.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan4 = course.weeklyData.pekan4.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan5 = course.weeklyData.pekan5.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan6 = course.weeklyData.pekan6.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan7 = course.weeklyData.pekan7.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan8 = course.weeklyData.pekan8.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan9 = course.weeklyData.pekan9.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan10 = course.weeklyData.pekan10.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan11 = course.weeklyData.pekan11.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan12 = course.weeklyData.pekan12.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan13 = course.weeklyData.pekan13.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan14 = course.weeklyData.pekan14.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan15 = course.weeklyData.pekan15.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan16 = course.weeklyData.pekan16.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan17 = course.weeklyData.pekan17.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
-                                            const weeklyDataPekan18 = course.weeklyData.pekan18.map(data => `<li>${data}</li>${addBreaks(data)}`).join('');
 
-                                            tableStatistik.row.add([
-                                                `${counter++}`,
-                                                `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${course.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`,
-                                                `<ul class="no-bullets">${dosenList}</ul>`,
-                                                `<ul class="no-bullets">${terisiDosenCount}</ul>`,
-                                                `${course.totalDosen}`,
-                                                `<a href="https://sikola-v2.unhas.ac.id/mod/attendance/manage.php?id=${absenDosen[0].id}" target="_blank" class="">Presensi Dosen <i class="fe-external-link"></i></a>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan1}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan2}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan3}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan4}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan5}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan6}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan7}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan8}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan9}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan10}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan11}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan12}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan13}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan14}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan15}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan16}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan17}</ul>`,
-                                                `<ul class="no-bullets">${weeklyDataPekan18}</ul>`
-                                            ]).draw(false);
+                                            dosenList.forEach((dosen, index) => {
+                                                dataSource.push({
+                                                    'No': index === 0 ? counter : '',
+                                                    'span': dosenList.length,
+                                                    'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : '', // Show course name only for the first row of the course
+                                                    'Report Actitivity': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/report/log/index.php?id=${courseData.id}" target="_blank">Report Actitivity <i class="fe-external-link"></i></a>` : '',
+                                                    'Nama Mahasiswa': dosen.name,
+                                                    'Total Aktifitas': dosen.terisiMhsCount,
+                                                    '1': weeklyData.pekan1[index] || '',
+                                                    '2': weeklyData.pekan2[index] || '',
+                                                    '3': weeklyData.pekan3[index] || '',
+                                                    '4': weeklyData.pekan4[index] || '',
+                                                    '5': weeklyData.pekan5[index] || '',
+                                                    '6': weeklyData.pekan6[index] || '',
+                                                    '7': weeklyData.pekan7[index] || '',
+                                                    '8': weeklyData.pekan8[index] || '',
+                                                    '9': weeklyData.pekan9[index] || '',
+                                                    '10': weeklyData.pekan10[index] || '',
+                                                    '11': weeklyData.pekan11[index] || '',
+                                                    '12': weeklyData.pekan12[index] || '',
+                                                    '13': weeklyData.pekan13[index] || '',
+                                                    '14': weeklyData.pekan14[index] || '',
+                                                    '15': weeklyData.pekan15[index] || '',
+                                                    '16': weeklyData.pekan16[index] || '',
+                                                    '17': weeklyData.pekan17[index] || '',
+                                                    '18': weeklyData.pekan18[index] || '',
+                                                });
+                                            });
+
+                                            counter++;
+                                        }
+
+                                        // Set the dataSource to jsGrid
+                                        $("#table_presensi_matkul_mhs").jsGrid({
+                                            width: "100%",
+                                            height: "800px",
+
+                                            inserting: false,
+                                            editing: false,
+                                            sorting: true,
+                                            paging: true,
+                                            filtering: true,
+                                            autoload: true,
+                                            pageSize: 20,
+                                            pageButtonCount: 15,
+
+                                            data: dataSource,
+
+                                            fields: [{
+                                                    name: "No",
+                                                    id: 'Nomor',
+                                                    type: "number",
+                                                    width: 50,
+                                                    filtering: false,
+                                                    // rowspan: 10,
+                                                    // itemTemplate: function(value, item) {
+
+                                                    //     // console.log($item);
+
+                                                    //     // return item['No'] === '' ? "" : $item.attr("rowspan", item.span).html(item['No']);
+                                                    //     if (item['No'] !== '') {
+
+                                                    //         const $td = $("td").attr("rowspan", item['span']).text(item['No']);
+                                                    //         return $td;
+                                                    //     }
+                                                    //     // const $td = $("<td>").attr("rowspan", item.span).text(item.No);
+                                                    //     // return $td.html();
+                                                    //     // return ""; // return rowspan:item.span ;
+                                                    // }
+                                                },
+                                                {
+                                                    name: "Nama Kelas",
+                                                    type: "text",
+                                                    width: 150,
+                                                    filtering: true,
+                                                    // itemTemplate: function(value, item) {
+                                                    //     return item['Nama Kelas'] === '' ? "" : $("").attr("rowspan", item.span).html(item['Nama Kelas']);
+                                                    // }
+                                                },
+                                                {
+                                                    name: "Report Actitivity",
+                                                    type: "text",
+                                                    width: 150,
+                                                    filtering: false,
+                                                    // itemTemplate: function(value, item) {
+                                                    //     return item['Report Actitivity'] === '' ? "" : $("<td>").attr("rowspan", item.span).html(item['Report Actitivity']);
+                                                    // }
+                                                },
+                                                { name: "Nama Mahasiswa", type: "text", width: 200, filtering: true },
+                                                { name: "Total Aktifitas", type: "number", width: 100, filtering: false },
+                                                // Tambahkan field untuk setiap minggu
+                                                { name: "1", type: "text", width: 50, filtering: false },
+                                                { name: "2", type: "text", width: 50, filtering: false },
+                                                { name: "3", type: "text", width: 50, filtering: false },
+                                                { name: "4", type: "text", width: 50, filtering: false },
+                                                { name: "5", type: "text", width: 50, filtering: false },
+                                                { name: "6", type: "text", width: 50, filtering: false },
+                                                { name: "7", type: "text", width: 50, filtering: false },
+                                                { name: "8", type: "text", width: 50, filtering: false },
+                                                { name: "9", type: "text", width: 50, filtering: false },
+                                                { name: "10", type: "text", width: 50, filtering: false },
+                                                { name: "11", type: "text", width: 50, filtering: false },
+                                                { name: "12", type: "text", width: 50, filtering: false },
+                                                { name: "13", type: "text", width: 50, filtering: false },
+                                                { name: "14", type: "text", width: 50, filtering: false },
+                                                { name: "15", type: "text", width: 50, filtering: false },
+                                                { name: "16", type: "text", width: 50, filtering: false },
+                                                { name: "17", type: "text", width: 50, filtering: false },
+                                                { name: "18", type: "text", width: 50, filtering: false }
+                                            ],
+
+
+
+                                            controller: {
+                                                loadData: function(filter) {
+                                                    return $.grep(dataSource, function(item) {
+                                                        return (!filter['Nama Kelas'] || item['Nama Kelas'].indexOf(filter['Nama Kelas']) > -1) &&
+                                                            (!filter['Nama Mahasiswa'] || item['Nama Mahasiswa'].indexOf(filter['Nama Mahasiswa']) > -1);
+                                                    });
+                                                },
+
+                                            },
                                         });
+
+                                        // $("#table_presensi_matkul_mhs").jsGrid("option", "data", dataSource);
+                                        $("#table_presensi_matkul_mhs").jsGrid("loadData");
+
+
+
+
+
+
+
 
 
 
@@ -1211,6 +1292,10 @@ async function filter_data() {
 
 }
 
+
+function clearJsGrid(gridId) {
+    $(gridId).jsGrid("option", "data", []).jsGrid("refresh");
+}
 const clear_filter = async() => {
     isFilterCleared = true; // Setel flag menjadi true
 
@@ -1238,6 +1323,9 @@ const clear_filter = async() => {
     $("#filter_data").attr("disabled", true)
 
     // tableStatistik.clear().draw();
+
+    clearJsGrid("#table_presensi_matkul_mhs");
+
     tabelInforMk.clear().draw();
     $("#semester_select, #program_studi, #select_mk").val("").trigger("change");
 
