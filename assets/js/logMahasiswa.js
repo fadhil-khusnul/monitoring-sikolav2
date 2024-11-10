@@ -588,7 +588,9 @@ async function filter_data() {
                                         dataSource.push({
                                             'No': index === 0 ? counter : '',
                                             'span': dosenList.length,
-                                            'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`, // Show course name only for the first row of the course
+                                            'Nama Kelas': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>` 
+                                            : '',
+                                            // `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${courseData.id}" target="_blank" class="">${courseName} <i class="fe-external-link"></i></a>`, // Show course name only for the first row of the course
                                             'Report Actitivity': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/report/log/index.php?id=${courseData.id}" target="_blank">Report Actitivity <i class="fe-external-link"></i></a>` : '',
                                             'Nama Mahasiswa': dosen.name,
                                             'Total Aktifitas': dosen.terisiMhsCount,
@@ -638,20 +640,7 @@ async function filter_data() {
                                             type: "number",
                                             width: 50,
                                             filtering: false,
-                                            // rowspan: 10,
-                                            // itemTemplate: function(value, item) {
-
-                                            //     // console.log($item);
-
-                                            //     // return item['No'] === '' ? "" : $item.attr("rowspan", item.span).html(item['No']);
-                                            //     if (item['No'] !== '') {
-
-                                            //         const $td = $("td").attr("rowspan", item['span']).text(item['No']);
-                                            //         return $td;
-                                            //     }
-                                            //     // const $td = $("<td>").attr("rowspan", item.span).text(item.No);
-                                            //     // return $td.html();
-                                            //     // return ""; // return rowspan:item.span ;
+                                           
                                             // }
                                         },
                                         {
@@ -659,18 +648,14 @@ async function filter_data() {
                                             type: "text",
                                             width: 150,
                                             filtering: true,
-                                            // itemTemplate: function(value, item) {
-                                            //     return item['Nama Kelas'] === '' ? "" : $("").attr("rowspan", item.span).html(item['Nama Kelas']);
-                                            // }
+                                           
                                         },
                                         {
                                             name: "Report Actitivity",
                                             type: "text",
                                             width: 150,
                                             filtering: false,
-                                            // itemTemplate: function(value, item) {
-                                            //     return item['Report Actitivity'] === '' ? "" : $("<td>").attr("rowspan", item.span).html(item['Report Actitivity']);
-                                            // }
+                                           
                                         },
                                         { name: "Nama Mahasiswa", type: "text", width: 200, filtering: true },
                                         { name: "Total Aktifitas", type: "number", width: 100, filtering: false },
@@ -695,46 +680,7 @@ async function filter_data() {
                                         { name: "18", type: "text", width: 50, filtering: false }
                                     ],
 
-                                    // fields: [{
-                                    //         name: "No",
-                                    //         type: "number",
-                                    //         width: 50,
-                                    //         filtering: false
-                                    //     },
-                                    //     {
-                                    //         name: "Nama Kelas",
-                                    //         type: "text",
-                                    //         width: 150,
-                                    //         filtering: true
-                                    //     },
-                                    //     {
-                                    //         name: "Report Actitivity",
-                                    //         type: "text",
-                                    //         width: 150,
-                                    //         filtering: false
-                                    //     },
-                                    //     { name: "Nama Mahasiswa", type: "text", width: 200, filtering: true },
-                                    //     { name: "Total Aktifitas", type: "number", width: 100, filtering: false },
-                                    //     // Tambahkan field untuk setiap minggu
-                                    //     { name: "1", type: "text", width: 50, filtering: false },
-                                    //     { name: "2", type: "text", width: 50, filtering: false },
-                                    //     { name: "3", type: "text", width: 50, filtering: false },
-                                    //     { name: "4", type: "text", width: 50, filtering: false },
-                                    //     { name: "5", type: "text", width: 50, filtering: false },
-                                    //     { name: "6", type: "text", width: 50, filtering: false },
-                                    //     { name: "7", type: "text", width: 50, filtering: false },
-                                    //     { name: "8", type: "text", width: 50, filtering: false },
-                                    //     { name: "9", type: "text", width: 50, filtering: false },
-                                    //     { name: "10", type: "text", width: 50, filtering: false },
-                                    //     { name: "11", type: "text", width: 50, filtering: false },
-                                    //     { name: "12", type: "text", width: 50, filtering: false },
-                                    //     { name: "13", type: "text", width: 50, filtering: false },
-                                    //     { name: "14", type: "text", width: 50, filtering: false },
-                                    //     { name: "15", type: "text", width: 50, filtering: false },
-                                    //     { name: "16", type: "text", width: 50, filtering: false },
-                                    //     { name: "17", type: "text", width: 50, filtering: false },
-                                    //     { name: "18", type: "text", width: 50, filtering: false }
-                                    // ],
+                                  
 
 
                                     controller: {
@@ -746,67 +692,9 @@ async function filter_data() {
                                         }
                                     },
 
-                                    // onRefreshed: function(args) {
-                                    //     // Iterate over each course and apply rowspan
-                                    //     for (const [courseName, span] of Object.entries(rowSpanTracker)) {
-                                    //         const $rows = $(`#table_presensi_matkul_mhs td:contains('${courseName}')`).parent();
-                                    //         const rowCount = $rows.length;
-
-                                    //         if (rowCount > 0) {
-                                    //             $rows.eq(0).find("td").eq(0).attr("rowspan", rowCount); // No
-                                    //             $rows.eq(0).find("td").eq(1).attr("rowspan", rowCount); // Nama Kelas
-                                    //             $rows.eq(0).find("td").eq(2).attr("rowspan", rowCount); // Report Actitivity
-
-                                    //             for (let i = 1; i < rowCount; i++) {
-                                    //                 $rows.eq(i).find("td").eq(0).remove();
-                                    //                 $rows.eq(i).find("td").eq(1).remove();
-                                    //                 $rows.eq(i).find("td").eq(2).remove();
-                                    //             }
-                                    //         }
-                                    //     }
-                                    // }
-
-                                    // onRefreshed: function(args) {
-                                    //     const item = args.item;
-                                    //     console.log(args, "ITEMMMMMMMMMM");
-                                    //     const $row = $(args.row);
-
-
-
-                                    //     if (item.No !== '') {
-                                    //         $row.find("td").eq(0).attr("rowspan", item.span);
-                                    //     }
-                                    //     if (item['Nama Kelas'] !== '') {
-                                    //         $row.find("td").eq(1).attr("rowspan", item.span);
-                                    //     }
-                                    //     if (item['Report Actitivity'] !== '') {
-                                    //         $row.find("td").eq(2).attr("rowspan", item.span);
-                                    //     }
-                                    // },
-
-                                    // onRefreshed: function(args) {
-                                    //     // Apply rowspan to the existing table cells
-                                    //     $("#table_presensi_matkul_mhs tr").each(function() {
-                                    //         const $cells = $(this).children("td");
-                                    //         const item = $cells.eq(0).data("jsgridItem");
-
-
-                                    //         if (item && item.span > 1) {
-                                    //             $cells.eq(0).attr("rowspan", item.span); // No
-                                    //             $cells.eq(1).attr("rowspan", item.span); // Nama Kelas
-                                    //             $cells.eq(2).attr("rowspan", item.span); // Report Actitivity
-                                    //         }
-                                    //     });
-                                    // }
                                 });
 
-                                // $("#table_presensi_matkul_mhs").jsGrid("option", "data", dataSource);
-                                // $("#table_presensi_matkul_mhs").jsGrid("loadData").done(function() {
-                                //     // Hide spinner and enable buttons after data is loaded
-                                //     $("#btn_spinner").addClass("d-none");
-                                //     $("#clear_filter").removeAttr("disabled");
-                                //     $("#filter_data").removeAttr("disabled");
-                                // })
+                              
 
 
                             })

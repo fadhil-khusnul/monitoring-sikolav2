@@ -21,7 +21,7 @@
 
         <!-- User box -->
         <div class="user-box text-center">
-            <img src="assets/images/logo-unhas.png" alt="user-img" title="Mat Helme" class="rounded-circle avatar-md">
+            <img src="assets/images/logo-unhas.png" alt="user-img" title="Sikola-v2" class="rounded-circle avatar-md">
             <div class="dropdown">
                 <a href="javascript: void(0);" class="dropdown-toggle h5 mb-1 d-block" data-bs-toggle="dropdown"><?php echo $_SESSION['username']; ?></a>
                 <div class="dropdown-menu user-pro-dropdown">

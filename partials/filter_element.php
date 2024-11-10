@@ -49,15 +49,7 @@ $fakultas_id = isset($_SESSION['fakultas_id']) ? $_SESSION['fakultas_id'] : 0;
                        
                       </div> -->
         </div>
-        <div class="col-md-6 d-none">
-          <h5 class="font-weight-semibold">Mata Kuliah Semester</h5>
-
-          <select class="form-control" data-toggle="select2" data-width="100%" id="id_kelas_kuliah[1]" name="id_kelas_kuliah[1]">
-            <option value="" selected disabled>Select Mata Kuliah Semester</option>
-
-
-          </select>
-        </div>
+        
 
         <div class="text-end py-4">
           <button id="clear_filter" disabled onclick="clear_filter()" style="margin-right: 10px;" type="button" class="btn btn-danger waves-effect waves-light">Clear

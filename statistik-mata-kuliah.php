@@ -15,10 +15,12 @@ include 'partials/main.php';
   <!-- third party css end -->
 
   <!-- JsGrid css -->
-  <!-- <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" />
-  <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" /> -->
+  <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" />
+  <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" />
 
   <link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
+  <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
+
 
   <?php include 'partials/head-css.php'; ?>
 </head>
@@ -101,79 +103,40 @@ include 'partials/main.php';
 
                   <div id="cardCollpase10" class="collapse show" dir="ltr">
                     <div id="apex-column-1" class="apex-charts pt-3" data-colors="#008ffb,#00e396,#feb019,#ff4560,#775dd0,#ffe200,#798385,#B56C79,#F1556C"></div>
-                  </div> <!-- collapsed end -->
-                </div> <!-- end card-body -->
-              </div> <!-- end card-->
+                  </div>
+                </div> 
+              </div>
             </div>
 
 
 
-            <div class="col-md-12">
+            <div class="col-lg-12">
               <div class="card">
                 <div class="card-body">
                   <h4 class="font-weight-semibold mb-3">
                     Data
-
                   </h4>
-
-                  <!-- <div class="text-end mb-3">
-                    <div class="btn-group mb-2">
-                      <button type="button" class="btn btn-sm btn-danger">
-                        PDF <i class="fe-download"></i>
-                      </button>
-                      <button type="button" class="btn btn-sm btn-success">
-                        EXCEL <i class="fe-download"></i>
-                      </button>
-                    </div>
-                  </div> -->
-
-
-
-                  <h4 class="title text-center font-weight-bold"> STATISTIK MATA KULIAH</h4>
+                  <h4 class="title text-center font-weight-bold">STATISTIK MATA KULIAH</h4>
+                  <h4 class="title text-center" id="ajaran"></h4>
                   <h4 class="title text-center" id="judul_prodi"></h4>
-                  <!-- 
-                  <div class="d-none justify-content-center" id="loader">
-                    <div class="spinner-border" role="status"></div>
-                  </div> -->
 
-                  <div class="table-responsive">
-
-                    <table width="100%" id="table_statistik_matkul" class="table table-hover w-100">
-
-                      <thead class="table-light">
-                        <tr align="center" valign="top">
-                          <th rowspan="2">No</th>
-                          <th rowspan="2" width="50%">Nama Kelas</th>
-                          <th colspan="2">Alur Pembelajaran</th>
-                          <th rowspan="2">RPS</th>
-                          <!-- <th rowspan="2">Proyek</th> -->
-                          <th rowspan="2">Tugas</th>
-                          <!-- <th rowspan="2">Kasus/Url</th> -->
-                          <th rowspan="2">Doc</th>
-                          <th rowspan="2">Survey</th>
-                          <th rowspan="2">Quiz</th>
-                          <th rowspan="2">Forum, Thread, Post</th>
-                          <th rowspan="2" width="30%">Dosen</th>
-                          <th rowspan="2" width="20%">Reports</th>
-                          <!-- <th rowspan="2" width="">Grafik</th> -->
-                        </tr>
-                        <tr align="center">
-
-                          <th>Terisi</th>
-                          <th>Total</th>
-
-                        </tr>
-                      </thead>
-
-                      <tbody>
-
-                      </tbody>
-                    </table>
+                  <div class="text-end">
+                      <button class="btn btn-sm btn-success " id="download-xlsx"> <i class="mdi mdi-microsoft-excel"></i> xlsx</button>
+                      <button class="btn btn-sm btn-danger " id="download-pdf"> <i class="mdi mdi-file-pdf-box"></i> pdf</button>
                   </div>
 
+                  <div class="table-responsive">
+                    <div id="tabelStatistik"></div>
+                  </div>
+                  
 
-                  <!-- <div id="jsGrid"></div> -->
+                
 
+                  
+
+                  
+
+  
                 </div>
               </div>
             </div>
@@ -257,19 +220,17 @@ include 'partials/main.php';
   <!-- Datatables init -->
 
   <!-- JsGrid js -->
-  <!-- <script src="assets/libs/jsgrid/jsgrid.min.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="assets/libs/jsgrid/jsgrid.min.js"></script>
   <script src="assets/libs/select2/js/select2.min.js"></script>
 
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-  <!-- <script src="https://apexcharts.com/samples/assets/irregular-data-series.js"></script> -->
-  <!-- <script src="https://apexcharts.com/samples/assets/ohlc.js"></script> -->
-
-  <!-- init js -->
-  <!-- <script src="assets/js/pages/apexcharts.init.js"></script> -->
-
+  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
+  <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
   <!-- Init js -->
-  <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
-  <script src="<?= 'assets/js/form.js?v=' . time() ?>"></script>
+  <script  src="<?= 'assets/js/form.js?v=' . time() ?>"></script>
   <!-- <script src="assets/js/pages/datatables.init.js"></script> -->
   <script src="assets/js/pages/form-advanced.init.js"></script>
 
