@@ -267,10 +267,7 @@ async function filter_data() {
 
 
 
-    const select_mk = $('#select_mk').select2('data');
-
-    
-
+    const select_mk = $('#select_mk').select2('data');    
     const mk_value = select_mk[0].id;
     const selectedKodeMatkul = select_mk[0].element?.getAttribute('data_kode_matkul');
     const fullname_sikola = select_mk[0].element?.getAttribute('fullname_sikola');
@@ -340,7 +337,7 @@ async function filter_data() {
 
 
 
-                        let banyakAlur = result.filter(alur => alur.name !== "Info Matakuliah");
+                        let banyakAlur = result.filter(alur => alur.section !== 0);
                         let banyakTerisi = banyakAlur.filter(alur => alur.modules && alur.modules.length > 0);
 
                         totalBanyakTerisi += banyakTerisi.length
@@ -365,7 +362,7 @@ async function filter_data() {
 
 
 
-                        let infoMK = result.filter(alur => alur.name === "Info Matakuliah");
+                        let infoMK = result.filter(alur => alur.section == 0);
                         let rps = infoMK.filter(section => section.modules.some(modul => modul.modname == "resource"));
 
                         totalRps += rps.length
@@ -373,7 +370,7 @@ async function filter_data() {
                         let attendanceModules = [];
                         
 
-                        infoMK.forEach(section => {
+                        result.forEach(section => {
                             section.modules.forEach(modul => {
                                 if (modul.modname === "attendance") {
                                     attendanceModules.push(modul);
