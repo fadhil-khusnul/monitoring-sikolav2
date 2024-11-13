@@ -67,12 +67,13 @@
 
                   </h4>
                   <h4 class="title text-center font-weight-bold">LOG AKTIFITAS MAHASISWA</h4>
-                  <h4 class="title text-center" id="judul_prodi_mhs"></h4>
+                  <h4 class="title text-center" id="judul_prodi"></h4>
+                  <h4 class="title text-center" id="ajaran"></h4>
 
 
 
                   <div class="table-responsive">
-                    <div id="table_presensi_matkul_mhs"></div>
+                    <div id="tabel_log"></div>
 
                   </div>
                   <!-- <div class="table-responsive">

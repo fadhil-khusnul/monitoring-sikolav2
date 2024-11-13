@@ -90,7 +90,7 @@ async function semester_select_fun() {
                 groups[fakultasId] = [];
             }
 
-            if (!item.nama_resmi.toLowerCase().includes("hapus")) { // Tambahkan filter di sini juga
+            if (!item.nama_resmi.toLowerCase().includes("hapus")) {
                 groups[fakultasId].push(item);
             }
         });
@@ -262,7 +262,6 @@ async function filter_data() {
 
         const activeSemester = selectedOption.getAttribute('ta_semester');
 
-        console.log('activeSemester',selectedOption.innerHTML);
         
         const ajaran = selectedOption.innerHTML;
 
@@ -295,11 +294,6 @@ async function filter_data() {
 
             let filteredCourses = dataCourses.courses.filter(course => course.shortname.includes(activeSemester));
 
-
-           
-
-
-            
             
             
             const fetchPromises = filteredCourses.map(item => {
@@ -622,14 +616,14 @@ async function filter_data() {
                             title: "Presensi Terisi",
                             name: "terisi",
                             type: "number",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
                         {
                             title: "Total Presensi",
                             name: "total",
-                            type: "nimber",
-                            width: 50,
+                            type: "number",
+                            minWidth: '30%',
                             filtering: false,
                         },
 
@@ -682,7 +676,7 @@ async function filter_data() {
                             filtering: true,
                             itemTemplate: function(value, item) {
                                 // Menampilkan Nama Kelas hanya pada baris pertama
-                                if (item.No !== '') {
+                                if (item.no_mhs !== '') {
                                     return value;
                                 }
                                 return ""; // Baris lainnya tidak menampilkan Nama Kelas
@@ -700,14 +694,14 @@ async function filter_data() {
                             title: "Presensi Terisi",
                             name: "terisi_mhs",
                             type: "number",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
                         {
                             title: "Total Presensi",
                             name: "total_mhs",
                             type: "nimber",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
 
@@ -757,7 +751,6 @@ async function filter_data() {
 
             $("#judul_prodi").html(fullname_sikola + " / " + nama_prodi)
             $("#judul_prodi_mhs").html(fullname_sikola + " / " + nama_prodi)
-            $("#judul_prodi_e").html(fullname_sikola + " / " + nama_prodi)
             $("#ajaran").html(ajaran)
             $("#ajaran_mhs").html(ajaran)
 
@@ -767,9 +760,7 @@ async function filter_data() {
             const data = await response.json()
 
             counter = 1
-            counter_e = 1
-            counter_m = 1
-
+            
             let jumlahWeeks = 0;        
             const dataSouceTable = [];
             const dataSouceTableMhs = [];
@@ -1130,14 +1121,14 @@ async function filter_data() {
                             title: "Presensi Terisi",
                             name: "terisi",
                             type: "number",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
                         {
                             title: "Total Presensi",
                             name: "total",
-                            type: "nimber",
-                            width: 50,
+                            type: "number",
+                            minWidth: '30%',
                             filtering: false,
                         },
 
@@ -1190,7 +1181,7 @@ async function filter_data() {
                             filtering: true,
                             itemTemplate: function(value, item) {
                                 // Menampilkan Nama Kelas hanya pada baris pertama
-                                if (item.No !== '') {
+                                if (item.no_mhs !== '') {
                                     return value;
                                 }
                                 return ""; // Baris lainnya tidak menampilkan Nama Kelas
@@ -1208,14 +1199,14 @@ async function filter_data() {
                             title: "Presensi Terisi",
                             name: "terisi_mhs",
                             type: "number",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
                         {
                             title: "Total Presensi",
                             name: "total_mhs",
                             type: "nimber",
-                            width: 50,
+                            minWidth: '30%',
                             filtering: false,
                         },
 

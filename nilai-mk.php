@@ -12,8 +12,8 @@
   <!-- third party css end -->
 
   <!-- JsGrid css -->
-  <!-- <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" />
-  <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" /> -->
+  <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" />
+  <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" />
 
   <link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
 
@@ -48,7 +48,7 @@
           <div class="row">
           <?php include 'partials/filter_element.php'; ?>
 
-          <div class="col-12">
+          <div class="col-4">
               <!-- Portlet card -->
               <div class="card">
                 <div class="card-body">
@@ -66,49 +66,29 @@
               </div> <!-- end card-->
             </div>
 
-            <div class="col-12">
+            <div class="col-8">
               <div class="card">
                 <div class="card-body">
                   <h4 class="font-weight-semibold mb-3">
-                    Data
+                    Data NILAI
 
                   </h4>
 
 
 
                   <h4 class="title text-center font-weight-bold">NILAI MATA KULIAH</h4>
+                  <h4 class="title text-center" id="ajaran"></h4>
                   <h4 class="title text-center" id="judul_prodi"></h4>
 
 
 
                   <div class="table-responsive">
-                    <table id="table_nilai" class="table table-hover w-100 nowra">
-                      <thead class="table-light">
-                        <tr align="center" valign="top">
-                          <th rowspan="2" width="5%" width="">No</th>
-                          <th rowspan="2" width="">Nama Kelas</th>
-                          <th colspan="2" style="text-align:center;">Sinkronisasi</th>
+                    <div id="tabelNilai">
 
-                        </tr>
-                        <tr>
+                    </div>
 
-                         
-                          <th style="text-align:left;">Status</th>
-                          <th style="text-align:center;">Link</th>
+                
 
-
-                          
-
-
-
-                        </tr>
-                      </thead>
-
-                      <tbody>
-
-
-                      </tbody>
-                    </table>
                   </div>
                   <!-- <div class="table-responsive">
 
@@ -162,7 +142,7 @@
   <!-- Datatables init -->
 
   <!-- JsGrid js -->
-  <!-- <script src="assets/libs/jsgrid/jsgrid.min.js"></script> -->
+  <script src="assets/libs/jsgrid/jsgrid.min.js"></script>
   <script src="assets/libs/select2/js/select2.min.js"></script>
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
 

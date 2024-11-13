@@ -1,49 +1,3 @@
-let tableStatistik = $("#table_nilai").DataTable({
-    // responsive: true,
-    // stateSave: true,
-    // lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
-    dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    // pageLength: 10,
-    buttons: [
-
-        { extend: 'copy', },
-        { extend: 'csv' },
-    ],
-    scrollX: !0,
-    fixedHeader: true,
-    createdRow: function(row, data, dataIndex) {
-        // Set the fourth column to be centered
-        $('td', row).eq(3).addClass('text-center');
-    },
-
-    language: { paginate: { previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>" } },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
-    }
-
-});
-
-
-
-let activeSemester = "TA232"
-let active = "2023/2024 Genap"
-
-let id_fakultas = document.getElementById("id_fakultas").value;
-
-const selectSemester = document.getElementById("semester_select")
-
-optionDefault = document.createElement("option")
-optionDefault.value = 72
-optionDefault.text = "2023/2024 (20232/GENAP)"
-optionDefault.setAttribute('ta_semester', "TA232");
-optionDefault.setAttribute("mk_aktif", active);
-
-selectSemester.appendChild(optionDefault)
-
-
-
-
-
 let nama_prodi_storage = localStorage.getItem('nama_prodi_storage');
 const id_prodi_storage = localStorage.getItem('id_prodi_storage');
 let semester_aktif_storage = localStorage.getItem('semester_aktif_storage');
@@ -52,10 +6,48 @@ let isFilterCleared = false;
 if (semester_aktif_storage) {
     $('#semester_select').val(semester_aktif_storage).trigger('change');
 }
+
+fetch('assets/data/listSemesters.json').then(res => res.json()).then(data => {
+    let semester_select = document.getElementById('semester_select');
+    data.semesters.forEach(sms => {
+        const option = document.createElement("option");
+        option.value = sms.id;
+        const ta_semester = sms.kode.slice(2);
+        option.text = `${sms.tahun_ajaran} (${sms.kode} - ${sms.jenis.toUpperCase()})`;
+        option.setAttribute('ta_semester', `TA${ta_semester}`);
+        option.setAttribute('mk_aktif', `${sms.tahun_ajaran} ${sms.jenis.charAt(0).toUpperCase() + sms.jenis.slice(1).toLowerCase()}`);
+
+        semester_select.appendChild(option);
+    })
+}).catch(error => console.error('Error loading JSON file:', error));
+
 async function semester_select_fun() {
     if (isFilterCleared) {
         return;
     }
+
+    sessionStorage.removeItem('nama_prodi_storage');
+    sessionStorage.removeItem('id_prodi_storage');
+    sessionStorage.removeItem('semester_aktif_storage');
+    sessionStorage.removeItem('selectedKodeMatkul_storage');
+    sessionStorage.removeItem('fullname_sikola_storage');
+    sessionStorage.removeItem('mk_value_storage');
+    sessionStorage.removeItem('mk_aktif');
+
+
+    $('#select_mk').val("").trigger('change');
+    $('#program_studi').val("").trigger('change');
+
+
+    const semester_select_data = $('#semester_select').select2('data');
+    active = semester_select_data[0].element.getAttribute('mk_aktif');
+    ta_semester = semester_select_data[0].element.getAttribute('ta_semester');
+    const select_mk = document.getElementById("select_mk");
+    select_mk.innerHTML = "";
+    const default_Mk = document.createElement("option")
+    default_Mk.text = `${ta_semester}`
+
+
     const response = await fetch('assets/data/get_all_prodi.json');
     const data = await response.json();
 
@@ -66,7 +58,7 @@ async function semester_select_fun() {
 
     console.log(id_fakultas);
     if (id_fakultas > 0) {
-        const listProdi = data.filter(prodi => prodi.fakultas.id === parseInt(id_fakultas))
+        const listProdi = data.filter(prodi => prodi.fakultas.id === parseInt(id_fakultas) && !prodi.nama_resmi.toLowerCase().includes("hapus"))
         console.log(listProdi);
         listProdi.forEach(item => {
             const option = document.createElement("option");
@@ -87,7 +79,10 @@ async function semester_select_fun() {
             if (!groups[fakultasId]) {
                 groups[fakultasId] = [];
             }
-            groups[fakultasId].push(item);
+
+            if (!item.nama_resmi.toLowerCase().includes("hapus")) { // Tambahkan filter di sini juga
+                groups[fakultasId].push(item);
+            }
         });
 
         for (let fakultasId in groups) {
@@ -125,6 +120,10 @@ async function prodi_select_fun() {
 
 
     $("#filter_data").removeAttr("disabled")
+    $('#select_mk').val("").trigger('change');
+
+
+
 
     const program_studi = document.getElementById("program_studi")
 
@@ -136,18 +135,26 @@ async function prodi_select_fun() {
 
     localStorage.setItem('nama_prodi_storage', nama_prodi);
 
+    let active = sessionStorage.getItem('mk_aktif');
+    let ta_semester = sessionStorage.getItem('ta_semester');
 
-    // nama_prodi_storage = null
+    if (!active) {
+        const semester_select = $('#semester_select').select2('data');
+        active = semester_select[0].element.getAttribute('mk_aktif');
+        ta_semester = semester_select[0].element.getAttribute('ta_semester');
+    }
 
 
-    const response = await fetch('assets/data/list_mk.json');
+
+
+    const response = await fetch(`assets/data/list_mk_${ta_semester}.json`);
     const data = await response.json()
 
     const select_mk = document.getElementById("select_mk");
 
     select_mk.innerHTML = "";
     const default_Mk = document.createElement("option")
-    default_Mk.text = `Select MK Prodi - ${nama_prodi}`
+    default_Mk.text = `${ta_semester} - ${nama_prodi}`
     default_Mk.setAttribute("value", "")
     default_Mk.setAttribute("disabled", "true")
     default_Mk.setAttribute("selected", "true")
@@ -174,24 +181,24 @@ async function prodi_select_fun() {
         return;
     }
 
-    if (nama_prodi_storage && !mk_value_storage) {
-        // $('#program_studi').val(nama_prodi_storage).trigger('change');
+    // if (nama_prodi_storage && !mk_value_storage) {
+    //     // $('#program_studi').val(nama_prodi_storage).trigger('change');
 
-        // console.log("1111");
-        filter_data();
-        nama_prodi_storage = null;
-        // localStorage.removeItem('nama_prodi_storage'); // Remove from localStorage
-        // Reset mk_value_storage
+    //     // console.log("1111");
+    //     filter_data();
+    //     nama_prodi_storage = null;
+    //     // localStorage.removeItem('nama_prodi_storage'); // Remove from localStorage
+    //     // Reset mk_value_storage
 
-    } else if (nama_prodi_storage && mk_value_storage) {
-        // console.log("222");
-        $('#select_mk').val(mk_value_storage).trigger('change');
-        filter_data();
-        // nama_prodi_storage = null; // Reset mk_value_storage
-        mk_value_storage = null; // Reset mk_value_storage
-        localStorage.removeItem('mk_value_storage'); // Remove from localStorage
+    // } else if (nama_prodi_storage && mk_value_storage) {
+    //     // console.log("222");
+    //     $('#select_mk').val(mk_value_storage).trigger('change');
+    //     filter_data();
+    //     // nama_prodi_storage = null; // Reset mk_value_storage
+    //     mk_value_storage = null; // Reset mk_value_storage
+    //     localStorage.removeItem('mk_value_storage'); // Remove from localStorage
 
-    }
+    // }
 
 
 
@@ -209,8 +216,6 @@ async function filter_data() {
         redirect: "follow"
     };
 
-    const myHeaders = new Headers();
-    // myHeaders.append("Authorization", "Bearer cd1920ad4e4c101c79313ba9a8e4aefa36be678d90b33fae894063792bc9d78");
 
     const requestOptionsNilai = {
         method: "GET",
@@ -219,8 +224,7 @@ async function filter_data() {
     };
     $("#filter_data, #clear_filter").attr("disabled", true);
     $("#btn_spinner").removeClass("d-none")
-    $("#judul_prodi, #apex-column-2, #apex-pie-1").html("")
-    tableStatistik.clear().draw();
+    $("#judul_prodi, #apex-column-2, #apex-pie-1, #ajaran").html("")
 
 
     let nama_prodi = document.getElementById("program_studi").value
@@ -234,21 +238,29 @@ async function filter_data() {
     localStorage.setItem('semester_aktif_storage', semester_aktif)
 
 
-
-    const select_mk = document.getElementById("select_mk");
-
-    const selectedOption = select_mk.options[select_mk.selectedIndex];
-    const mk_value = selectedOption.value
-    const selectedKodeMatkul = selectedOption.getAttribute('data_kode_matkul');
-    const fullname_sikola = selectedOption.getAttribute('fullname_sikola');
-
+    
+    const select_mk = $('#select_mk').select2('data');    
+    const mk_value = select_mk[0].id;
+    const selectedKodeMatkul = select_mk[0].element?.getAttribute('data_kode_matkul');
+    const fullname_sikola = select_mk[0].element?.getAttribute('fullname_sikola');
 
     if (!selectedKodeMatkul && !fullname_sikola) {
 
         try {
+
+            const semester_select = document.getElementById("semester_select");
+            const selectedOption = semester_select.options[semester_select.selectedIndex];
+    
+            const activeSemester = selectedOption.getAttribute('ta_semester');
+    
+            console.log('activeSemester',selectedOption.innerHTML);
+            
+            const ajaran = selectedOption.innerHTML;
+
+
             $("#judul_prodi").html(nama_prodi)
             $("#judul_prodi_mhs").html(nama_prodi)
-            $("#judul_prodi_e").html(nama_prodi)
+            $("#ajaran").html(ajaran)
 
             const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_categories&criteria[0][key]=name&criteria[0][value]=${nama_prodi}`, requestOptions)
             const result = await response.json();
@@ -264,6 +276,9 @@ async function filter_data() {
 
             let totalSinkron = 0;
             let totalTidakSinkron = 0;
+
+            let jumlahWeeks = 0;
+            const dataSourceTable = [];
 
 
             const fetchPromises = filteredCourses.map(item => {
@@ -290,12 +305,15 @@ async function filter_data() {
 
                                 let badge = kursusSinkron ? `<div class="badge label-table bg-success">Sinkron</div>` : `<div class="badge label-table bg-danger">Belum Sinkron</div>`;
 
-                                tableStatistik.row.add([
-                                    counter++,
-                                    `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
-                                    badge,
-                                    `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${item.id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`
-                                ]).draw(false);
+                                dataSourceTable.push({
+                                    "no": counter++,
+                                    'nama_kelas' : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
+                                    'status' : badge,
+                                    'link' : `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${item.id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`,
+
+                                })
+
+                                
                             })
                             .catch(error => {
                                 console.error(error);
@@ -311,6 +329,67 @@ async function filter_data() {
                 $("#btn_spinner").addClass("d-none");
                 $("#clear_filter").removeAttr("disabled");
                 $("#filter_data").removeAttr("disabled");
+
+                $("#tabelNilai").jsGrid({
+                    width: "100%",
+                    height: "800px",
+                    inserting: false,
+                    editing: false,
+                    sorting: false,
+                    paging: true,
+                    filtering: true,
+                    autoload: true,
+                    pageSize: 20,
+                    pageButtonCount: 15,
+                    responsive: true,
+                    data: dataSourceTable,
+                
+                    fields: [
+                        {
+                            name: "no",
+                            title: "No",
+                            type: "number",
+                            width: 50,
+                            filtering: false,
+                        },
+
+                        {
+                            title: "Nama Kelas",
+                            name: "nama_kelas",
+                            type: "text",
+                            minWidth: '30%',
+                            filtering: true,
+                        },
+                        {
+                            title: "Status",
+                            name: "status",
+                            type: "text",
+                            filtering: false,
+                        },
+                        {
+                            title: "Link Penilaian",
+                            name: "link",
+                            type: "text",
+                            filtering: false,
+                        },
+
+
+                       
+                      
+                    ],
+                
+                    controller: {
+                        loadData: function (filter) {
+                            return $.grep(dataSourceTable, function (item) {
+                                return (
+                                    (!filter["nama_kelas"] || item["nama_kelas"].toLowerCase().indexOf(filter["nama_kelas"].toLowerCase()) > -1)
+                                );
+                            });
+                        },
+                    },
+                
+                   
+                });
 
                 console.log(totalSinkron, totalTidakSinkron, nama_prodi);
 
@@ -329,13 +408,26 @@ async function filter_data() {
             localStorage.setItem('selectedKodeMatkul_storage', selectedKodeMatkul)
             localStorage.setItem('fullname_sikola_storage', fullname_sikola)
             localStorage.setItem('mk_value_storage', mk_value)
+            
+            
+            const semester_select = $('#semester_select').select2('data');
+            
+            active = semester_select[0].element.getAttribute('mk_aktif');
+            ta_semester = semester_select[0].element.getAttribute('ta_semester');
+            ajaran = semester_select[0].text
+            
             $("#judul_prodi").html(fullname_sikola + " / " + nama_prodi)
+            $("#ajaran").html(ajaran)
 
-            const response = await fetch(`assets/data/list_mk_per_kelas.json`)
+
+
+            const response = await fetch(`assets/data/list_mk_per_kelas_${ta_semester}.json`)
             const data = await response.json()
 
             let totalSinkron = 0;
             let totalTidakSinkron = 0;
+
+            let dataSourceTable = [];
 
 
             counter = 1
@@ -370,12 +462,14 @@ async function filter_data() {
 
                                         let badge = kursusSinkron ? `<div class="badge label-table bg-success">Sinkron</div>` : `<div class="badge label-table bg-danger">Belum Sinkron</div>`;
 
-                                        tableStatistik.row.add([
-                                            counter++,
-                                            `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
-                                            badge,
-                                            `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${kelas.courses[0].id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`
-                                        ]).draw(false);
+                                        dataSourceTable.push({
+                                            "no": counter++,
+                                            'nama_kelas' : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${kelas.courses[0].id}" target="_blank" class="">${kelas.courses[0].fullname} <i class="fe-external-link"></i></a>`,
+                                            'status' : badge,
+                                            'link' : `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${kelas.courses[0].id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`,
+        
+                                        })
+
                                     })
                                     .catch(error => {
                                         console.error(error);
@@ -409,6 +503,64 @@ async function filter_data() {
                 $("#filter_data").removeAttr("disabled");
 
                 grafik_statistik(totalSinkron, totalTidakSinkron, nama_prodi);
+
+                $("#tabelNilai").jsGrid({
+                    width: "100%",
+                    height: "800px",
+                    inserting: false,
+                    editing: false,
+                    sorting: false,
+                    paging: true,
+                    filtering: true,
+                    autoload: true,
+                    pageSize: 20,
+                    pageButtonCount: 15,
+                    responsive: true,
+                    data: dataSourceTable,
+                
+                    fields: [
+                        {
+                            name: "no",
+                            title: "No",
+                            type: "number",
+                            width: 50,
+                            filtering: false,
+                        },
+
+                        {
+                            title: "Nama Kelas",
+                            name: "nama_kelas",
+                            type: "text",
+                            minWidth: '30%',
+                            filtering: true,
+                        },
+                        {
+                            title: "Status",
+                            name: "status",
+                            type: "text",
+                            filtering: false,
+                        },
+                        {
+                            title: "Link Penilaian",
+                            name: "link",
+                            type: "text",
+                            filtering: false,
+                        },
+                      
+                    ],
+                
+                    controller: {
+                        loadData: function (filter) {
+                            return $.grep(dataSourceTable, function (item) {
+                                return (
+                                    (!filter["nama_kelas"] || item["nama_kelas"].toLowerCase().indexOf(filter["nama_kelas"].toLowerCase()) > -1)
+                                );
+                            });
+                        },
+                    },
+                
+                   
+                });
 
 
 
