@@ -60,12 +60,12 @@ include 'partials/main.php';
                 <div class="card-body">
                   <div class="card-widgets">
                     <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
-                    <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
-                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                    <a data-bs-toggle="collapse" href="#cardCollpase11" role="button" aria-expanded="false" aria-controls="cardCollpase11"><i class="mdi mdi-minus"></i></a>
+                    <!-- <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a> -->
                   </div>
-                  <h4 class="header-title mb-0">Bar Chart</h4>
+                  <h4 class="header-title mb-0">Bar Chart Matakuliah</h4>
 
-                  <div id="cardCollpase10" class="collapse show" dir="ltr">
+                  <div id="cardCollpase11" class="collapse show" dir="ltr">
                     <div id="apex-column-2" class="apex-charts pt-3" data-colors="#008ffb,#00e396,#feb019,#ff4560,#775dd0,#ffe200,#798385,#B56C79,#F1556C"></div>
                   </div> <!-- end card-body -->
                 </div> <!-- end card-->
@@ -79,15 +79,48 @@ include 'partials/main.php';
                   <div class="card-widgets">
                     <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
                     <a data-bs-toggle="collapse" href="#cardCollpase18" role="button" aria-expanded="false" aria-controls="cardCollpase18"><i class="mdi mdi-minus"></i></a>
-                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                    <!-- <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a> -->
                   </div>
-                  <h4 class="header-title mb-0">Pie Chart</h4>
+                  <h4 class="header-title mb-0">Pie Chart Matakuliah</h4>
 
                   <div id="cardCollpase18" class="collapse show" dir="ltr">
                     <div id="apex-pie-1" class="apex-charts pt-3" data-colors="#008ffb,#00e396,#feb019,#ff4560,#775dd0,#ffe200,#798385,#B56C79,#F1556C"></div>
                   </div> <!-- collapsed end -->
                 </div> <!-- end card-body -->
               </div> <!-- end card-->
+            </div>
+
+            <div class="col-lg-12 d-none" id="tab_perKelas">
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="header-title mb-4 text-center" id="judul_tab_kelas"></h4>
+
+                      <div class="row">
+                        <div class="col-sm-3">
+
+
+                          <ul class="nav flex-column nav-pills nav-pills-tabs" id="nav-tabs-kelas" role="tablist" aria-orientation="vertical">
+
+
+                          </ul>
+
+
+                        </div>
+
+                        <div class="col-sm-9">
+
+                          <div class="tab-content pt-0" id="tab-content-kelas">
+
+                          </div>
+
+
+
+                        </div>
+                      </div>
+
+                      
+                  </div>
+              </div>
             </div>
 
             <div class="col-12 d-none" id="grafik_kelas">
@@ -97,7 +130,7 @@ include 'partials/main.php';
                   <div class="card-widgets">
                     <a href="javascript: void(0);" data-bs-toggle="reload"><i class="mdi mdi-refresh"></i></a>
                     <a data-bs-toggle="collapse" href="#cardCollpase10" role="button" aria-expanded="false" aria-controls="cardCollpase10"><i class="mdi mdi-minus"></i></a>
-                    <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a>
+                    <!-- <a href="javascript: void(0);" data-bs-toggle="remove"><i class="mdi mdi-close"></i></a> -->
                   </div>
                   <h4 class="header-title mb-0 text-center" id="juduL_kelas"></h4>
 
@@ -108,6 +141,10 @@ include 'partials/main.php';
               </div>
             </div>
 
+           
+
+
+    
 
 
             <div class="col-lg-12">
@@ -142,41 +179,6 @@ include 'partials/main.php';
             </div>
 
           </div>
-
-          <div class="modal fade" id="modal_grafik" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-xl">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h4 class="modal-title" id="myCenterModalLabel">Grafik</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-md-6">
-
-                      <h4 class="header-title mb-0">Bar Chart</h4>
-
-                      <div id="cardCollpase10" class="collapse show" dir="ltr">
-                        <div id="apex-column-modal" class="apex-charts pt-3" data-colors="#077AC3,#4fc6e1,#4892B5,#405D88,#4A81D4,#00B19D,#798385,#B56C79,#F1556C"></div>
-                      </div> <!-- collapsed end -->
-                    </div>
-
-                    <div class="col-md-6">
-                      <h4 class="header-title mb-0">Pie Chart</h4>
-
-                      <div class="collapse show" dir="ltr">
-                        <div id="apex-pie-modal" class="apex-charts pt-3" data-colors="#077AC3,#4fc6e1,#4892B5,#405D88,#4A81D4,#00B19D,#798385,#B56C79,#F1556C"></div>
-                      </div> <!-- collapsed end -->
-                    </div>
-
-                  </div>
-
-
-
-                </div>
-              </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-          </div><!-- /.modal -->
 
 
         </div> <!-- container -->

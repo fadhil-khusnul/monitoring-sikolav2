@@ -1,47 +1,13 @@
 
 var scrollPosition = 0;
-var tableStatistik = $("#table_statistik_matkul").DataTable({
-
-    // stateSave: true,
-    scrollX: true,
-    // lengthChange: true, // Atur ke true untuk mengaktifkan opsi perubahan jumlah baris per halaman
-    dom: '<"dtsp-verticalContainer"<"dtsp-verticalPanes"P><"dtsp-dataTable"Bfrtip>>',
-    pageLength: 10,
-    buttons: [
-
-        { extend: 'copy', },
-        { extend: 'csv' },
-    ],
-
-    preDrawCallback: function(settings) {
-        // Simpan posisi scroll saat ini sebelum tabel di-draw ulang
-        scrollPosition = $(window).scrollTop();
-    },
-
-    language: {
-        paginate: {
-            previous: "<i class='mdi mdi-chevron-left'>",
-            next: "<i class='mdi mdi-chevron-right'>"
-        }
-    },
-    drawCallback: function() {
-        $(".dataTables_paginate > .pagination").addClass("pagination-rounded");
-        $(window).scrollTop(scrollPosition);
-    }
-});
 
 
 
 let id_fakultas = document.getElementById("id_fakultas").value;
 
-let nama_prodi_storage = localStorage.getItem('nama_prodi_storage');
-const id_prodi_storage = localStorage.getItem('id_prodi_storage');
-let semester_aktif_storage = localStorage.getItem('semester_aktif_storage');
-let mk_value_storage = localStorage.getItem('mk_value_storage');
+
 let isFilterCleared = false; 
-if (mk_value_storage) {
-    $('#semester_select').val(mk_value_storage).trigger('change');
-}
+
 
 
 fetch('assets/data/listSemesters.json').then(res => res.json()).then(data => {
@@ -59,22 +25,35 @@ fetch('assets/data/listSemesters.json').then(res => res.json()).then(data => {
 }).catch(error => console.error('Error loading JSON file:', error));
 
 
+let nama_prodi_storage = sessionStorage.getItem('nama_prodi_storage');
+let semester_aktif_storage = sessionStorage.getItem('semester_aktif_storage');
+if (semester_aktif_storage && nama_prodi_storage) {
+    $('#semester_select').val(semester_aktif_storage).trigger('change');
+    // $('#program_studi').val(nama_prodi_storage).trigger('change');
+
+
+}
 async function semester_select_fun() {
     if (isFilterCleared) {
         return;
     }
 
 
-    localStorage.removeItem('nama_prodi_storage');
-    localStorage.removeItem('id_prodi_storage');
-    localStorage.removeItem('semester_aktif_storage');
-    localStorage.removeItem('selectedKodeMatkul_storage');
-    localStorage.removeItem('fullname_sikola_storage');
-    localStorage.removeItem('mk_value_storage');
-    localStorage.removeItem('mk_aktif');
 
-    $('#select_mk').val("").trigger('change');
-    $('#program_studi').val("").trigger('change');
+
+    // sessionStorage.removeItem('nama_prodi_storage');
+    // sessionStorage.removeItem('id_prodi_storage');
+    // sessionStorage.removeItem('semester_aktif_storage');
+    // sessionStorage.removeItem('selectedKodeMatkul_storage');
+    // sessionStorage.removeItem('fullname_sikola_storage');
+    // sessionStorage.removeItem('mk_value_storage');
+    // sessionStorage.removeItem('mk_aktif');
+
+    // $('#select_mk').val("").trigger('change');
+    // $('#program_studi').val("").trigger('change');
+
+
+    // select.innerHTML = ""; 
 
     const semester_select = $('#semester_select').select2('data');
     active = semester_select[0].element.getAttribute('mk_aktif');
@@ -82,22 +61,38 @@ async function semester_select_fun() {
     const select_mk = document.getElementById("select_mk");
     select_mk.innerHTML = "";
     const default_Mk = document.createElement("option")
-    default_Mk.text = `${ta_semester}`
+    default_Mk.text = `${ta_semester} - `
+    default_Mk.setAttribute("value", "")
+    default_Mk.setAttribute("disabled", "true")
+    default_Mk.setAttribute("selected", "true")
+    select_mk.appendChild(default_Mk)
+    select_mk.dispatchEvent(new Event('change'));
+
+    console.log('namaPRODIIs', nama_prodi_storage, id_fakultas, ta_semester );
+
+
+
+    sessionStorage.setItem('semester_aktif_storage', semester_select[0].id)
+
+
+
 
 
 
     const response = await fetch('assets/data/get_all_prodi.json');
     const data = await response.json();
 
+    // const select = document.getElementById("program_studi");
+
     const select = document.getElementById("program_studi");
 
-    console.log(id_fakultas);
+
     if (id_fakultas > 0) {
         const listProdi = data.filter(prodi => prodi.fakultas.id === parseInt(id_fakultas) &&  !prodi.nama_resmi.toLowerCase().includes("hapus"))
         console.log(listProdi);
         listProdi.forEach(item => {
             const option = document.createElement("option");
-            option.value = item.nama_resmi;
+            option.value = item.id;
             option.text = item.nama_resmi;
             option.setAttribute('data_fakultas', item.fakultas.nama_resmi);
             option.setAttribute('id_prodi', item.id);
@@ -119,6 +114,8 @@ async function semester_select_fun() {
             }
         });
 
+        
+
         for (let fakultasId in groups) {
             const group = groups[fakultasId];
             const optgroup = document.createElement("optgroup");
@@ -126,7 +123,7 @@ async function semester_select_fun() {
             const fakultas_2 = group[0].fakultas.nama_resmi;
             group.forEach(item => {
                 const option = document.createElement("option");
-                option.value = item.nama_resmi;
+                option.value = item.id;
                 option.text = item.nama_resmi;
                 option.setAttribute('data_fakultas', fakultas_2);
                 option.setAttribute('id_prodi', item.id);
@@ -151,6 +148,11 @@ async function semester_select_fun() {
 }
 async function prodi_select_fun() {
 
+    console.log('prodiFun', nama_prodi_storage);
+    
+
+
+
 
     $("#filter_data").removeAttr("disabled")
     $('#select_mk').val("").trigger('change');
@@ -160,21 +162,23 @@ async function prodi_select_fun() {
 
     const selectedOption = program_studi.options[program_studi.selectedIndex];
 
-    const nama_prodi = selectedOption.value;
+    const nama_prodi = selectedOption.innerHTML;
+
+    
     const id_prodi = selectedOption.getAttribute('id_prodi');
 
-    localStorage.setItem('nama_prodi_storage', nama_prodi);
+    sessionStorage.setItem('nama_prodi_storage', id_prodi);
 
 
     
-    let active = localStorage.getItem('mk_aktif');
-    let ta_semester = localStorage.getItem('ta_semester');
+    // let active = sessionStorage.getItem('mk_aktif');
+    // let ta_semester = sessionStorage.getItem('ta_semester');
     
-    if (!active) {
-        const semester_select = $('#semester_select').select2('data');
-        active = semester_select[0].element.getAttribute('mk_aktif');
-        ta_semester = semester_select[0].element.getAttribute('ta_semester');
-    }
+    const semester_select = $('#semester_select').select2('data');
+    active = semester_select[0].element.getAttribute('mk_aktif');
+    ta_semester = semester_select[0].element.getAttribute('ta_semester');
+    // if (!active) {
+    // }
 
 
 
@@ -197,8 +201,8 @@ async function prodi_select_fun() {
     select_mk.dispatchEvent(new Event('change'));
 
 
-    localStorage.setItem('ta_semester', ta_semester);
-    localStorage.setItem('mk_aktif', active);
+    sessionStorage.setItem('ta_semester', ta_semester);
+    sessionStorage.setItem('mk_aktif', active);
     const listAktif = data.filter(mk => mk.nama_category_periode_sikola === active)
     const listMk = listAktif.filter(mk => mk.id_prodi == id_prodi)
 
@@ -221,18 +225,18 @@ async function prodi_select_fun() {
         return;
     }
 
-    if (nama_prodi_storage && !mk_value_storage) {
-        filter_data();
-        nama_prodi_storage = null;
+    // if (nama_prodi_storage && !mk_value_storage) {
+    //     filter_data();
+    //     nama_prodi_storage = null;
        
 
-    } else if (nama_prodi_storage && mk_value_storage) {
-        $('#select_mk').val(mk_value_storage).trigger('change');
-        filter_data();
-        mk_value_storage = null; 
+    // } else if (nama_prodi_storage && mk_value_storage) {
+    //     $('#select_mk').val(mk_value_storage).trigger('change');
+    //     filter_data();
+    //     mk_value_storage = null; 
 
-        localStorage.removeItem('mk_value_storage'); 
-    }
+    //     sessionStorage.removeItem('mk_value_storage'); 
+    // }
 
 }
 
@@ -252,18 +256,20 @@ async function filter_data() {
     $("#filter_data, #clear_filter").attr("disabled", true);
     $("#btn_spinner").removeClass("d-none")
     $("#judul_prodi, #apex-column-2, #apex-pie-1, #apex-column-1").html("")
-    tableStatistik.clear().draw();
 
-    let nama_prodi = document.getElementById("program_studi").value
+    const program_studi = document.getElementById("program_studi")
+
+    const selectedOption = program_studi.options[program_studi.selectedIndex];
+    let nama_prodi = selectedOption.innerHTML;
     let semester_aktif = document.getElementById("semester_select").value
     let id_prodi = document.getElementById("program_studi");
     id_prodi = id_prodi.options[id_prodi.selectedIndex];
     id_prodi = id_prodi.getAttribute('id_prodi');
     console.log("NAMA PRODI", id_prodi, nama_prodi);
 
-    localStorage.setItem('nama_prodi_storage', nama_prodi)
-    localStorage.setItem('id_prodi_storage', id_prodi)
-    localStorage.setItem('semester_aktif_storage', semester_aktif)
+    // sessionStorage.setItem('nama_prodi_storage', nama_prodi)
+    sessionStorage.setItem('id_prodi_storage', id_prodi)
+    // sessionStorage.setItem('semester_aktif_storage', semester_aktif)
 
 
 
@@ -682,7 +688,7 @@ async function filter_data() {
             
                 
             
-                $("#grafik_kelas").addClass("d-none");
+                $("#grafik_kelas, #tab_perKelas").addClass("d-none");
             
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
                 $("#btn_spinner").addClass("d-none");
@@ -699,9 +705,9 @@ async function filter_data() {
         }
     } else {
         try {
-            localStorage.setItem('selectedKodeMatkul_storage', selectedKodeMatkul)
-            localStorage.setItem('fullname_sikola_storage', fullname_sikola)
-            localStorage.setItem('mk_value_storage', mk_value)
+            sessionStorage.setItem('selectedKodeMatkul_storage', selectedKodeMatkul)
+            sessionStorage.setItem('fullname_sikola_storage', fullname_sikola)
+            sessionStorage.setItem('mk_value_storage', mk_value)
             $("#judul_prodi").html(fullname_sikola + " / " + nama_prodi)
 
             const semester_select = $('#semester_select').select2('data');
@@ -845,7 +851,7 @@ async function filter_data() {
             });
 
             Promise.all(fetchPromises).then(() => {
-                $("#grafik_kelas").removeClass("d-none")
+                $("#grafik_kelas, #tab_perKelas").removeClass("d-none")
 
 
                 nama_prodi = `${fullname_sikola} / ${nama_prodi}`
@@ -853,6 +859,7 @@ async function filter_data() {
 
 
                 grafikKelas2(filteredData, requestOptions, nama_prodi);
+                tab_perKelas(filteredData, requestOptions, nama_prodi);
 
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
 
@@ -1341,7 +1348,7 @@ const grafikKelas = async(kelasMK, requestOptions) => {
 }
 const grafikKelas2 = async(kelasMK, requestOptions, nama_kelas) => {
 
-    $("#juduL_kelas").html(`Grafik Kelas - ${nama_kelas}`)
+    $("#juduL_kelas").html(`Grafik Perbandingan Kelas - ${nama_kelas}`)
 
     const chartElement3 = document.querySelector('#apex-column-1');
     if (chartElement3 && chartElement3._chartInstance) {
@@ -1423,6 +1430,109 @@ const grafikKelas2 = async(kelasMK, requestOptions, nama_kelas) => {
 
 }
 
+
+const tab_perKelas = async (kelasMK, requestOptions, nama_prodi) => {
+    // Set judul
+    $("#judul_tab_kelas").html(`Grafik PerKelas - ${nama_prodi}`);
+
+    // Hapus elemen tabs dan konten sebelumnya
+    $("#nav-tabs-kelas").empty();
+    $("#tab-content-kelas").empty();
+
+    // Variabel untuk konfigurasi grafik
+    let categories = ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"];
+
+    let colors = ["#008ffb", "#00e396", "#feb019", "#ff4560", "#775dd0", "#ffe200", "#798385"];
+
+
+    for (const [index, item] of kelasMK.entries()) {
+        // Buat nav-tabs secara dinamis
+
+        
+        const tabId = `tabKelas-${index}`;
+        const navItem = `
+            <li class="nav-item">
+                <a href="#${tabId}" data-bs-toggle="tab" aria-expanded="false" class="nav-link ${index === 0 ? 'active' : ''}">
+                    ${item.fullname_kelas_sikola}
+                </a>
+            </li>`;
+        $("#nav-tabs-kelas").append(navItem);
+
+        // Buat konten tab secara dinamis
+        const tabContent = `
+            <div class="tab-pane ${index === 0 ? 'active' : ''}" id="${tabId}">
+                <div id="grafik-${tabId}" class="apex-charts pt-3" data-colors="${colors.join(',')}"></div>
+            </div>`;
+        $("#tab-content-kelas").append(tabContent);
+
+        // Fetch data untuk kelas
+        const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_courses_by_field&field=shortname&value=${item.shortname_sikola}`, requestOptions);
+        const data = await response.json();
+        const courseId = data.courses[0].id;
+        const contentResponse = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_contents&courseid=${courseId}`, requestOptions);
+        const contentData = await contentResponse.json();
+
+        // Hitung data untuk grafik
+        let totalTerisi = contentData.filter(section => section.name !== "Info Matakuliah" && section.modules.length > 0).length;
+        let totalRPS = contentData.filter(section => section.name === "Info Matakuliah" && section.modules.some(modul => modul.modname === "resource")).length;
+        let totalTugas = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "assign").length, 0);
+        let totalDoc = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "resource" || modul.modname === "folder").length, 0);
+        let totalSurvey = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "survey").length, 0);
+        let totalQuiz = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "quiz").length, 0);
+        let totalForum = contentData.reduce((acc, section) => acc + section.modules.filter(modul => modul.modname === "forum").length, 0);
+
+
+        // Konfigurasi grafik
+        const options = {
+            chart: {
+                height: 380,
+                type: "bar",
+                toolbar: { show: false }
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: { position: "top" },
+                    distributed: true,
+
+                }
+            },
+
+            dataLabels: {
+                enabled: !0,
+                offsetY: -40,
+                style: { fontSize: "12px", colors: ["#304758"] }
+            },
+            stroke: { show: true, width: 2, colors: ["transparent"] },
+            series: [{
+                name: item.nama_kelas,
+                data: [totalTerisi, totalRPS, totalTugas, totalDoc, totalSurvey, totalQuiz, totalForum]
+            }],
+            colors: colors,
+            xaxis: { categories: categories },
+           
+            title: {
+                text: item.fullname_kelas_sikola,
+                align: "center",
+                style: { color: "#444" }
+            },
+            fill: { opacity: 1 },
+            grid: { row: { colors: ["transparent", "transparent"], opacity: .2 }, borderColor: "#f1f3fa", padding: { bottom: 20 } }
+        };
+
+        // Render grafik untuk tab tersebut
+        const chart = new ApexCharts(document.querySelector(`#grafik-${tabId}`), options);
+        chart.render();
+    }
+
+    // Sembunyikan spinner dan aktifkan tombol
+    $("#btn_spinner").addClass("d-none");
+    $("#clear_filter").removeAttr("disabled");
+    $("#filter_data").removeAttr("disabled");
+};
+
+
+
+
 // $(document).ready(function() {
 
 // Add an event listener for semester_select change
@@ -1481,19 +1591,18 @@ const clear_filter = async() => {
         console.log(chartElement3._chartInstance);
         chartElement3._chartInstance.destroy();
     }
-    localStorage.removeItem('nama_prodi_storage');
-    localStorage.removeItem('id_prodi_storage');
-    localStorage.removeItem('semester_aktif_storage');
-    localStorage.removeItem('selectedKodeMatkul_storage');
-    localStorage.removeItem('fullname_sikola_storage');
-    localStorage.removeItem('mk_value_storage');
-    localStorage.removeItem('mk_aktif');
+    sessionStorage.removeItem('nama_prodi_storage');
+    sessionStorage.removeItem('id_prodi_storage');
+    sessionStorage.removeItem('semester_aktif_storage');
+    sessionStorage.removeItem('selectedKodeMatkul_storage');
+    sessionStorage.removeItem('fullname_sikola_storage');
+    sessionStorage.removeItem('mk_value_storage');
+    sessionStorage.removeItem('mk_aktif');
 
 
-    $("#judul_prodi").html("")
+    $("#judul_prodi, #tab_perKelas").html("")
     $("#filter_data").attr("disabled", true)
 
-    tableStatistik.clear().draw();
     $("#semester_select, #program_studi, #select_mk").val("").trigger("change");
 
 

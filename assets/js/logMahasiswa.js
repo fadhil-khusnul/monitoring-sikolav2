@@ -11,6 +11,7 @@ $("#semester_select, #program_studi_presensi, #select_mk").select2()
 
 
 
+let id_fakultas = document.getElementById("id_fakultas").value;
 
 let nama_prodi_storage = localStorage.getItem('nama_prodi_storage');
 const id_prodi_storage = localStorage.getItem('id_prodi_storage');
