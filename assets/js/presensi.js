@@ -760,6 +760,7 @@ async function filter_data() {
             const data = await response.json()
 
             counter = 1
+            counter_m = 1
             
             let jumlahWeeks = 0;        
             const dataSouceTable = [];
@@ -767,7 +768,6 @@ async function filter_data() {
 
 
             const filteredData = data.filter(item => item.kode_matkul === selectedKodeMatkul);
-
             const fetchPromises = filteredData.map(item => {
                 // console.log(item.shortname_sikola);
                 return fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_courses_by_field&field=shortname&value=${item.shortname_sikola}`, requestOptions)
@@ -778,7 +778,6 @@ async function filter_data() {
                             .then(async result => {
 
                                 
-                                // let infoMK = result.filter(alur => alur.section == 0);
                                 let attendanceModules = [];
 
                                 jumlahWeeks = 18;

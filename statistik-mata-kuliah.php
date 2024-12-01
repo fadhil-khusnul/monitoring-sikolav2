@@ -15,11 +15,13 @@ include 'partials/main.php';
   <!-- third party css end -->
 
   <!-- JsGrid css -->
-  <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" />
-  <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="assets/libs/jsgrid/jsgrid.min.css" rel="stylesheet" type="text/css" /> -->
+  <!-- <link href="assets/libs/jsgrid/jsgrid-theme.min.css" rel="stylesheet" type="text/css" /> -->
+
+  <link href="assets/libs/bootstrap-table/bootstrap-table.min.css" rel="stylesheet" type="text/css" />
+
 
   <link href="assets/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css" />
-  <link href="https://unpkg.com/tabulator-tables/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
 
 
   <?php include 'partials/head-css.php'; ?>
@@ -92,34 +94,34 @@ include 'partials/main.php';
 
             <div class="col-lg-12 d-none" id="tab_perKelas">
               <div class="card">
-                  <div class="card-body">
-                      <h4 class="header-title mb-4 text-center" id="judul_tab_kelas"></h4>
+                <div class="card-body">
+                  <h4 class="header-title mb-4 text-center" id="judul_tab_kelas"></h4>
 
-                      <div class="row">
-                        <div class="col-sm-3">
-
-
-                          <ul class="nav flex-column nav-pills nav-pills-tabs" id="nav-tabs-kelas" role="tablist" aria-orientation="vertical">
+                  <div class="row">
+                    <div class="col-sm-3">
 
 
-                          </ul>
+                      <ul class="nav flex-column nav-pills nav-pills-tabs" id="nav-tabs-kelas" role="tablist" aria-orientation="vertical">
 
 
-                        </div>
-
-                        <div class="col-sm-9">
-
-                          <div class="tab-content pt-0" id="tab-content-kelas">
-
-                          </div>
+                      </ul>
 
 
+                    </div>
 
-                        </div>
+                    <div class="col-sm-9">
+
+                      <div class="tab-content pt-0" id="tab-content-kelas">
+
                       </div>
 
-                      
+
+
+                    </div>
                   </div>
+
+
+                </div>
               </div>
             </div>
 
@@ -137,14 +139,14 @@ include 'partials/main.php';
                   <div id="cardCollpase10" class="collapse show" dir="ltr">
                     <div id="apex-column-1" class="apex-charts pt-3" data-colors="#008ffb,#00e396,#feb019,#ff4560,#775dd0,#ffe200,#798385,#B56C79,#F1556C"></div>
                   </div>
-                </div> 
+                </div>
               </div>
             </div>
 
-           
 
 
-    
+
+
 
 
             <div class="col-lg-12">
@@ -157,23 +159,57 @@ include 'partials/main.php';
                   <h4 class="title text-center" id="ajaran"></h4>
                   <h4 class="title text-center" id="judul_prodi"></h4>
 
-                  <div class="text-end">
-                      <button class="btn btn-sm btn-success " id="download-xlsx"> <i class="mdi mdi-microsoft-excel"></i> xlsx</button>
-                      <button class="btn btn-sm btn-danger " id="download-pdf"> <i class="mdi mdi-file-pdf-box"></i> pdf</button>
+                  
+
+                  <div class="d-flex gap-2 p-3 align-content-end">
+                    <select id="filterDosen" class="form-control" style="max-width: 400px;">
+                      <option value="">-- Pilih Dosen --</option>
+                    </select>
+                    <button id="clearFilter" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-close"></i></button>
+
+                    <button class="btn btn-sm btn-success " id="download-xlsx"> <i class="mdi mdi-microsoft-excel"></i> xlsx</button>
+                    <button class="btn btn-sm btn-danger " id="download-pdf"> <i class="mdi mdi-file-pdf-box"></i> pdf</button>
                   </div>
 
-                  <div class="table-responsive">
-                    <div id="tabelStatistik"></div>
-                  </div>
-                  
 
-                
 
-                  
+                  <table
+                    id="tableStatistikB"
+                    data-toggle="table"
+                    data-height="900"
+                    data-page-size="25"
+                    data-pagination="true">
+                    <thead class="table-light">
+                      <tr>
+                        <th data-field="No" data-sortable="true" rowspan="2">No</th>
+                        <th data-field="Nama Kelas" data-sortable="true" data-searchable="true">Nama Kelas</th>
+                        <th data-field="Dosen" data-sortable="true" data-searchable="true">Dosen</th>
+                        <th data-field="Alur Pembelajaran Terisi" data-sortable="true" rowspan="2">Alur Terisi</th>
+                        <th data-field="Alur Pembelajaran Total" data-sortable="true" rowspan="2">Total Alur</th>
+                        <th data-field="RPS" data-sortable="true" rowspan="2">RPS</th>
+                        <th data-field="Tugas" data-sortable="true" rowspan="2">Tugas</th>
+                        <th data-field="Doc" data-sortable="true" rowspan="2">Doc</th>
+                        <th data-field="Survey" data-sortable="true" rowspan="2">Survey</th>
+                        <th data-field="Quiz" data-sortable="true" rowspan="2">Quiz</th>
+                        <th data-field="Forum" data-sortable="true" rowspan="2">Forum</th>
+                        <th data-field="Report" data-sortable="true" rowspan="2">Reports</th>
+                      </tr>
+                      <tr>
+                        <!-- <th>
+                          <input type="text" class="form-control" placeholder="Search Nama Kelas" id="searchNamaKelas" /></th>
+                        <th>
+                          <input type="text" class="form-control" placeholder="Search Dosen" id="searchDosen" />
+                        </th> -->
 
-                  
+                      </tr>
+                    </thead>
+                  </table>
 
-  
+
+
+
+
+
                 </div>
               </div>
             </div>
@@ -222,17 +258,17 @@ include 'partials/main.php';
   <!-- Datatables init -->
 
   <!-- JsGrid js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="assets/libs/jsgrid/jsgrid.min.js"></script>
   <script src="assets/libs/select2/js/select2.min.js"></script>
 
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
-  <script type="text/javascript" src="https://unpkg.com/tabulator-tables/dist/js/tabulator.min.js"></script>
-  <script type="text/javascript" src="https://oss.sheetjs.com/sheetjs/xlsx.full.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.20/jspdf.plugin.autotable.min.js"></script>
-  <!-- Init js -->
-  <script  src="<?= 'assets/js/form.js?v=' . time() ?>"></script>
+
+  <script src="assets/libs/bootstrap-table/bootstrap-table.min.js"></script>
+  <script src="assets/libs/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+
+  <script src="assets/js/pages/bootstrap-tables.init.js"></script>
+
+  <script src="<?= 'assets/js/form.js?v=' . time() ?>"></script>
   <!-- <script src="assets/js/pages/datatables.init.js"></script> -->
   <script src="assets/js/pages/form-advanced.init.js"></script>
 

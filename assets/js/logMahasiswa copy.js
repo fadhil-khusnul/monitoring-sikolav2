@@ -366,15 +366,7 @@ async function filter_data() {
                                     'link': index === 0 ? `<a href="https://sikola-v2.unhas.ac.id/report/log/index.php?id=${item.id}" target="_blank">Report Actitivity <i class="fe-external-link"></i></a>` : '',
                                     ...pekanCounts_mhs
                                 });
-                            });
-
-
-
-
-
-
-
-                            
+                            });                            
                         }
 
                 

@@ -6,7 +6,7 @@ var scrollPosition = 0;
 let id_fakultas = document.getElementById("id_fakultas").value;
 
 
-let isFilterCleared = false; 
+let isFilterCleared = false;
 
 
 
@@ -19,7 +19,7 @@ fetch('assets/data/listSemesters.json').then(res => res.json()).then(data => {
         option.text = `${sms.tahun_ajaran} (${sms.kode} - ${sms.jenis.toUpperCase()})`;
         option.setAttribute('ta_semester', `TA${ta_semester}`);
         option.setAttribute('mk_aktif', `${sms.tahun_ajaran} ${sms.jenis.charAt(0).toUpperCase() + sms.jenis.slice(1).toLowerCase()}`);
-        
+
         semester_select.appendChild(option);
     })
 }).catch(error => console.error('Error loading JSON file:', error));
@@ -68,7 +68,7 @@ async function semester_select_fun() {
     select_mk.appendChild(default_Mk)
     select_mk.dispatchEvent(new Event('change'));
 
-    console.log('namaPRODIIs', nama_prodi_storage, id_fakultas, ta_semester );
+    console.log('namaPRODIIs', nama_prodi_storage, id_fakultas, ta_semester);
 
 
 
@@ -88,11 +88,11 @@ async function semester_select_fun() {
 
 
     if (id_fakultas > 0) {
-        const listProdi = data.filter(prodi => prodi.fakultas.id === parseInt(id_fakultas) &&  !prodi.nama_resmi.toLowerCase().includes("hapus"))
+        const listProdi = data.filter(prodi => prodi.fakultas.id === parseInt(id_fakultas) && !prodi.nama_resmi.toLowerCase().includes("hapus"))
         console.log(listProdi);
         listProdi.forEach(item => {
             const option = document.createElement("option");
-            option.value = item.id;
+            option.value = item.nama_resmi;
             option.text = item.nama_resmi;
             option.setAttribute('data_fakultas', item.fakultas.nama_resmi);
             option.setAttribute('id_prodi', item.id);
@@ -114,7 +114,7 @@ async function semester_select_fun() {
             }
         });
 
-        
+
 
         for (let fakultasId in groups) {
             const group = groups[fakultasId];
@@ -123,7 +123,7 @@ async function semester_select_fun() {
             const fakultas_2 = group[0].fakultas.nama_resmi;
             group.forEach(item => {
                 const option = document.createElement("option");
-                option.value = item.id;
+                option.value = item.nama_resmi;
                 option.text = item.nama_resmi;
                 option.setAttribute('data_fakultas', fakultas_2);
                 option.setAttribute('id_prodi', item.id);
@@ -149,7 +149,7 @@ async function semester_select_fun() {
 async function prodi_select_fun() {
 
     console.log('prodiFun', nama_prodi_storage);
-    
+
 
 
 
@@ -162,18 +162,18 @@ async function prodi_select_fun() {
 
     const selectedOption = program_studi.options[program_studi.selectedIndex];
 
-    const nama_prodi = selectedOption.innerHTML;
+    const nama_prodi = selectedOption.value;
 
-    
+
     const id_prodi = selectedOption.getAttribute('id_prodi');
 
     sessionStorage.setItem('nama_prodi_storage', id_prodi);
 
 
-    
+
     // let active = sessionStorage.getItem('mk_aktif');
     // let ta_semester = sessionStorage.getItem('ta_semester');
-    
+
     const semester_select = $('#semester_select').select2('data');
     active = semester_select[0].element.getAttribute('mk_aktif');
     ta_semester = semester_select[0].element.getAttribute('ta_semester');
@@ -228,7 +228,7 @@ async function prodi_select_fun() {
     // if (nama_prodi_storage && !mk_value_storage) {
     //     filter_data();
     //     nama_prodi_storage = null;
-       
+
 
     // } else if (nama_prodi_storage && mk_value_storage) {
     //     $('#select_mk').val(mk_value_storage).trigger('change');
@@ -260,7 +260,7 @@ async function filter_data() {
     const program_studi = document.getElementById("program_studi")
 
     const selectedOption = program_studi.options[program_studi.selectedIndex];
-    let nama_prodi = selectedOption.innerHTML;
+    let nama_prodi = selectedOption.value;
     let semester_aktif = document.getElementById("semester_select").value
     let id_prodi = document.getElementById("program_studi");
     id_prodi = id_prodi.options[id_prodi.selectedIndex];
@@ -273,7 +273,7 @@ async function filter_data() {
 
 
 
-    const select_mk = $('#select_mk').select2('data');    
+    const select_mk = $('#select_mk').select2('data');
     const mk_value = select_mk[0].id;
     const selectedKodeMatkul = select_mk[0].element?.getAttribute('data_kode_matkul');
     const fullname_sikola = select_mk[0].element?.getAttribute('fullname_sikola');
@@ -283,15 +283,18 @@ async function filter_data() {
 
         const semester_select = document.getElementById("semester_select");
         const selectedOption = semester_select.options[semester_select.selectedIndex];
-       
+
         const activeSemester = selectedOption.getAttribute('ta_semester');
 
-        
+        const ajaran = selectedOption.innerHTML;
+
+
+
 
 
         try {
             $("#judul_prodi").html(`${nama_prodi}`)
-            $("#ajaran").html(`${activeSemester}`)
+            $("#ajaran").html(`${ajaran}`)
 
             const response = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_course_get_categories&criteria[0][key]=name&criteria[0][value]=${nama_prodi}`, requestOptions)
             const result = await response.json();
@@ -374,7 +377,7 @@ async function filter_data() {
                         totalRps += rps.length
 
                         let attendanceModules = [];
-                        
+
 
                         result.forEach(section => {
                             section.modules.forEach(modul => {
@@ -388,277 +391,480 @@ async function filter_data() {
                         console.log(attendanceModules, "Presensi");
 
                         if (activeSemester == "TA232") {
-                                
-    
+
+
                             const reqUser = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_enrol_get_enrolled_users&courseid=${item.id}`, requestOptions)
                             const users = await reqUser.json()
                             let dosens = users.filter(user => user.groups.some(grup => grup.name == "DOSEN"));
 
 
-                            const jumlahDosen = dosens.length;
+                            const namaDosens = dosens.map(dosen => dosen.lastname).join('<br>');
 
-                            dosens.forEach((dosen, dosenIndex) => {
-                                dataSouceTable.push({
-                                    'No': dosenIndex === 0 ? counter++ : '', // Menampilkan nomor baris yang berbeda untuk setiap dosen
-                                    'Nama Kelas': dosenIndex === 0 
-                                        ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>` 
-                                        : '', 
-                                    'rowspan': dosenIndex === 0 ? jumlahDosen : null, // Rowspan hanya untuk baris pertama
-                                    'Alur Pembelajaran Terisi': dosenIndex === 0 ? banyakTerisi.length : '',
-                                    'Alur Pembelajaran Total': dosenIndex === 0 ? banyakAlur.length : '',
-                                    'RPS': dosenIndex === 0 ? rps.length : '',
-                                    'Tugas': dosenIndex === 0 ? tugas : '',
-                                    'Doc': dosenIndex === 0 ? files : '',
-                                    'Survey': dosenIndex === 0 ? surveys : '',
-                                    'Quiz': dosenIndex === 0 ? quizes : '',
-                                    'Forum, Thread, Post': dosenIndex === 0 ? forums : '',
-                                    'Dosen': `${dosen.lastname}`,  // Tampilkan nama dosen di setiap baris
-                                    'Report': dosenIndex === 0 
-                                        ? `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br>
-                                        <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`
-                                        : ''
-                                });
-                            });
 
-                        }else{
-
-                            const reqUser = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_enrol_get_enrolled_users&courseid=${item.id}`, requestOptions)
-                            const users = await reqUser.json()
-                            let dosens = users.filter(user => user.groups.some(grup => grup.name == "DOSEN"));
-
-                            const namaDosens = dosens.map(dosen => `${dosen.lastname}`).join(', ');
-
+                            // Gabungkan nama dosen dengan <br> sebagai pemisah antar nama
 
                             console.log(dosens, item.id);
 
-                            const jumlahDosen = dosens.length;
-
-                            dosens.forEach((dosen, dosenIndex) => {
-                                dataSouceTable.push({
-                                    'No': dosenIndex === 0 ? counter++ : '', // Menampilkan nomor baris yang berbeda untuk setiap dosen
-                                    'Nama Kelas': dosenIndex === 0 
-                                        ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>` 
-                                        : '', 
-                                    'rowspan': dosenIndex === 0 ? jumlahDosen : null,
-                                    'Alur Pembelajaran Terisi': dosenIndex === 0 ? banyakTerisi.length : '',
-                                    'Alur Pembelajaran Total': dosenIndex === 0 ? banyakAlur.length : '',
-                                    'RPS': dosenIndex === 0 ? rps.length : '',
-                                    'Tugas': dosenIndex === 0 ? tugas : '',
-                                    'Doc': dosenIndex === 0 ? files : '',
-                                    'Survey': dosenIndex === 0 ? surveys : '',
-                                    'Quiz': dosenIndex === 0 ? quizes : '',
-                                    'Forum': dosenIndex === 0 ? forums : '',
-                                    'Dosen': `${dosen.lastname}`,
-                                    'excel_namaKelas': item.fullname,
-                                    'link_namaKelas': `https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}`,
-                                    'link_1': dosenIndex === 0 ? `https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}` : '',
-                                    'link_2': dosenIndex === 0 ? `https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}` : '',
-                                    'Report': dosenIndex === 0 
-                                        ? `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br>
-                                        <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`
-                                        : ''
-                                });
+                            dataSouceTable.push({
+                                'No': counter++, // Increment untuk setiap course
+                                'Nama Kelas': `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
+                                'rowspan': 1, // Karena sekarang semua dosen dalam satu baris
+                                'Alur Pembelajaran Terisi': banyakTerisi.length,
+                                'Alur Pembelajaran Total': banyakAlur.length,
+                                'RPS': rps.length,
+                                'Tugas': tugas,
+                                'Doc': files,
+                                'Survey': surveys,
+                                'Quiz': quizes,
+                                'Forum': forums,
+                                'Dosen': namaDosens, // Nama dosen dipisahkan dengan <br>
+                                'excel_namaKelas': item.fullname,
+                                'link_namaKelas': `https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}`,
+                                'link_1': `https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}`,
+                                'link_2': `https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}`,
+                                'Report': `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br> <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`,
                             });
 
-                        
-                           
-                           
-                            
-                           
+
+
+
+
+                            // dosens.forEach((dosen, dosenIndex) => {
+                            // dataSouceTable.push({
+                            //     'No': dosenIndex === 0 ? counter++ : '', // Menampilkan nomor baris yang berbeda untuk setiap dosen
+                            //     'Nama Kelas': dosenIndex === 0
+                            //         ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`
+                            //         : '',
+                            //     'rowspan': dosenIndex === 0 ? jumlahDosen : 0, // Rowspan hanya untuk baris pertama
+                            //     'Alur Pembelajaran Terisi': dosenIndex === 0 ? banyakTerisi.length : '',
+                            //     'Alur Pembelajaran Total': dosenIndex === 0 ? banyakAlur.length : '',
+                            //     'RPS': dosenIndex === 0 ? rps.length : '',
+                            //     'Tugas': dosenIndex === 0 ? tugas : '',
+                            //     'Doc': dosenIndex === 0 ? files : '',
+                            //     'Survey': dosenIndex === 0 ? surveys : '',
+                            //     'Quiz': dosenIndex === 0 ? quizes : '',
+                            //     'Forum': dosenIndex === 0 ? forums : '',
+                            //     'Dosen': `${dosen.lastname}`,  // Tampilkan nama dosen di setiap baris
+                            //     'Report': dosenIndex === 0
+                            //         ? `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br>
+                            //             <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`
+                            //         : ''
+                            // });
+                            // });
+
+                        } else {
+
+                            const reqUser = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_enrol_get_enrolled_users&courseid=${item.id}`, requestOptions)
+                            const users = await reqUser.json()
+                            let dosens = users.filter(user => user.groups.some(grup => grup.name == "DOSEN"));
+
+                            const namaDosens = dosens.map(dosen => dosen.lastname).join('<br>');
+
+                            dataSouceTable.push({
+                                'No': counter++, // Increment untuk setiap course
+                                'Nama Kelas': `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
+                                'rowspan': 1, // Karena sekarang semua dosen dalam satu baris
+                                'Alur Pembelajaran Terisi': banyakTerisi.length,
+                                'Alur Pembelajaran Total': banyakAlur.length,
+                                'RPS': rps.length,
+                                'Tugas': tugas,
+                                'Doc': files,
+                                'Survey': surveys,
+                                'Quiz': quizes,
+                                'Forum': forums,
+                                'Dosen': namaDosens, // Nama dosen dipisahkan dengan <br>
+                                'excel_namaKelas': item.fullname,
+                                'link_namaKelas': `https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}`,
+                                'link_1': `https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}`,
+                                'link_2': `https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}`,
+                                'Report': `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${item.id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br> <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${item.id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`,
+                            });
+
+
+
+
+
+
+
+
+
+
                         }
-                                               
+
                     })
                     .catch((error) => console.error(error));
 
 
 
             });
+
+
+
             Promise.all(fetchPromises).then(() => {
-                console.log(dataSouceTable.length, "COUNT COURSE");
+                console.log(dataSouceTable, "COUNT COURSE");
 
 
 
-        
+                const jsonData = {
+                    total: dataSouceTable.length,
+                    totalNotFiltered: dataSouceTable.length,
+                    rows: dataSouceTable
+                };
 
-                $("#tabelStatistik").jsGrid({
-                    width: "100%",
-                    height: "800px",
-                    inserting: false,
-                    editing: false,
-                    sorting: false,
-                    paging: true,
-                    filtering: true,
-                    autoload: true,
-                    pageSize: 20,
-                    pageButtonCount: 15,
-                    responsive: true,
-                    data: dataSouceTable,
-                
-                    fields: [
-                        {
-                            name: "No",
-                            title: "No",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Nama Kelas",
-                            title: "Nama Kelas",
-                            type: "text",
-                            minWidth: "50%",
-                            filtering: true,
-                        },
-                        {
-                            name: "Dosen",
-                            title: "Dosen",
-                            type: "text",
-                            width: 100,
-                            filtering: true,
-                        },
-                        {
-                            name: "Alur Pembelajaran Terisi",
-                            title: "Alur Terisi",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Alur Pembelajaran Total",
-                            title: "Total Alur",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "RPS",
-                            title: "RPS",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Tugas",
-                            title: "Tugas",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Doc",
-                            title: "Doc",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Survey",
-                            title: "Survey",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Quiz",
-                            title: "Quiz",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Forum",
-                            title: "Forum",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Report",
-                            title: "Reports",
-                            type: "text",
-                            width: 100,
-                            filtering: false,
-                        },
-                    ],
-                
-                    controller: {
-                        loadData: function (filter) {
-                            return $.grep(dataSouceTable, function (item) {
-                                return (
-                                    (!filter["Nama Kelas"] || item["Nama Kelas"].toLowerCase().indexOf(filter["Nama Kelas"].toLowerCase()) > -1) &&
-                                    (!filter["Dosen"] || item["Dosen"].toLowerCase().indexOf(filter["Dosen"].toLowerCase()) > -1)
-                                );
-                            });
-                        },
+                fetch('services/writeStatistik.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
                     },
-                
-                    // onRefreshed: function () {
-                    //     // Modifikasi tabel setelah data dimuat untuk mengatur rowspan
-                    //     let kelasSebelumnya = '';
-                    //     let rowSpan = 1;
-                    //     let $grid = $("#tabelStatistik");
-                    //     let $rows = $grid.find(".jsgrid-grid-body tbody tr");
-                
-                    //     $rows.each(function (index) {
-                    //         let $row = $(this);
-                    //         let namaKelas = $row.find('td:eq(1)').text().trim(); // Ambil Nama Kelas di kolom kedua
-                
-                    //         if (namaKelas === kelasSebelumnya) {
-                    //             // Jika nama kelas sama dengan kelas sebelumnya, sembunyikan kolom Nama Kelas
-                    //             $row.find('td:eq(1)').remove(); // Hapus cell Nama Kelas
-                    //             rowSpan++;
-                    //         } else {
-                    //             // Jika nama kelas berbeda, atur rowspan untuk cell Nama Kelas dari kelas sebelumnya
-                    //             if (rowSpan > 1) {
-                    //                 $rows.eq(index - rowSpan).find('td:eq(1)').attr('rowspan', rowSpan);
-                    //             }
-                    //             kelasSebelumnya = namaKelas;
-                    //             rowSpan = 1;
-                    //         }
-                    //     });
-                
-                    //     // Atur rowspan untuk kelas terakhir jika perlu
-                    //     if (rowSpan > 1) {
-                    //         $rows.eq($rows.length - rowSpan).find('td:eq(1)').attr('rowspan', rowSpan);
-                    //     }
-                
-                    //     // Ganti <thead> di jsGrid dengan header yang diinginkan
-                    //     $grid.find("thead").html(`
-                    //         <thead class="table-light">
-                    //             <tr align="" valign="top">
-                    //                 <th rowspan="2">No</th>
-                    //                 <th rowspan="2" width="50%">Nama Kelas</th>
-                    //                 <th colspan="2">Alur Pembelajaran</th>
-                    //                 <th rowspan="2">RPS</th>
-                    //                 <th rowspan="2">Tugas</th>
-                    //                 <th rowspan="2">Doc</th>
-                    //                 <th rowspan="2">Survey</th>
-                    //                 <th rowspan="2">Quiz</th>
-                    //                 <th rowspan="2">Forum, Thread, Post</th>
-                    //                 <th rowspan="2" width="30%">Dosen</th>
-                    //                 <th rowspan="2" width="20%">Reports</th>
-                    //             </tr>
-                    //             <tr align="center">
-                    //                 <th>Terisi</th>
-                    //                 <th>Total</th>
-                    //             </tr>
-                    //         </thead>
-                    //     `);
-                    // },
-                });
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+
+
+                        if (data.status === 'success') {
+                            // Refresh BootstrapTable
+                            $('#tableStatistikB').bootstrapTable('refresh', {
+                                url: 'services/data/statistik.json',
+                                pagination: true,
+                                search: true,
+                                sidePagination: 'server',
+                                silent: true,
+
+                                columns: [{
+                                    field: 'Dosen',
+                                    title: 'Dosen',
+                                    escape: false
+                                }],
+
+
+
+                            })
+
+                            let originalData = [];
+
+                            const allDosens = [...new Set(dataSouceTable.flatMap(row =>
+                                row.Dosen.split('<br>').map(name => name.trim())
+                            ))];
+
+                            // Tambahkan ke dalam Select2
+                            allDosens.forEach(dosen => {
+                                $('#filterDosen').append(new Option(dosen, dosen));
+                            });
+
+                            // Inisialisasi Select2
+                            $('#filterDosen').select2({
+                                placeholder: "Pilih Dosen",
+                                width: '500px',
+                                dropdownAutoWidth: false,
+                            });
+
+                            // Ambil data asli dan simpan di `originalData` setelah tabel di-load
+                            $('#tableStatistikB').on('post-body.bs.table', function () {
+                                if (originalData.length === 0) {
+                                    originalData = $('#tableStatistikB').bootstrapTable('getData');
+                                }
+                            });
+
+                            // Event handler untuk filter
+                            $('#filterDosen').on('change', function () {
+                                const selectedDosen = $(this).val();
+                                console.log('selectedDosen', selectedDosen);
+
+                                if (selectedDosen) {
+                                    // Filter data berdasarkan kecocokan sebagian (partial match)
+                                    const filteredData = originalData.filter(row =>
+                                        row.Dosen && row.Dosen.toLowerCase().includes(selectedDosen.toLowerCase())
+                                    );
+
+                                    // Refresh tabel dengan data yang difilter
+                                    $('#tableStatistikB').bootstrapTable('load', filteredData);
+                                } else {
+                                    // Jika filter dikosongkan, tampilkan semua data asli
+                                    $('#tableStatistikB').bootstrapTable('load', originalData);
+                                }
+                            });
+
+                            $('#clearFilter').on('click', function () {
+                                // Hapus pilihan di Select2
+                                $('#filterDosen').val(null).trigger('change');
+                            
+                                // Tampilkan semua data asli
+                                $('#tableStatistikB').bootstrapTable('load', originalData);
+                            });
+
+
+
+
+
+
+
+
+
+
+
+                        } else {
+                            console.error('Error from PHP:', data.message);
+                        }
+
+                        console.log('Response from PHP:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+
+
+
+
+                // downloadJSON(jsonData, 'data/statistik.json');
+
+
+
+
+
+
+
+
+                // const tableBody = $('#tableBody');
+                // dataSouceTable.forEach((row, index) => {
+                //     let rowHtml = `<tr>`;
+                //     for (const key in row) {
+                //         if (key === 'rowspan' || key === 'Dosen') continue; // Skip rowspan key
+                //         if (row.rowspan && key !== 'Dosen') {
+                //             rowHtml += `<td rowspan="${row.rowspan}">${row[key]}</td>`;
+                //         } else if (!row.rowspan && key !== 'Dosen') {
+                //             rowHtml += `<td>${row[key]}</td>`;
+                //         }
+                //     }
+                //     rowHtml += `</tr>`;
+                //     tableBody.append(rowHtml);
+                // });
+
+
+
+
+
+
+
+                // $("#tabelStatistik").jsGrid({
+                //     width: "100%",
+                //     height: "800px",
+
+                //     paging: true,
+                //     filtering: true,
+                //     autoload: true,
+                //     pageSize: 20,
+                //     pageButtonCount: 15,
+                //     responsive: true,
+                //     data: dataSouceTable,
+
+                //     fields: [
+                //         {
+                //             name: "No",
+                //             title: "No",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+
+
+                //         },
+                //         {
+                //             name: "Nama Kelas",
+                //             title: "Nama Kelas",
+                //             type: "text",
+                //             minWidth: "50%",
+                //             filtering: true,
+
+                //             itemTemplate: function(value, item) {
+                //                 if (item.No !== '') {
+                //                     return value;
+                //                 }
+
+
+                //             }
+                //         },
+                //         {
+                //             name: "Dosen",
+                //             title: "Dosen",
+                //             type: "text",
+                //             width: 100,
+                //             filtering: true,
+                //         },
+                //         {
+                //             name: "Alur Pembelajaran Terisi",
+                //             title: "Alur Terisi",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Alur Pembelajaran Total",
+                //             title: "Total Alur",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "RPS",
+                //             title: "RPS",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Tugas",
+                //             title: "Tugas",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Doc",
+                //             title: "Doc",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Survey",
+                //             title: "Survey",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Quiz",
+                //             title: "Quiz",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Forum",
+                //             title: "Forum",
+                //             type: "number",
+                //             width: 50,
+                //             filtering: false,
+
+                //         },
+                //         {
+                //             name: "Report",
+                //             title: "Reports",
+                //             type: "text",
+                //             width: 100,
+                //             filtering: false,
+
+                //         },
+                //     ],
+
+                //     controller: {
+                //         loadData: function (filter) {
+                //             return $.grep(dataSouceTable, function (item) {
+                //                 return (
+                //                     (!filter["Nama Kelas"] || item["Nama Kelas"].toLowerCase().indexOf(filter["Nama Kelas"].toLowerCase()) > -1) &&
+                //                     (!filter["Dosen"] || item["Dosen"].toLowerCase().indexOf(filter["Dosen"].toLowerCase()) > -1)
+                //                 );
+                //             });
+                //         },
+                //     },
+
+                //     onRefreshed: function () {
+                //         const rows = $("#tabelStatistik tbody tr");
+
+                //         rows.each(function (rowIndex) {
+                //             const $row = $(this);
+                //             const data = $row.data("JSGridItem"); // Ambil data item jsGrid untuk baris ini
+
+                //             if (data && data.rowspan) {
+                //                 $row.find("td").each(function (colIndex) {
+                //                     const $td = $(this);
+
+                //                     // Abaikan kolom 'Dosen'
+                //                     const fieldName = $("#tabelStatistik").jsGrid("option", "fields")[colIndex].name;
+                //                     if (fieldName !== "Dosen") {
+                //                         if (!$td.attr("rowspan")) {
+                //                             // Tambahkan rowspan hanya untuk kolom non-Dosen
+                //                             $td.attr("rowspan", data.rowspan);
+
+                //                             // Hapus elemen <td> di baris berikutnya
+                //                             for (let i = 1; i < data.rowspan; i++) {
+                //                                 const $nextRow = rows.eq(rowIndex + i);
+                //                                 $nextRow.find(`td:eq(${colIndex})`).remove();
+                //                             }
+                //                         }
+                //                     }
+                //                 });
+                //             }
+                //         });
+
+                //         // Pastikan baris kosong tidak ada
+                //         rows.each(function () {
+                //             const $row = $(this);
+
+                //             // Jika baris hanya memiliki kolom kosong, hapus
+                //             if (!$row.children("td").length) {
+                //                 $row.remove();
+                //             }
+                //         });
+                //     }
+
+
+
+                //     // onRefreshed: function () {
+                //     //     $("#tabelStatistik tbody tr").each(function () {
+                //     //         const $row = $(this);
+                //     //         const data = $row.data("JSGridItem"); // Dapatkan data item jsGrid
+
+                //     //         if (data && data.rowspan) {
+                //     //             $row.find("td").each(function (index) {
+                //     //                 const $td = $(this);
+
+                //     //                 // Abaikan kolom 'Dosen'
+                //     //                 const fieldName = $("#tabelStatistik").jsGrid("option", "fields")[index].name;
+                //     //                 if (fieldName !== "Dosen") {
+                //     //                     $td.attr("rowspan", data.rowspan);
+                //     //                 }
+                //     //             });
+                //     //         }
+                //     //     });
+                //     // }
+
+
+                // });
+
+                // $('#tabelStatistikBoots').bootstrapTable({
+                //     data: dataSouceTable
+                // });
+
+                // $("#tabelStatistik").jsGrid('setGroupHeaders', {
+                //     useColSpanStyle: false, 
+                //     groupHeaders:[
+                //       {startColumnName: 'Alur Pembelajaran Terisi', numberOfColumns: 3, titleText: '<em>ALur Group</em>'},
+                //     //   {startColumnName: 'closed', numberOfColumns: 2, titleText: 'Shiping'}
+                //     ]
+                // });
 
                 document.getElementById("download-xlsx").addEventListener("click", function () {
                     // Ambil data dari jsGrid
                     const data = $("#tabelStatistik").jsGrid("option", "data");
-                
+
                     const worksheetData = [
                         ["No", "Nama Kelas", "Dosen", "Alur Terisi", "Total Alur", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum", "Report Activity", "Report Completion"]
                     ];
-                
+
                     data.forEach(item => {
                         worksheetData.push([
                             item.No,
-                            { f: `HYPERLINK("${item['link_namaKelas']}", "${item['excel_namaKelas']}")`},
+                            { f: `HYPERLINK("${item['link_namaKelas']}", "${item['excel_namaKelas']}")` },
                             item.Dosen,
                             item["Alur Pembelajaran Terisi"],
                             item["Alur Pembelajaran Total"],
@@ -668,28 +874,28 @@ async function filter_data() {
                             item.Survey,
                             item.Quiz,
                             item.Forum,
-                            { f: `HYPERLINK("${item['link_1']}", "Link Activity Report")`},
-                            { f: `HYPERLINK("${item['link_2']}", "Link Activity Completion")`} 
+                            { f: `HYPERLINK("${item['link_1']}", "Link Activity Report")` },
+                            { f: `HYPERLINK("${item['link_2']}", "Link Activity Completion")` }
                         ]);
                     });
-                
+
                     // Buat workbook dan worksheet
                     const wb = XLSX.utils.book_new();
                     const ws = XLSX.utils.aoa_to_sheet(worksheetData);
-                
+
                     // Tambahkan worksheet ke workbook
                     XLSX.utils.book_append_sheet(wb, ws, "Monitoring Data");
-                
+
                     // Unduh file Excel
                     XLSX.writeFile(wb, "Monitoring_Data.xlsx");
                 });
-                
 
-            
-                
-            
+
+
+
+
                 $("#grafik_kelas, #tab_perKelas").addClass("d-none");
-            
+
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
                 $("#btn_spinner").addClass("d-none");
                 $("#clear_filter").removeAttr("disabled");
@@ -731,7 +937,7 @@ async function filter_data() {
 
             const dataSouceTable = [];
 
-            
+
 
             const filteredData = data.filter(item => item.kode_matkul === selectedKodeMatkul);
 
@@ -814,15 +1020,15 @@ async function filter_data() {
                                 const reqUser = await fetch(`https://sikola-v2.unhas.ac.id/webservice/rest/server.php?wstoken=07480e5bbb440a596b1ad8e33be525f8&moodlewsrestformat=json&wsfunction=core_enrol_get_enrolled_users&courseid=${courseid}`, requestOptions)
                                 const users = await reqUser.json()
                                 let dosens = users.filter(user => user.groups.some(grup => grup.name == "DOSEN"));
-    
-    
+
+
                                 const jumlahDosen = dosens.length;
-    
+
                                 dosens.forEach((dosen, dosenIndex) => {
                                     dataSouceTable.push({
                                         'No': dosenIndex === 0 ? counter++ : '', // Menampilkan nomor baris yang berbeda untuk setiap dosen
-                                        'Nama Kelas': dosenIndex === 0 
-                                            ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${data.courses[0].id}" target="_blank" class="">${data.courses[0].fullname} <i class="fe-external-link"></i></a>` 
+                                        'Nama Kelas': dosenIndex === 0
+                                            ? `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${data.courses[0].id}" target="_blank" class="">${data.courses[0].fullname} <i class="fe-external-link"></i></a>`
                                             : '', // Tampilkan Nama Kelas hanya di baris pertama
                                         'rowspan': dosenIndex === 0 ? jumlahDosen : null, // Rowspan hanya untuk baris pertama
                                         'Alur Pembelajaran Terisi': dosenIndex === 0 ? banyakTerisi.length : '',
@@ -834,14 +1040,14 @@ async function filter_data() {
                                         'Quiz': dosenIndex === 0 ? quizes : '',
                                         'Forum, Thread, Post': dosenIndex === 0 ? forums : '',
                                         'Dosen': `${dosen.lastname}`,  // Tampilkan nama dosen di setiap baris
-                                        'Report': dosenIndex === 0 
+                                        'Report': dosenIndex === 0
                                             ? `<a href="https://sikola-v2.unhas.ac.id/report/outline/index.php?id=${data.courses[0].id}" target="_blank" class="">Activity Report <i class="fe-external-link"></i></a> <br>
                                             <a href="https://sikola-v2.unhas.ac.id/report/progress/index.php?course=${data.courses[0].id}" target="_blank" class="">Activity Completion <i class="fe-external-link"></i></a>`
                                             : ''
                                     });
                                 });
 
-                               
+
                             })
                             .catch((error) => console.error(error));
                     })
@@ -877,7 +1083,7 @@ async function filter_data() {
                     pageButtonCount: 15,
                     responsive: true,
                     data: dataSouceTable,
-                
+
                     fields: [
                         {
                             name: "No",
@@ -964,7 +1170,7 @@ async function filter_data() {
                             filtering: false,
                         },
                     ],
-                
+
                     controller: {
                         loadData: function (filter) {
                             return $.grep(dataSouceTable, function (item) {
@@ -975,9 +1181,9 @@ async function filter_data() {
                             });
                         },
                     },
-                
+
                 });
-                
+
 
 
 
@@ -995,6 +1201,8 @@ async function filter_data() {
 
 
 }
+
+
 
 const modalShow = (namaKelas, banyakTerisi, banyakAlur, rps, tugas, files, surveys, quizes, forums, namaDosenHtml) => {
     $("#modal_grafik").modal("show");
@@ -1031,7 +1239,7 @@ const modalShow = (namaKelas, banyakTerisi, banyakAlur, rps, tugas, files, surve
 
             // type: 'bar',
             data: [banyakTerisi, rps, tugas, files, surveys, quizes, forums]
-        }, ],
+        },],
 
         labels: ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"],
 
@@ -1161,7 +1369,7 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
 
             // type: 'bar',
             data: [totalBanyakTerisi, totalRps, totalTugas, totalDoc, totalSurvey, totalQuiz, totalForum]
-        }, ],
+        },],
 
         labels: ["Alur Pembelajaran (Terisi)", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum"],
 
@@ -1242,7 +1450,7 @@ async function grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalT
     // chart.destroy()
 }
 
-const grafikKelas = async(kelasMK, requestOptions) => {
+const grafikKelas = async (kelasMK, requestOptions) => {
 
     const chartElement3 = document.querySelector('#apex-column-1');
     if (chartElement3 && chartElement3._chartInstance) {
@@ -1346,7 +1554,7 @@ const grafikKelas = async(kelasMK, requestOptions) => {
 
 
 }
-const grafikKelas2 = async(kelasMK, requestOptions, nama_kelas) => {
+const grafikKelas2 = async (kelasMK, requestOptions, nama_kelas) => {
 
     $("#juduL_kelas").html(`Grafik Perbandingan Kelas - ${nama_kelas}`)
 
@@ -1448,7 +1656,7 @@ const tab_perKelas = async (kelasMK, requestOptions, nama_prodi) => {
     for (const [index, item] of kelasMK.entries()) {
         // Buat nav-tabs secara dinamis
 
-        
+
         const tabId = `tabKelas-${index}`;
         const navItem = `
             <li class="nav-item">
@@ -1509,7 +1717,7 @@ const tab_perKelas = async (kelasMK, requestOptions, nama_prodi) => {
             }],
             colors: colors,
             xaxis: { categories: categories },
-           
+
             title: {
                 text: item.fullname_kelas_sikola,
                 align: "center",
@@ -1571,7 +1779,7 @@ const tab_perKelas = async (kelasMK, requestOptions, nama_prodi) => {
 
 
 
-const clear_filter = async() => {
+const clear_filter = async () => {
     isFilterCleared = true; // Setel flag menjadi true
 
     const chartElement = document.querySelector('#apex-pie-1');
