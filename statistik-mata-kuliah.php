@@ -165,7 +165,7 @@ include 'partials/main.php';
                     <select id="filterDosen" class="form-control" style="max-width: 400px;">
                       <option value="">-- Pilih Dosen --</option>
                     </select>
-                    <button id="clearFilter" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-close"></i></button>
+                    <button id="clearFilter" class="btn btn-outline-danger btn-sm waves-effect waves-light">Clear Filter</button>
 
                     <button class="btn btn-sm btn-success " id="download-xlsx"> <i class="mdi mdi-microsoft-excel"></i> xlsx</button>
                     <button class="btn btn-sm btn-danger " id="download-pdf"> <i class="mdi mdi-file-pdf-box"></i> pdf</button>

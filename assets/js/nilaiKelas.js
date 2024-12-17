@@ -310,6 +310,8 @@ async function filter_data() {
                                     'nama_kelas' : `<a href="https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}" target="_blank" class="">${item.fullname} <i class="fe-external-link"></i></a>`,
                                     'status' : badge,
                                     'link' : `<a href="https://sikola-v2.unhas.ac.id/grade/report/grader/index.php?id=${item.id}" target="_blank" style="text-align:center;" class="text-center">Penilaian Mahasiswa <i class="fe-external-link"></i></a>`,
+                                    'excel_namaKelas': item.fullname,
+                                    'link_namaKelas': `https://sikola-v2.unhas.ac.id/course/view.php?id=${item.id}`,
 
                                 })
 
@@ -390,6 +392,45 @@ async function filter_data() {
                 
                    
                 });
+
+                document.getElementById("download-xlsx").addEventListener("click", function () {
+                    // Ambil data dari jsGrid
+                    const data = $("#tabelNilai").jsGrid("option", "data");
+                
+                    const worksheetData = [
+                        ["No", "Nama Kelas", "Status"] // Header kolom
+                    ];
+                
+                    // Fungsi untuk membersihkan HTML dan mengambil teks saja
+                    function stripHtml(html) {
+                        const tempElement = document.createElement("div");
+                        tempElement.innerHTML = html;
+                        return tempElement.textContent || tempElement.innerText || "";
+                    }
+                
+                    // Proses data
+                    data.forEach(item => {
+                        worksheetData.push([
+                            item.no,
+                            { f: `HYPERLINK("${item.link_namaKelas}", "${item.excel_namaKelas}")` },
+                            stripHtml(item.status) // Membersihkan HTML dari item.status
+                        ]);
+                    });
+                
+                    // Buat workbook dan worksheet
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.aoa_to_sheet(worksheetData);
+                
+                    // Tambahkan worksheet ke workbook
+                    XLSX.utils.book_append_sheet(wb, ws, "Monitoring Data");
+                
+                    // Unduh file Excel
+                    XLSX.writeFile(wb, "Monitoring_Data.xlsx");
+                });
+                
+
+
+
 
                 console.log(totalSinkron, totalTidakSinkron, nama_prodi);
 

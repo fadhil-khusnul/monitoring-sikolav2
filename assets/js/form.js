@@ -25,37 +25,43 @@ fetch('assets/data/listSemesters.json').then(res => res.json()).then(data => {
 }).catch(error => console.error('Error loading JSON file:', error));
 
 
+$('#semester_select').select2({
+    placeholder: 'Pilih Semester',
+    allowClear: true,
+    width: '100%',
+});
+
+$('#program_studi').select2({
+    placeholder: 'Pilih Program Studi',
+    allowClear: true,
+    width: '100%',
+});
+
 let nama_prodi_storage = sessionStorage.getItem('nama_prodi_storage');
 let semester_aktif_storage = sessionStorage.getItem('semester_aktif_storage');
+
+console.log(semester_aktif_storage, nama_prodi_storage);
+
 if (semester_aktif_storage && nama_prodi_storage) {
     $('#semester_select').val(semester_aktif_storage).trigger('change');
-    // $('#program_studi').val(nama_prodi_storage).trigger('change');
+    $('#program_studi').val(nama_prodi_storage).trigger('change');
 
 
 }
+
+$('#program_studi').on('change', async function () {
+    await prodi_select_fun();
+});
 async function semester_select_fun() {
     if (isFilterCleared) {
         return;
     }
 
 
-
-
-    // sessionStorage.removeItem('nama_prodi_storage');
-    // sessionStorage.removeItem('id_prodi_storage');
-    // sessionStorage.removeItem('semester_aktif_storage');
-    // sessionStorage.removeItem('selectedKodeMatkul_storage');
-    // sessionStorage.removeItem('fullname_sikola_storage');
-    // sessionStorage.removeItem('mk_value_storage');
-    // sessionStorage.removeItem('mk_aktif');
-
-    // $('#select_mk').val("").trigger('change');
-    // $('#program_studi').val("").trigger('change');
-
-
-    // select.innerHTML = ""; 
-
     const semester_select = $('#semester_select').select2('data');
+
+    console.log('semester_select', semester_select);
+    
     active = semester_select[0].element.getAttribute('mk_aktif');
     ta_semester = semester_select[0].element.getAttribute('ta_semester');
     const select_mk = document.getElementById("select_mk");
@@ -148,18 +154,17 @@ async function semester_select_fun() {
 }
 async function prodi_select_fun() {
 
-    console.log('prodiFun', nama_prodi_storage);
-
-
-
-
-
+    
+    
+    
+    
+    
     $("#filter_data").removeAttr("disabled")
     $('#select_mk').val("").trigger('change');
-
-
-    const program_studi = document.getElementById("program_studi")
-
+    
+    const program_studi = $('#program_studi').select2('data');
+    
+    console.log('prodiFun', program_studi);
     const selectedOption = program_studi.options[program_studi.selectedIndex];
 
     const nama_prodi = selectedOption.value;
@@ -248,7 +253,6 @@ async function filter_data() {
         return;
     }
 
-    console.log("FILTERR");
     const requestOptions = {
         method: "GET",
         redirect: "follow"
@@ -259,6 +263,8 @@ async function filter_data() {
 
     const program_studi = document.getElementById("program_studi")
 
+    
+
     const selectedOption = program_studi.options[program_studi.selectedIndex];
     let nama_prodi = selectedOption.value;
     let semester_aktif = document.getElementById("semester_select").value
@@ -267,7 +273,7 @@ async function filter_data() {
     id_prodi = id_prodi.getAttribute('id_prodi');
     console.log("NAMA PRODI", id_prodi, nama_prodi);
 
-    // sessionStorage.setItem('nama_prodi_storage', nama_prodi)
+    sessionStorage.setItem('nama_prodi_storage', nama_prodi)
     sessionStorage.setItem('id_prodi_storage', id_prodi)
     // sessionStorage.setItem('semester_aktif_storage', semester_aktif)
 
@@ -855,7 +861,9 @@ async function filter_data() {
 
                 document.getElementById("download-xlsx").addEventListener("click", function () {
                     // Ambil data dari jsGrid
-                    const data = $("#tabelStatistik").jsGrid("option", "data");
+                    // const data = $("#tabelStatistik").jsGrid("option", "data");
+                    const data = $('#tabelStatistik').bootstrapTable('getData');
+
 
                     const worksheetData = [
                         ["No", "Nama Kelas", "Dosen", "Alur Terisi", "Total Alur", "RPS", "Tugas", "Doc", "Survey", "Quiz", "Forum", "Report Activity", "Report Completion"]
@@ -1070,120 +1078,106 @@ async function filter_data() {
                 grafik_statistik(totalBanyakTerisi, totalRps, totalProyek, totalTugas, totalKasus, totalDoc, totalSurvey, totalQuiz, totalForum, nama_prodi);
 
 
-                $("#tabelStatistik").jsGrid({
-                    width: "100%",
-                    height: "800px",
-                    inserting: false,
-                    editing: false,
-                    sorting: false,
-                    paging: true,
-                    filtering: true,
-                    autoload: true,
-                    pageSize: 20,
-                    pageButtonCount: 15,
-                    responsive: true,
-                    data: dataSouceTable,
+                const jsonData = {
+                    total: dataSouceTable.length,
+                    totalNotFiltered: dataSouceTable.length,
+                    rows: dataSouceTable
+                };
 
-                    fields: [
-                        {
-                            name: "No",
-                            title: "No",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Nama Kelas",
-                            title: "Nama Kelas",
-                            type: "text",
-                            minWidth: "50%",
-                            filtering: true,
-                        },
-                        {
-                            name: "Dosen",
-                            title: "Dosen",
-                            type: "text",
-                            width: 100,
-                            filtering: true,
-                        },
-                        {
-                            name: "Alur Pembelajaran Terisi",
-                            title: "Alur Terisi",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Alur Pembelajaran Total",
-                            title: "Total Alur",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "RPS",
-                            title: "RPS",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Tugas",
-                            title: "Tugas",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Doc",
-                            title: "Doc",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Survey",
-                            title: "Survey",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Quiz",
-                            title: "Quiz",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Forum",
-                            title: "Forum",
-                            type: "number",
-                            width: 50,
-                            filtering: false,
-                        },
-                        {
-                            name: "Report",
-                            title: "Reports",
-                            type: "text",
-                            width: 100,
-                            filtering: false,
-                        },
-                    ],
-
-                    controller: {
-                        loadData: function (filter) {
-                            return $.grep(dataSouceTable, function (item) {
-                                return (
-                                    (!filter["Nama Kelas"] || item["Nama Kelas"].toLowerCase().indexOf(filter["Nama Kelas"].toLowerCase()) > -1) &&
-                                    (!filter["Dosen"] || item["Dosen"].toLowerCase().indexOf(filter["Dosen"].toLowerCase()) > -1)
-                                );
-                            });
-                        },
+                fetch('services/writeStatistik.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
                     },
+                    body: JSON.stringify(jsonData)
+                })
+                    .then(response => response.json())
+                    .then(data => {
 
-                });
 
+                        if (data.status === 'success') {
+                            // Refresh BootstrapTable
+                            $('#tableStatistikB').bootstrapTable('refresh', {
+                                url: 'services/data/statistik.json',
+                                pagination: true,
+                                search: true,
+                                sidePagination: 'server',
+                                silent: true,
+
+                                columns: [{
+                                    field: 'Dosen',
+                                    title: 'Dosen',
+                                    escape: false
+                                }],
+
+
+
+                            })
+
+                            let originalData = [];
+
+                            const allDosens = [...new Set(dataSouceTable.flatMap(row =>
+                                row.Dosen.split('<br>').map(name => name.trim())
+                            ))];
+
+                            // Tambahkan ke dalam Select2
+                            allDosens.forEach(dosen => {
+                                $('#filterDosen').append(new Option(dosen, dosen));
+                            });
+
+                            // Inisialisasi Select2
+                            $('#filterDosen').select2({
+                                placeholder: "Pilih Dosen",
+                                width: '500px',
+                                dropdownAutoWidth: false,
+                            });
+
+                            // Ambil data asli dan simpan di `originalData` setelah tabel di-load
+                            $('#tableStatistikB').on('post-body.bs.table', function () {
+                                if (originalData.length === 0) {
+                                    originalData = $('#tableStatistikB').bootstrapTable('getData');
+                                }
+                            });
+
+                            // Event handler untuk filter
+                            $('#filterDosen').on('change', function () {
+                                const selectedDosen = $(this).val();
+                                console.log('selectedDosen', selectedDosen);
+
+                                if (selectedDosen) {
+                                    // Filter data berdasarkan kecocokan sebagian (partial match)
+                                    const filteredData = originalData.filter(row =>
+                                        row.Dosen && row.Dosen.toLowerCase().includes(selectedDosen.toLowerCase())
+                                    );
+
+                                    // Refresh tabel dengan data yang difilter
+                                    $('#tableStatistikB').bootstrapTable('load', filteredData);
+                                } else {
+                                    // Jika filter dikosongkan, tampilkan semua data asli
+                                    $('#tableStatistikB').bootstrapTable('load', originalData);
+                                }
+                            });
+
+                            $('#clearFilter').on('click', function () {
+                                // Hapus pilihan di Select2
+                                $('#filterDosen').val(null).trigger('change');
+                            
+                                // Tampilkan semua data asli
+                                $('#tableStatistikB').bootstrapTable('load', originalData);
+                            });
+
+                        } else {
+                            console.error('Error from PHP:', data.message);
+                        }
+
+                        console.log('Response from PHP:', data);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+
+
+              
 
 
 

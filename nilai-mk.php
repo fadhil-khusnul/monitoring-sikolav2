@@ -81,6 +81,16 @@
                   <h4 class="title text-center" id="judul_prodi"></h4>
 
 
+                  
+                  <div class="d-flex gap-2 p-3 align-content-end">
+                   
+                    <!-- <button id="clearFilter" class="btn btn-outline-danger btn-sm waves-effect waves-light">Clear Filter</button> -->
+
+                    <button class="btn btn-sm btn-success " id="download-xlsx"> <i class="mdi mdi-microsoft-excel"></i> xlsx</button>
+                    <!-- <button class="btn btn-sm btn-danger " id="download-pdf"> <i class="mdi mdi-file-pdf-box"></i> pdf</button> -->
+                  </div>
+
+
 
                   <div class="table-responsive">
                     <div id="tabelNilai">
@@ -145,6 +155,12 @@
   <script src="assets/libs/jsgrid/jsgrid.min.js"></script>
   <script src="assets/libs/select2/js/select2.min.js"></script>
   <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
+  <script src="assets/libs/bootstrap-table/bootstrap-table.min.js"></script>
+  <script src="assets/libs/bootstrap-table/extensions/export/bootstrap-table-export.min.js"></script>
+
+  <script src="assets/js/pages/bootstrap-tables.init.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
 
   <!-- Init js -->
   <!-- <script src="assets/js/pages/jsgrid.init.js"></script> -->
